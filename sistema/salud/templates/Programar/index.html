@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{%block titulo%} Paciente {% endblock %}
+{%block contenido%} 
+
+<h1>Ingreso de  Paciente</h1>
+<p> Se Solicita la Informacion Basica del Paciente </P>
+    <div class="card">
+        <div class="card-header"><a
+            name=""
+            id=""
+            class="btn btn-success"
+            href="{% url 'agregar'%}"
+            role="button"
+            >Agregar Paciente</a>
+            
+<a
+    name=""
+    id=""
+    class="btn btn-primary"
+    href="{% url 'editar'%}"
+    role="button"
+    >Editar</a
+>
+
+        </div>
+        <div class="card-body">
+            <h4 class="card-title">Paciente</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Cedula</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Edad</th>
+                        <th>Sexo</th>
+                        <th>Telefono</th>
+                        <th>Correo</th>
+                        <th>EBAIS</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                    </tr>
+                    <tr>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                    </tr>
+                    <tr>
+                        <td>Larry</td>
+                        <td>the Bird</td>
+                        <td>@twitter</td>
+                    </tr>
+                </tbody>
+                </table>
+        </div>
+        <div class="card-footer text-muted">Footer</div>
+    </div>
+    
+{% endblock %}

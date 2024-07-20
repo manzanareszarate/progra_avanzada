@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{%block titulo%} agregar {%endblock%}
+{%block contenido%} 
+
+<h1>Seccion de agregar Paciente</h1>
+<p> Ingrese la Informacion del Paciente </P>
+
+    <div class="card">
+        <div class="card-header">Datos</div>
+        <div class="card-body">
+            
+
+            {% include "Programar/formulario.html" %}
+
+
+
+
+        </div>
+        <div class="card-footer text-muted"><a
+            name=""
+            id=""
+            class="btn btn-success"
+            href="#"
+            role="button"
+            >agregar</a
+        >
+        </div>
+    </div>
+    
+{%endblock%}
