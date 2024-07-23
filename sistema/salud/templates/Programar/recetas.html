@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{%block titulo%} Medicamentos {%endblock%}
+{%block titulo%} Recetas {%endblock%}
 {%block contenido%} 
 
 
-<h1>Ingreso de Medicamentos</h1>
-<p> Gestión de Medicamentos </P>
+<h1>Ingreso de Recetas</h1>
+<p> Gestión de Recetas </P>
     
         <div class="card">
             <div class="card-header"><a
@@ -14,7 +14,7 @@
                 class="btn btn-success"
                 href="{% url 'agregar'%}"
                 role="button"
-                >Agregar Medicamento</a>
+                >Agregar Receta</a>
                 
     <a
         name=""
@@ -27,12 +27,16 @@
     
             </div>
             <div class="card-body">
-                <h4 class="card-title">Medicamentos</h4>
+                <h4 class="card-title">Receta</h4>
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th>Número Receta</th>
+                            <th>Cédula</th>
                             <th>Número Medicamento</th>
-                            <th>Nombre</th>
+                            <th>Nombre Medicamento</th>
+                            <th>Fecha Entrega</th>
+                            <th>Fecha Reposicion</th>
                             
                             
                             
@@ -62,17 +66,3 @@
 
 
 {%endblock%}
-
-
-
-
-
-
-
-
-
-
-
-
-
-

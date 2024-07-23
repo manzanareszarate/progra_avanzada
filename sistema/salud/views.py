@@ -26,3 +26,6 @@ def laboratorios(request):
 
 def medicamentos (request):
     return render (request, 'Programar/medicamentos.html')
+
+def recetas(request):
+    return render (request, 'Programar/recetas.html')
