@@ -23,3 +23,6 @@ def citas(request):
 
 def laboratorios(request):
     return render (request, 'Programar/laboratorios.html')
+
+def medicamentos (request):
+    return render (request, 'Programar/medicamentos.html')
