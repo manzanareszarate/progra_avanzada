@@ -17,3 +17,9 @@ def agregar(request):
 
 def editar(request):
     return render (request, 'Programar/editar.html')
+
+def citas(request):
+    return render (request, 'Programar/citas.html')
+
+def laboratorios(request):
+    return render (request, 'Programar/laboratorios.html')
