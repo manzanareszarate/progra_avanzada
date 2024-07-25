@@ -36,19 +36,19 @@ class medicamento(models.Model):
     nombre_Medicamento = models.CharField(max_length=50, verbose_name='Nombre')
     presentacion = models.CharField(max_length=50, verbose_name='Presentacion')
 
-    class recetas(models.Model):
+class receta (models.Model):
         id_Recetas = models.AutoField(primary_key=True , verbose_name='ID_Recetas')
         id_Usuario = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Usuario')
         id_Medicamento = models.ForeignKey('medicamento', on_delete=models.CASCADE, verbose_name='ID_Medicamento')
         fecha_Emision = models.DateField(null=False, verbose_name='Fecha_Emision')
         fecha_Reposicion = models.DateField(null=False, verbose_name='Fecha_Reposicion')
 
-        class Control_Hipertension(models.Model):
-            id_Hipertension = models.AutoField(primary_key=True , verbose_name='ID_Hipertension')
-            id_Usuario = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Usuario')
-            fecha = models.DateField(null=False, verbose_name='Fecha')
-            diastolica = models.IntegerField ( verbose_name='Diastolica')
-            sistolica = models.IntegerField ( verbose_name='Sistolica')
+class Control_Hipertensione (models.Model):
+        id_Hipertension = models.AutoField(primary_key=True , verbose_name='ID_Hipertension')
+        id_Usuario = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Usuario')
+        fecha = models.DateField(null=False, verbose_name='Fecha')
+        diastolica = models.IntegerField ( verbose_name='Diastolica')
+        sistolica = models.IntegerField ( verbose_name='Sistolica')
     
     
 

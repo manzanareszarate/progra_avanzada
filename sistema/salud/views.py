@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from models import paciente
 
 
 # Create your views here.
@@ -10,7 +11,8 @@ def soporte(request):
     return render (request, 'paginas/soporte.html')
 
 def index(request):
-    return render (request, 'Programar/index.html')
+    paciente = paciente.objects.all()
+    return render (request, 'Programar/index.html', {'paciente':paciente})
 
 def agregar(request):
     return render (request, 'Programar/agregar.html')
