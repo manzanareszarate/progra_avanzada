@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import paciente
+from .forms import pacienteForm
 
 
 
@@ -13,13 +14,16 @@ def soporte(request):
 
 def index(request):
     pacientes = paciente.objects.all()
-    return render (request, 'Programar/index.html'), {'paciente':pacientes}
+    return render (request, 'Programar/index.html', context={'pacientes':pacientes})
+    
 
-    
-    
+
+
 
 def agregar(request):
-    return render (request, 'Programar/agregar.html')
+    formulario = pacienteForm(request.POST or None)
+    return render (request, 'Programar/agregar.html',{'form':formulario})
+
 
 def editar(request):
     return render (request, 'Programar/editar.html')

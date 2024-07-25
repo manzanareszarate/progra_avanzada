@@ -50,23 +50,7 @@
                         <td>{{ pacientes.telefono}}</td>
                         <td>{{ pacientes.email}}</td>
 
-                        <td>
-                            <a
-                                name=""
-                                id=""
-                                class="btn btn-outline-warning"
-                                href="{% url 'editar' pacientes.id_paciente%}"
-                                role="button"
-                                >Editar</a
-                            >
-                            <a
-                                name=""
-                                id=""
-                                class="btn btn-outline-danger"
-                                href="{% url 'eliminar' pacientes.id_paciente%}"
-                                role="button"
-                                >Eliminar</a
-                            >
+                        
                         </td>
                     </tr>
                     {% endfor %}
