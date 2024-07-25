@@ -1,73 +1,69 @@
 {% extends "base.html" %}
 
-{%block titulo%} Paciente {% endblock %}
-{%block contenido%} 
+{% block titulo %}Paciente{% endblock %}
 
-<h1>Ingreso de  Paciente</h1>
-<p> Se Solicita la Informacion Basica del Paciente </P>
+{% block contenido %}
+    <h1>Listado de pacientes</h1>
+    <p>Sección que muestra el listado de pacientes</p>
+
     <div class="card">
         <div class="card-header"><a
             name=""
             id=""
-            class="btn btn-success"
-            href="{% url 'agregar'%}"
+            class="btn btn-outline-success"
+            href="{% url 'agregar' %}"
             role="button"
-            >Agregar Paciente</a>
-            
-<a
-    name=""
-    id=""
-    class="btn btn-primary"
-    href="{% url 'editar'%}"
-    role="button"
-    >Editar</a
->
-
+            >Agregar paciente</a
+        >
         </div>
         <div class="card-body">
-            <h4 class="card-title">Paciente</h4>
-            <table class="table table-striped">
+            <h4 class="card-title">Listado</h4>
+            
+
+            <table class="table" id="myTable">
                 <thead>
-                    <tr>
-                        <th>Cédula</th>
+                    
+                        <th>Id_Paciente</th>
+                        <th>Cedula</th>
                         <th>Nombre</th>
                         <th>Apellido</th>
-                        <th>Sexo</th>
-                        <th>Fecha de Nacimiento</th>
+                        <th>sexo</th>
+                        <th>Fecha Nacimiento</th>
                         <th>Edad</th>
                         <th>Dirección</th>
-                        <th>Teléfono</th>
+                        <th>Telefono</th>
                         <th>Email</th>
-                        
-                    </tr>
+                    
                 </thead>
                 <tbody>
-                    
-                    {% for paciente in pacientes %}
+
+                    {% for pacientes in pacientes  %}
                     <tr>
-                        <td>{{paciente.cedula}}</td>
-                        <td>{{paciente.nombre}}</td>
-                        <td>{{paciente.apellido}}</td>
-                        <td>{{paciente.sexo}}</td>
-                        <td>{{paciente.fecha_nacimiento}}</td>
-                        <td>{{paciente.edad}}</td>
-                        <td>{{paciente.direccion}}</td>
-                        <td>{{paciente.telefono}}</td>
-                        <td>{{paciente.email}}</td>
+                        <td>{{ pacientes.id_paciente }}</td>
+                        <td>{{ pacientes.cedula}}</td>
+                        <td>{{ pacientes.nombre }}</td>
+                        <td>{{ pacientes.apellido}}</td>
+                        <td>{{ pacientes.sexo}}</td>
+                        <td>{{ pacientes.fecha_Nacimiento}}</td>
+                        <td>{{ pacientes.edad}}</td>
+                        <td>{{ pacientes.direccion}}</td>
+                        <td>{{ pacientes.telefono}}</td>
+                        <td>{{ pacientes.email}}</td>
+
                         <td>
                             <a
                                 name=""
                                 id=""
-                                class="btn btn-primary"
-                                href="{% url 'editar' paciente.id %}"
+                                class="btn btn-outline-warning"
+                                href="{% url 'editar' pacientes.id_paciente%}"
                                 role="button"
                                 >Editar</a
                             >
                             <a
                                 name=""
                                 id=""
-                                class="btn btn-danger"
-                                href="{% url 'eliminar' paciente.id %}"
+                                class="btn btn-outline-danger"
+                                href="{% url 'eliminar' pacientes.id_paciente%}"
                                 role="button"
                                 >Eliminar</a
                             >
@@ -75,9 +71,18 @@
                     </tr>
                     {% endfor %}
                 </tbody>
-                </table>
+            </table>
         </div>
-        <div class="card-footer text-muted">Footer</div>
+        <div class="card-footer text-muted">
+
+            
+
+        </div>
     </div>
+
+    <script>
+        
+        
     
+
 {% endblock %}

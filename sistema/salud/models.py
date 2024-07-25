@@ -4,6 +4,7 @@ from django.db import models
 # Create your models here.
 class paciente(models.Model):
     id_paciente = models.AutoField(primary_key=True , verbose_name='ID_Paciente')
+    cedula = models.IntegerField(null=True,verbose_name='Cedula')
     nombre = models.CharField(max_length=50, verbose_name='Nombre')
     apellido = models.CharField(max_length=50, verbose_name='Apellido')
     sexo = models.CharField(max_length=20, verbose_name='Sexo')
@@ -13,6 +14,8 @@ class paciente(models.Model):
     telefono = models.IntegerField( verbose_name='Telefono')
     email = models.EmailField( verbose_name='Email')
     
+    def __str__(self):
+        return str (self.cedula) + '    ' + self.nombre + '    ' + self.apellido + '    ' + self.sexo + '    ' + str (self.fecha_Nacimiento) + '    ' +str( self.edad) + '    ' + self.direccion + '    ' + str (self.telefono) + '    ' + self.email
 
 
 class laboratorio(models.Model):
