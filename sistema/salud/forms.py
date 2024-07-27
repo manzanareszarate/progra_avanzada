@@ -6,10 +6,10 @@ from django.contrib.auth.forms import UserCreationForm
 
 from .models import paciente
 
-class pacienteForm(forms.ModelForm):
+class pacienteForm(forms.ModelForm):#formulario para el modelo paciente
     class Meta:
         model = paciente
-        fields = ['cedula', 'nombre', 'apellido', 'sexo', 'fecha_Nacimiento', 'edad', 'direccion', 'telefono', 'email',]	
+        fields = fields = ['cedula', 'nombre', 'apellido', 'sexo', 'fecha_Nacimiento', 'edad', 'direccion', 'telefono', 'email']
 
 
 

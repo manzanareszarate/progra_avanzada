@@ -42,21 +42,21 @@ def index(request):
     return render(request, 'Programar/index.html', {'pacientes': pacientes})
 
 
-def agregar(request):
-    form = pacienteForm(request.POST or None)
-    if form.is_valid():
-        instancia = form.save(commit=False)
-        instancia.usuario = request.user
-        instancia.save()
-        return redirect('index')
-    return render(request, 'Programar/agregar.html', {'form': form})
         
-
-
-
-
-
-
+login_required(login_url='/accounts/login/')
+def agregar(request):
+    if request.method == 'POST':
+        form = pacienteForm(request.POST)
+        if form.is_valid():
+            instancia = form.save(commit=False)
+            # Asignar la instancia del usuario actual
+            instancia.id_usuario = request.user
+            instancia.save()
+            return redirect('index')  # Redirige a la página de inicio o a la página deseada
+    else:
+        form = pacienteForm()
+    
+    return render(request, 'Programar/agregar.html', {'form': form})
 
 
 
