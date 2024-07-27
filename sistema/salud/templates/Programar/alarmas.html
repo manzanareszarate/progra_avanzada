@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block titulo %}Paciente{% endblock %}
+
+{% block contenido %}
+    <h1>Listado de pacientes</h1>
+    <p>Sección que muestra el listado de pacientes</p>
+
+    
+        <div class="card-body">
+            <h4 class="card-title">Listado</h4>
+            
+
+            <table class="table" id="myTable">
+                <thead>
+                    
+                        <th>Id_Paciente</th>
+                        <th>Cedula</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>sexo</th>
+                        <th>Fecha Nacimiento</th>
+                        <th>Edad</th>
+                        <th>Dirección</th>
+                        <th>Telefono</th>
+                        <th>Email</th>
+                    
+                </thead>
+                <tbody>
+
+                    {% for alertas in alertas  %}
+                    <tr>
+                        <td>{{ alertas.}}</td>
+                        <td>{{ pacientes.cedula}}</td>
+                        <td>{{ pacientes.nombre }}</td>
+                        <td>{{ pacientes.apellido}}</td>
+                        <td>{{ pacientes.sexo}}</td>
+                        <td>{{ pacientes.fecha_Nacimiento}}</td>
+                        <td>{{ pacientes.edad}}</td>
+                        <td>{{ pacientes.direccion}}</td>
+                        <td>{{ pacientes.telefono}}</td>
+                        <td>{{ pacientes.email}}</td>
+
+                        
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+            </table>
+        </div>
+        <div class="card-footer text-muted">
+
+
+            {% if request.user.is_authenticated %}
+            <h2>Hola {{ request.user.username }}</h2>
+            {% endif %}
+
+
+
+            <br>
+            <div class="card">
+                <div class=""><a
+                    name=""
+                    id=""
+                    class="btn btn-outline-success"
+                    href="{% url 'agregar' %}"
+                    role="button"
+                    >Agregar Paciente</a>
+                </div>
+                
+                <div class="card">
+                    <div class=""><a
+                        name=""
+                        id=""
+                        class="btn btn-outline-primary"
+                        href="{% url 'agregar'%}"
+                        role="button"
+                        >Modificar Paciente</a
+                    >
+                    </div>
+                    <div class="card">
+                        <div class=""><a
+                            name=""
+                            id=""
+                            class="btn btn-outline-danger"
+                            href="{%url 'agregar'%}"
+                            role="button"
+                            >Eliminar Paciente</a
+                        >
+                        </div>
+            
+
+        </div>
+    </div>
+
+    <script>
+        
+        
+    
+
+{% endblock %}

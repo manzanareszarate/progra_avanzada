@@ -18,6 +18,6 @@ path('eliminar/<int:id>/', views.eliminar, name='eliminar'),
 path('accounts/login/', login_view, name='login'),
 path('accounts/logout/', logout_view, name='logout'),
 path('accounts/registro/', registro, name='registro'),
-path( 'alertas/', views.alertas, name='alertas')
+path( 'alarmas/', views.alertas, name='alarmas'),
 
 ]

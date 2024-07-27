@@ -5,6 +5,10 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import paciente
+from django.db import models
+from django.utils import timezone
+from datetime import timedelta
+from django.contrib.auth.models import User
 from .forms import pacienteForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
@@ -60,7 +64,7 @@ def recetas(request):
 def alertas (request):
     return render (request, 'Programar/alertas.html')
 
-###############################
+
 def registro(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)
@@ -95,4 +99,5 @@ def logout_view(request):
     logout(request)
     return redirect('inicio')
 
-
+def alarmas (request):
+    return render (request, 'Programar/alertas.html')

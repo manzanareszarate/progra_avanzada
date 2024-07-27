@@ -1,6 +1,6 @@
 from django.db import models
-from django.db import models
-
+from django.utils import timezone
+from datetime import timedelta
 from django.contrib.auth.models import User
 
 
@@ -76,8 +76,8 @@ class Control_Peso(models.Model):
     Altura = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Altura')
     IMC = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='IMC')
 
-    class alertas(models.Model):
-        id_alerta = models.AutoField(primary_key=True , verbose_name='ID_Alerta')
+class alarmas(models.Model):
+        id_Alarmas = models.AutoField(primary_key=True , verbose_name='ID_Alerta')
         id_Recetas = models.ForeignKey('receta', on_delete=models.CASCADE, verbose_name='ID_Recetas')
         id_Paciente = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Paciente')
         id_Cita = models.ForeignKey('cita', on_delete=models.CASCADE, verbose_name='ID_Cita')
