@@ -6,16 +6,7 @@
     <h1>Listado de pacientes</h1>
     <p>Sección que muestra el listado de pacientes</p>
 
-    <div class="card">
-        <div class="card-header"><a
-            name=""
-            id=""
-            class="btn btn-outline-success"
-            href="{% url 'agregar' %}"
-            role="button"
-            >Agregar paciente</a
-        >
-        </div>
+    
         <div class="card-body">
             <h4 class="card-title">Listado</h4>
             
@@ -55,10 +46,49 @@
                     </tr>
                     {% endfor %}
                 </tbody>
+                
             </table>
         </div>
         <div class="card-footer text-muted">
 
+
+            {% if request.user.is_authenticated %}
+            <h2>Hola {{ request.user.username }}</h2>
+            {% endif %}
+
+
+
+            <br>
+            <div class="card">
+                <div class=""><a
+                    name=""
+                    id=""
+                    class="btn btn-outline-success"
+                    href="{% url 'agregar' %}"
+                    role="button"
+                    >Agregar Paciente</a>
+                </div>
+                
+                <div class="card">
+                    <div class=""><a
+                        name=""
+                        id=""
+                        class="btn btn-outline-primary"
+                        href="{% url 'agregar'%}"
+                        role="button"
+                        >Modificar Paciente</a
+                    >
+                    </div>
+                    <div class="card">
+                        <div class=""><a
+                            name=""
+                            id=""
+                            class="btn btn-outline-danger"
+                            href="{%url 'agregar'%}"
+                            role="button"
+                            >Eliminar Paciente</a
+                        >
+                        </div>
             
 
         </div>

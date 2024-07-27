@@ -1,4 +1,8 @@
 from django.db import models
+from django.db import models
+from django.utils import timezone
+from datetime import timedelta
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -13,6 +17,8 @@ class paciente(models.Model):
     direccion = models.CharField(max_length=50, verbose_name='Direccion')
     telefono = models.IntegerField( verbose_name='Telefono')
     email = models.EmailField( verbose_name='Email')
+
+    
     
     def __str__(self):
         return str (self.cedula) + '    ' + self.nombre + '    ' + self.apellido + '    ' + self.sexo + '    ' + str (self.fecha_Nacimiento) + '    ' +str( self.edad) + '    ' + self.direccion + '    ' + str (self.telefono) + '    ' + self.email
@@ -68,6 +74,11 @@ class Control_Peso(models.Model):
     Peso = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Peso')
     Altura = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Altura')
     IMC = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='IMC')
+
+    class alertas(models.Model):
+        id_alerta = models.AutoField(primary_key=True , verbose_name='ID_Alerta')
+        id_Recetas = models.ForeignKey('receta', on_delete=models.CASCADE, verbose_name='ID_Recetas')
+        id_Paciente = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Paciente')
 
 
 
