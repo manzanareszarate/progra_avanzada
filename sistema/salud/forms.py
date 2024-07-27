@@ -9,7 +9,27 @@ from .models import paciente
 class pacienteForm(forms.ModelForm):
     class Meta:
         model = paciente
-        fields = '__all__'
+        fields = ['cedula', 'nombre', 'apellido', 'sexo', 'fecha_Nacimiento', 'edad', 'direccion', 'telefono', 'email',]	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

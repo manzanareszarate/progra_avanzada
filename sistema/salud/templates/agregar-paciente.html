@@ -1,0 +1,14 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Paciente</title>
+</head>
+<body>
+    <h1>Agregar Paciente</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Renderiza el formulario como párrafos -->
+        <button type="submit">Guardar</button>
+    </form>
+</body>
+</html>

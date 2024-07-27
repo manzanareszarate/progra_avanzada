@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from .views import login_view, logout_view, inicio, soporte
 from .views import registro
+from .views import agregar_paciente
 
 
 urlpatterns = [
@@ -18,6 +19,7 @@ path('eliminar/<int:id>/', views.eliminar, name='eliminar'),
 path('accounts/login/', login_view, name='login'),
 path('accounts/logout/', logout_view, name='logout'),
 path('accounts/registro/', registro, name='registro'),
-path( 'alarmas/', views.alertas, name='alarmas'),
+path('alarmas/', views.alarmas, name='alarmas'),
+path('agregar-paciente/', agregar_paciente, name='agregar_paciente')
 
 ]

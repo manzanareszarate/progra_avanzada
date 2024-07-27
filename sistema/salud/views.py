@@ -41,6 +41,32 @@ def agregar(request):
         return redirect('index')
     return render (request, 'Programar/agregar.html', {'form':form})
 
+
+
+
+def agregar_paciente(request):
+    if request.method == 'POST':
+        form = pacienteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')  
+    else:
+        form = pacienteForm()
+    return render(request, 'Programar/agregar-paciente.html', {'form': form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def eliminar(request, id):
     elimina_paciente= paciente.objects.get(id_paciente=id)
     elimina_paciente.delete()
@@ -100,4 +126,7 @@ def logout_view(request):
     return redirect('inicio')
 
 def alarmas (request):
-    return render (request, 'Programar/alertas.html')
+    return render (request, 'Programar/alarmas.html')
+
+
+
