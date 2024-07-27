@@ -29,30 +29,28 @@ def inicio(request):
 @login_required
 def soporte(request):
     return render (request, 'paginas/soporte.html')
-@login_required
-def index(request):
-    pacientes = paciente.objects.all()
-    return render (request, 'Programar/index.html', context={'pacientes':pacientes})
+
+
     
+    
+
+
+
+@login_required(login_url='/accounts/login/')
+def index(request):
+    pacientes = paciente.objects.filter(id_usuario=request.user)
+    return render(request, 'Programar/index.html', {'pacientes': pacientes})
+
+
 def agregar(request):
     form = pacienteForm(request.POST or None)
     if form.is_valid():
-        form.save()
+        instancia = form.save(commit=False)
+        instancia.usuario = request.user
+        instancia.save()
         return redirect('index')
-    return render (request, 'Programar/agregar.html', {'form':form})
-
-
-
-
-def agregar_paciente(request):
-    if request.method == 'POST':
-        form = pacienteForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('index')  
-    else:
-        form = pacienteForm()
-    return render(request, 'Programar/agregar-paciente.html', {'form': form})
+    return render(request, 'Programar/agregar.html', {'form': form})
+        
 
 
 
@@ -67,10 +65,11 @@ def agregar_paciente(request):
 
 
 
-def eliminar(request, id):
-    elimina_paciente= paciente.objects.get(id_paciente=id)
-    elimina_paciente.delete()
-    return redirect('index')
+
+
+
+
+
 
 def editar(request):
     return render (request, 'Programar/editar.html')
@@ -87,10 +86,8 @@ def medicamentos (request):
 def recetas(request):
     return render (request, 'Programar/recetas.html')
 
-def alertas (request):
-    return render (request, 'Programar/alertas.html')
 
-
+####################################################################################################3
 def registro(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)

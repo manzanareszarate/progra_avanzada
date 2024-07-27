@@ -3,100 +3,101 @@
 {% block titulo %}Paciente{% endblock %}
 
 {% block contenido %}
-    <h1>Listado de pacientes</h1>
-    <p>Sección que muestra el listado de pacientes</p>
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pacientes</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Elimina el espacio entre bordes de las celdas */
+        }
+        th, td {
+            border: 1px solid black; /* Borde de las celdas */
+            padding: 20px; /* Aumenta el espacio interno de las celdas */
+            text-align: center; /* Alinea el texto al centro */
+        }
+        th {
+            background-color: #f2f2f2; /* Color de fondo para los encabezados */
+        }
+        tbody tr {
+            border-bottom: 1px solid #ddd; /* Borde inferior de las filas (opcional) */
+        }
+        .button {
+            padding: 8px 12px;
+            margin: 5px; /* Espacio entre los botones */
+            border: none;
+            border-radius: 4px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block; /* Asegura que el margen se aplique correctamente */
+        }
+        .edit-button {
+            background-color: #4CAF50; /* Verde */
+        }
+        .delete-button {
+            background-color: #f44336; /* Rojo */
+        }
+        .edit-button:hover, .delete-button:hover {
+            opacity: 0.8;
+        }
+        .add-button {
+            background-color: #008CBA; /* Azul */
+            display: block; /* Asegura que el botón ocupe toda la línea disponible */
+            margin: 20px auto; /* Centra el botón y añade espacio alrededor */
+            width: 200px; /* Ajusta el ancho del botón */
+            text-align: center; /* Centra el texto dentro del botón */
+        }
+    </style>
+</head>
+<body>
+    <h1>Información del Paciente</h1>
     
-        <div class="card-body">
-            <h4 class="card-title">Listado</h4>
-            
-
-            <table class="table" id="myTable">
-                <thead>
-                    
-                        <th>Id_Paciente</th>
-                        <th>Cedula</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>sexo</th>
-                        <th>Fecha Nacimiento</th>
-                        <th>Edad</th>
-                        <th>Dirección</th>
-                        <th>Telefono</th>
-                        <th>Email</th>
-                    
-                </thead>
-                <tbody>
-
-                    {% for pacientes in pacientes  %}
-                    <tr>
-                        <td>{{ pacientes.id_paciente }}</td>
-                        <td>{{ pacientes.cedula}}</td>
-                        <td>{{ pacientes.nombre }}</td>
-                        <td>{{ pacientes.apellido}}</td>
-                        <td>{{ pacientes.sexo}}</td>
-                        <td>{{ pacientes.fecha_Nacimiento}}</td>
-                        <td>{{ pacientes.edad}}</td>
-                        <td>{{ pacientes.direccion}}</td>
-                        <td>{{ pacientes.telefono}}</td>
-                        <td>{{ pacientes.email}}</td>
-
-                        
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                
-            </table>
-        </div>
-        <div class="card-footer text-muted">
-
-
-            {% if request.user.is_authenticated %}
-            <h2>Hola {{ request.user.username }}</h2>
-            {% endif %}
-
-
-
-            <br>
-            <div class="card">
-                <div class=""><a
-                    name=""
-                    id=""
-                    class="btn btn-outline-success"
-                    href="{% url 'agregar' %}"
-                    role="button"
-                    >Agregar Paciente</a>
-                </div>
-                
-                <div class="card">
-                    <div class=""><a
-                        name=""
-                        id=""
-                        class="btn btn-outline-primary"
-                        href="{% url 'agregar'%}"
-                        role="button"
-                        >Modificar Paciente</a
-                    >
-                    </div>
-                    <div class="card">
-                        <div class=""><a
-                            name=""
-                            id=""
-                            class="btn btn-outline-danger"
-                            href="{%url 'agregar'%}"
-                            role="button"
-                            >Eliminar Paciente</a
-                        >
-                        </div>
-            
-
-        </div>
-    </div>
-
-    <script>
-        
-        
-    
-
+    <form method="post" action="{% url 'index' %}">
+        {% csrf_token %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cédula</th>
+                    <th>Apellido</th>
+                    <th>Sexo</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Edad</th>
+                    <th>Dirección</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Acciones</th> <!-- Nueva columna para los botones -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for paciente in pacientes %}
+                <tr>
+                    <td>{{ paciente.nombre }}</td>
+                    <td>{{ paciente.cedula }}</td>
+                    <td>{{ paciente.apellido }}</td>
+                    <td>{{ paciente.sexo }}</td>
+                    <td>{{ paciente.fecha_Nacimiento }}</td>
+                    <td>{{ paciente.edad }}</td>
+                    <td>{{ paciente.direccion }}</td>
+                    <td>{{ paciente.telefono }}</td>
+                    <td>{{ paciente.email }}</td>
+                    <td>
+                        <a href="" class="button edit-button">Editar</a>
+                        <a href="" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar este paciente?');">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10">No hay pacientes disponibles.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- Botón para agregar un nuevo paciente -->
+        <a href="{% url agregar %}" class="button add-button">Agregar Nuevo Paciente</a>
+    </form>
+</body>
+</html>
 {% endblock %}
