@@ -57,6 +57,9 @@ def medicamentos (request):
 def recetas(request):
     return render (request, 'Programar/recetas.html')
 
+def alertas (request):
+    return render (request, 'Programar/alertas.html')
+
 ###############################
 def registro(request):
     if request.method == 'POST':

@@ -1,7 +1,6 @@
 from django.db import models
 from django.db import models
-from django.utils import timezone
-from datetime import timedelta
+
 from django.contrib.auth.models import User
 
 
@@ -17,6 +16,8 @@ class paciente(models.Model):
     direccion = models.CharField(max_length=50, verbose_name='Direccion')
     telefono = models.IntegerField( verbose_name='Telefono')
     email = models.EmailField( verbose_name='Email')
+    id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    
 
     
     
@@ -79,7 +80,9 @@ class Control_Peso(models.Model):
         id_alerta = models.AutoField(primary_key=True , verbose_name='ID_Alerta')
         id_Recetas = models.ForeignKey('receta', on_delete=models.CASCADE, verbose_name='ID_Recetas')
         id_Paciente = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Paciente')
-
+        id_Cita = models.ForeignKey('cita', on_delete=models.CASCADE, verbose_name='ID_Cita')
+        id_Laboratorios = models.ForeignKey('laboratorio', on_delete=models.CASCADE, verbose_name='ID_Laboratorio')
+        fecha_Alarma = models.DateField(null=False, verbose_name='Fecha_Alarma')
 
 
 
