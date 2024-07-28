@@ -32,13 +32,7 @@ def save(self, *args, **kwargs):
             self.edad = today.year - self.fecha_Nacimiento.year - ((today.month, today.day) < (self.fecha_Nacimiento.month, self.fecha_Nacimiento.day))
             super(paciente, self).save(*args, **kwargs)
 
-class laboratorio(models.Model):
-    id_Laboratorios = models.AutoField(primary_key=True , verbose_name='ID_Laboratorio')
-    id_Paciente = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Paciente')
-    fecha = models.DateField(null=False, verbose_name='Fecha')
-    hora = models.TimeField(null=False, verbose_name='Hora')
-    lugar = models.CharField(max_length=200, verbose_name='Lugar')
-    tipo_Muestra = models.CharField(max_length=50, verbose_name='Tipo de Muestra')
+
 #########################################################
 
 
@@ -53,8 +47,33 @@ class cita(models.Model):
 
 def __str__(self):
         return str(self.id_Usuario) + '    ' + str(self.fecha) + '    ' + str(self.hora) + '    ' + self.lugar + '    ' + self.especialidad
-#################################################################################3
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#################################################################################3
+class laboratorio(models.Model):
+    id_Laboratorios = models.AutoField(primary_key=True , verbose_name='ID_Laboratorio')
+    id_Paciente = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Paciente')
+    fecha = models.DateField(null=False, verbose_name='Fecha')
+    hora = models.TimeField(null=False, verbose_name='Hora')
+    lugar = models.CharField(max_length=200, verbose_name='Lugar')
+    tipo_Muestra = models.CharField(max_length=50, verbose_name='Tipo de Muestra')
 
 
 

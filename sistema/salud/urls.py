@@ -5,6 +5,9 @@ from .views import registro
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import static
+from django.urls import path
+from .views import CitaListView
+from .views import cita
 
 urlpatterns = [
 path('', views.inicio, name='inicio'),
@@ -20,8 +23,7 @@ path('accounts/registro/', registro, name='registro'),
 path('alarmas/', views.alarmas, name='alarmas'),
 path('editar/<int:paciente_id>/', views.editar, name='editar'),
 path('eliminar/<int:paciente_id>/', views.eliminar, name='eliminar'),
-path('citas/', views.citas, name='citas'),
-path('citas/agregar/', views.agregar_cita, name='agregar_cita'),
-path('citas/editar/<int:cita_id>/', views.editar_cita, name='editar_cita'),
-path('citas/eliminar/<int:cita_id>/', views.eliminar_cita, name='eliminar_cita'),
+path('citas/', CitaListView.as_view(), name='citas_list'),
+path('cita/', views.cita, name='cita')
+
 ]

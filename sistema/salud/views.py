@@ -17,7 +17,10 @@ from django.contrib.auth.models import User
 from .forms import RegistroForm
 from .models import paciente
 from .models import cita
-from .forms import CitaForm
+from django.shortcuts import render
+from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import cita, paciente
 
 
 
@@ -107,111 +110,90 @@ def eliminar(request, paciente_id):
 ###### vistas para citas 
 
 
-@login_required(login_url='/accounts/login/')
+from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import cita, paciente  # Usa los nombres en minúscula
+
+class CitaListView(LoginRequiredMixin, ListView):
+    model = cita  # Usa el nombre del modelo en minúscula
+    template_name = 'citas_list.html'
+    context_object_name = 'citas'
+
+    def get_queryset(self):
+        """
+        Devuelve el conjunto de consultas para la vista, filtrando por los pacientes del usuario actual.
+        """
+        # Obtener todos los pacientes del usuario actual
+        pacientes_usuario = paciente.objects.filter(id_usuario=self.request.user)  # Usa el nombre del modelo en minúscula
+        # Obtener todas las citas asociadas a esos pacientes
+        return cita.objects.filter(paciente__in=pacientes_usuario) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def citas(request):
-    # Filtra las citas del usuario que está logueado
-    citas = cita.objects.filter(id_Usuario=request.user.paciente)
-    return render(request, 'Programar/citas.html', {'citas': citas})
-
-@login_required(login_url='/accounts/login/')
-def agregar_cita(request):
-    if request.method == 'POST':
-        form = CitaForm(request.POST)
-        if form.is_valid():
-            cita = form.save(commit=False)
-            cita.id_Usuario = request.user.paciente
-            cita.save()
-            return redirect('citas')
-    else:
-        form = CitaForm()
-    return render(request, 'Programar/agregar_cita.html', {'form': form})
-
-@login_required(login_url='/accounts/login/')
-def editar_cita(request, cita_id):
-    cita_instance = get_object_or_404(cita, id_Cita=cita_id, id_Usuario=request.user.paciente)
-    if request.method == 'POST':
-        form = CitaForm(request.POST, instance=cita_instance)
-        if form.is_valid():
-            form.save()
-            return redirect('citas')
-    else:
-        form = CitaForm(instance=cita_instance)
-    return render(request, 'Programar/editar_cita.html', {'form': form})
-
-@login_required(login_url='/accounts/login/')
-def eliminar_cita(request, cita_id):
-    cita_instance = get_object_or_404(cita, id_Cita=cita_id, id_Usuario=request.user.paciente)
-    if request.method == 'POST':
-        cita_instance.delete()
-        return redirect('citas')
-    return render(request, 'Programar/eliminar_cita.html', {'cita': cita_instance})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return render (request, 'Programar/citas.html')
 
 
 def laboratorios(request):
