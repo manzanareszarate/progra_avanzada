@@ -84,8 +84,8 @@
                     <td>{{ paciente.telefono }}</td>
                     <td>{{ paciente.email }}</td>
                     <td>
-                        <a href="" class="button edit-button">Editar</a>
-                        <a href="" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar este paciente?');">Eliminar</a>
+                        <a href="{% url 'editar' paciente.id_paciente %}" class="button edit-button">Editar</a>
+                        <a href="{% url 'eliminar' paciente.id_paciente %}" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar este paciente?');">Eliminar</a>
                     </td>
                 </tr>
                 {% empty %}

@@ -1,28 +1,125 @@
-{% extends "base.html" %}
-
-{% block titulo %}Iniciar Sesión{% endblock %}
-
-{% block contenido %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-lg">
-                <div class="card-body">
-                    <h2 class="text-center mb-4">Iniciar Sesión</h2>
-                    <form method="post" action="{% url 'login' %}">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-                            <a href="{% url 'inicio' %}" class="btn btn-secondary">Cancelar</a>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <!-- Agrega el enlace a Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #b8b8f0; /* Color lavanda un grado más oscuro */
+            font-family: 'Arial', sans-serif;
+        }
+        .card {
+            border-radius: 12px;
+            background-color: #fff; /* Color blanco para el fondo del cuadro */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 0 0 2px rgba(0,0,0,0.1); /* Borde difuminado */
+            overflow: hidden; /* Asegura que el contenido no se salga de los bordes redondeados */
+        }
+        .card-header {
+            background-color: #007bff; /* Color azul del banner */
+            color: white;
+            padding: 1rem; /* Aumenta el padding para extender el banner */
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.125); /* Añade una línea sutil abajo del banner */
+        }
+        .card-body {
+            padding: 2rem;
+        }
+        .btn-primary {
+            background-color: #007bff; /* Coincide con el color del banner */
+            border: 2px solid #000; /* Borde negro */
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            color: white; /* Color de la fuente blanca */
+        }
+        .btn-primary:hover {
+            background-color: #0056b3; /* Azul más oscuro en hover */
+            color: white; /* Mantiene el color de la fuente blanca en hover */
+        }
+        .btn-secondary {
+            background-color: #c82333; /* Rojo oscuro */
+            border: 2px solid #000; /* Borde negro */
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            color: white; /* Color de la fuente blanca */
+        }
+        .btn-secondary:hover {
+            background-color: #a71d2a; /* Rojo más oscuro en hover */
+        }
+        .btn-primary,
+        .btn-secondary {
+            text-decoration: none; /* Eliminar subrayado del texto en los botones */
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            font-weight: 500;
+        }
+        .form-control {
+            border-radius: 8px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.075);
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.075), 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+        }
+        .text-center a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+        .text-center a:hover {
+            text-decoration: none; /* Eliminar subrayado del enlace */
+        }
+        .text-center p {
+            font-size: 0.875rem;
+            color: #333;
+        }
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .btn-separation {
+            margin-right: 1rem; /* Separa los botones con un margen a la derecha */
+        }
+    </style>
+</head>
+<body>
+    <div class="container form-container">
+        <div class="row justify-content-center w-100">
+            <div class="col-md-8 col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">Iniciar Sesión</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="{% url 'login' %}">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                                <a href="{% url 'inicio' %}" class="btn btn-secondary btn-separation">Cancelar</a>
+                            </div>
+                        </form>
+                        <div class="text-center mt-4">
+                            <p>¿No tienes una cuenta?</p>
+                            <a href="{% url 'registro' %}">Regístrate</a>
                         </div>
-                    </form>
-                    <div class="text-center mt-3">
-                        <a href="{% url 'registro' %}">¿No tienes una cuenta? Regístrate</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
+    <!-- Agrega el enlace a Bootstrap JS y dependencias -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from datetime import timedelta
+from datetime import date
 from django.contrib.auth.models import User
 
 
@@ -24,6 +24,13 @@ class paciente(models.Model):
     def __str__(self):
         return str (self.cedula) + '    ' + self.nombre + '    ' + self.apellido + '    ' + self.sexo + '    ' + str (self.fecha_Nacimiento) + '    ' +str( self.edad) + '    ' + self.direccion + '    ' + str (self.telefono) + '    ' + self.email
 
+def save(self, *args, **kwargs):
+        # Calcular la edad basada en la fecha de nacimiento
+        if self.fecha_Nacimiento:
+            from datetime import date
+            today = date.today()
+            self.edad = today.year - self.fecha_Nacimiento.year - ((today.month, today.day) < (self.fecha_Nacimiento.month, self.fecha_Nacimiento.day))
+            super(paciente, self).save(*args, **kwargs)
 
 class laboratorio(models.Model):
     id_Laboratorios = models.AutoField(primary_key=True , verbose_name='ID_Laboratorio')
@@ -32,6 +39,9 @@ class laboratorio(models.Model):
     hora = models.TimeField(null=False, verbose_name='Hora')
     lugar = models.CharField(max_length=200, verbose_name='Lugar')
     tipo_Muestra = models.CharField(max_length=50, verbose_name='Tipo de Muestra')
+#########################################################
+
+
 
 class cita(models.Model):
     id_Cita = models.AutoField(primary_key=True , verbose_name='ID_Cita')
@@ -40,6 +50,13 @@ class cita(models.Model):
     hora = models.TimeField(null=False, verbose_name='Hora')
     lugar = models.CharField(max_length=200, verbose_name='Lugar')
     especialidad = models.CharField(max_length=50, verbose_name='Especialidad')
+
+def __str__(self):
+        return str(self.id_Usuario) + '    ' + str(self.fecha) + '    ' + str(self.hora) + '    ' + self.lugar + '    ' + self.especialidad
+#################################################################################3
+
+
+
 
 class medicamento(models.Model):
     id_Medicamento = models.AutoField(primary_key=True , verbose_name='ID_Medicamento')

@@ -3,64 +3,97 @@
 {%block titulo%} Citas {%endblock%}
 {%block contenido%} 
 
-<h1>Control de Citas</h1>
-<p> Gestión de Citas </P>
-    
-        <div class="card">
-            <div class="card-header"><a
-                name=""
-                id=""
-                class="btn btn-success"
-                href="{% url 'agregar'%}"
-                role="button"
-                >Agregar Cita</a>
-                
-    <a
-        name=""
-        id=""
-        class="btn btn-primary"
-        href="{% url 'editar'%}"
-        role="button"
-        >Editar</a
-    >
-    
-            </div>
-            <div class="card-body">
-                <h4 class="card-title">Paciente</h4>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Número Cita</th>
-                            <th>Cédula</th>
-                            <th>Fecha</th>
-                            <th>Hora</th>
-                            <th>Lugar</th>
-                            <th>Especialidad</th>
-                            
-                            
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
-                        <tr>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
-                        </tr>
-                    </tbody>
-                    </table>
-            </div>
-            <div class="card-footer text-muted">Footer</div>
-        </div>
+{% extends "base.html" %}
 
+{% block titulo %}Citas{% endblock %}
+
+{% block contenido %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Citas</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Elimina el espacio entre bordes de las celdas */
+        }
+        th, td {
+            border: 1px solid black; /* Borde de las celdas */
+            padding: 12px; /* Espacio interno de las celdas */
+            text-align: center; /* Alinea el texto al centro */
+        }
+        th {
+            background-color: #f2f2f2; /* Color de fondo para los encabezados */
+        }
+        tbody tr {
+            border-bottom: 1px solid #ddd; /* Borde inferior de las filas (opcional) */
+        }
+        .button {
+            padding: 8px 12px;
+            margin: 5px; /* Espacio entre los botones */
+            border: none;
+            border-radius: 4px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block; /* Asegura que el margen se aplique correctamente */
+        }
+        .edit-button {
+            background-color: #4CAF50; /* Verde */
+        }
+        .delete-button {
+            background-color: #f44336; /* Rojo */
+        }
+        .add-button {
+            background-color: #008CBA; /* Azul */
+            display: block; /* Asegura que el botón ocupe toda la línea disponible */
+            margin: 20px auto; /* Centra el botón y añade espacio alrededor */
+            width: 200px; /* Ajusta el ancho del botón */
+            text-align: center; /* Centra el texto dentro del botón */
+        }
+    </style>
+</head>
+<body>
+    <h1>Mis Citas</h1>
+    
+    <form method="post" action="{% url 'citas' %}">
+        {% csrf_token %}
+        <table>
+            <thead>
+                <tr>
+                    
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Lugar</th>
+                    <th>Especialidad</th>
+                    <th>Acciones</th> <!-- Nueva columna para los botones -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in citas %}
+                <tr>
+                    
+                    <td>{{ cita.fecha }}</td>
+                    <td>{{ cita.hora }}</td>
+                    <td>{{ cita.lugar }}</td>
+                    <td>{{ cita.especialidad }}</td>
+                    <td>
+                        <a href="{% url 'editar_cita' cita.id_Cita %}" class="button edit-button">Editar</a>
+                        <a href="{% url 'eliminar_cita' cita.id_Cita %}" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No hay citas disponibles.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- Botón para agregar una nueva cita -->
+        <a href="{% url 'agregar_cita' %}" class="button add-button">Agregar Nueva Cita</a>
+    </form>
+</body>
+</html>
+{% endblock %}
 
 {%endblock%}

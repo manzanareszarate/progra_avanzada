@@ -4,7 +4,6 @@ from django.contrib.auth import logout
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import paciente
 from django.db import models
 from django.utils import timezone
 from datetime import timedelta
@@ -16,7 +15,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .forms import RegistroForm
-
+from .models import paciente
+from .models import cita
+from .forms import CitaForm
 
 
 
@@ -59,23 +60,159 @@ def agregar(request):
     return render(request, 'Programar/agregar.html', {'form': form})
 
 
+#vista para editar un paciente
 
 
+@login_required(login_url='/accounts/login/')
+def editar(request, paciente_id):
+    # Obtener la instancia del paciente o devolver 404 si no se encuentra
+    paciente_instance = get_object_or_404(paciente, id_paciente=paciente_id)
+
+    # Verificar que el paciente pertenece al usuario actual
+    if paciente_instance.id_usuario != request.user:
+        return redirect('inicio')  # Redirige a una página de error o a una página de acceso denegado
+
+    if request.method == 'POST':
+        form = pacienteForm(request.POST, instance=paciente_instance)
+        if form.is_valid():
+            instancia = form.save(commit=False)
+            instancia.id_usuario = request.user  # Mantener el usuario actual
+            instancia.save()
+            return redirect('index')  # Redirige a la página de inicio o a la página deseada
+    else:
+        form = pacienteForm(instance=paciente_instance)
+
+    return render(request, 'Programar/editar.html', {'form': form, 'paciente': paciente_instance})
 
 
+#vista para eliminar un paciente
+
+@login_required(login_url='/accounts/login/')
+def eliminar(request, paciente_id):
+    # Obtener la instancia del paciente o devolver 404 si no se encuentra
+    paciente_instance = get_object_or_404(paciente, id_paciente=paciente_id)
+
+    # Verificar que el paciente pertenece al usuario actual
+    if paciente_instance.id_usuario != request.user:
+        return redirect('inicio')  # Redirige a una página de error o a una página de acceso denegado
+
+    if request.method == 'POST':
+        paciente_instance.delete()  # Eliminar el paciente
+        return redirect('index')  # Redirige a la página de inicio o a la página deseada
+
+    return render(request, 'Programar/eliminar.html', {'paciente': paciente_instance})
 
 
+###########################################################################################################3
+###### vistas para citas 
 
 
-
-
-
-
-def editar(request):
-    return render (request, 'Programar/editar.html')
-
+@login_required(login_url='/accounts/login/')
 def citas(request):
-    return render (request, 'Programar/citas.html')
+    # Filtra las citas del usuario que está logueado
+    citas = cita.objects.filter(id_Usuario=request.user.paciente)
+    return render(request, 'Programar/citas.html', {'citas': citas})
+
+@login_required(login_url='/accounts/login/')
+def agregar_cita(request):
+    if request.method == 'POST':
+        form = CitaForm(request.POST)
+        if form.is_valid():
+            cita = form.save(commit=False)
+            cita.id_Usuario = request.user.paciente
+            cita.save()
+            return redirect('citas')
+    else:
+        form = CitaForm()
+    return render(request, 'Programar/agregar_cita.html', {'form': form})
+
+@login_required(login_url='/accounts/login/')
+def editar_cita(request, cita_id):
+    cita_instance = get_object_or_404(cita, id_Cita=cita_id, id_Usuario=request.user.paciente)
+    if request.method == 'POST':
+        form = CitaForm(request.POST, instance=cita_instance)
+        if form.is_valid():
+            form.save()
+            return redirect('citas')
+    else:
+        form = CitaForm(instance=cita_instance)
+    return render(request, 'Programar/editar_cita.html', {'form': form})
+
+@login_required(login_url='/accounts/login/')
+def eliminar_cita(request, cita_id):
+    cita_instance = get_object_or_404(cita, id_Cita=cita_id, id_Usuario=request.user.paciente)
+    if request.method == 'POST':
+        cita_instance.delete()
+        return redirect('citas')
+    return render(request, 'Programar/eliminar_cita.html', {'cita': cita_instance})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def laboratorios(request):
     return render (request, 'Programar/laboratorios.html')
@@ -112,7 +249,7 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('index')
+                return redirect('inicio')
     else:
         form = AuthenticationForm()
     return render(request, 'registration/login.html', {'form': form})
