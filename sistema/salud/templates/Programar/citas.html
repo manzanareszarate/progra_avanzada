@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Información de las Citas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .button {
+            padding: 8px 12px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+        }
+        .edit-button {
+            background-color: #4CAF50;
+        }
+        .delete-button {
+            background-color: #f44336;
+        }
+        .edit-button:hover, .delete-button:hover {
+            opacity: 0.8;
+        }
+        .add-button {
+            background-color: #008CBA;
+            display: block;
+            margin: 20px auto;
+            width: 200px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Información de las Citas</h1>
+    
+    <form method="post" action="{% url 'citas' %}">
+        {% csrf_token %}
+        <table>
+            <thead>
+                <tr><th>Nombre</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Lugar</th>
+                    <th>Especialidad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in citas %}
+                <tr>
+                    <td>{{ cita.id_paciente.nombre }} {{ cita.id_paciente.apellido }}</td>
+                    <td>{{ cita.fecha }}</td>
+                    <td>{{ cita.hora }}</td>
+                    <td>{{ cita.lugar }}</td>
+                    <td>{{ cita.especialidad }}</td>
+                    <td>
+                        <a href="" class="button edit-button">Editar</a>
+                        <a href="" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No hay Citas disponibles.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="" class="button add-button">Agregar Nueva Cita</a>
+    </form>
+</body>
+</html>

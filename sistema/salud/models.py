@@ -39,22 +39,14 @@ def save(self, *args, **kwargs):
 
 class cita(models.Model):
     id_Cita = models.AutoField(primary_key=True , verbose_name='ID_Cita')
-    id_Usuario = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Usuario')
+    id_paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
     fecha = models.DateField(null=False, verbose_name='Fecha')
     hora = models.TimeField(null=False, verbose_name='Hora')
     lugar = models.CharField(max_length=200, verbose_name='Lugar')
     especialidad = models.CharField(max_length=50, verbose_name='Especialidad')
 
 def __str__(self):
-        return str(self.id_Usuario) + '    ' + str(self.fecha) + '    ' + str(self.hora) + '    ' + self.lugar + '    ' + self.especialidad
-
-
-
-
-
-
-
-
+        return f'Cita {self.id_Cita} - Paciente: {self.id_paciente.nombre} {self.id_paciente.apellido} - Fecha: {self.fecha} - Hora: {self.hora} - Lugar: {self.lugar} - Especialidad: {self.especialidad}'
 
 
 
@@ -69,7 +61,7 @@ def __str__(self):
 #################################################################################3
 class laboratorio(models.Model):
     id_Laboratorios = models.AutoField(primary_key=True , verbose_name='ID_Laboratorio')
-    id_Paciente = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Paciente')
+    id_paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
     fecha = models.DateField(null=False, verbose_name='Fecha')
     hora = models.TimeField(null=False, verbose_name='Hora')
     lugar = models.CharField(max_length=200, verbose_name='Lugar')
@@ -84,14 +76,14 @@ class medicamento(models.Model):
 
 class receta (models.Model):
         id_Recetas = models.AutoField(primary_key=True , verbose_name='ID_Recetas')
-        id_Usuario = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Usuario')
-        id_Medicamento = models.ForeignKey('medicamento', on_delete=models.CASCADE, verbose_name='ID_Medicamento')
+        id_paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
+        id_Medicamento = models.ForeignKey(medicamento, on_delete=models.CASCADE, verbose_name='ID_Medicamento')
         fecha_Emision = models.DateField(null=False, verbose_name='Fecha_Emision')
         fecha_Reposicion = models.DateField(null=False, verbose_name='Fecha_Reposicion')
 
 class Control_Hipertensione (models.Model):
         id_Hipertension = models.AutoField(primary_key=True , verbose_name='ID_Hipertension')
-        id_Usuario = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Usuario')
+        id_paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
         fecha = models.DateField(null=False, verbose_name='Fecha')
         diastolica = models.IntegerField ( verbose_name='Diastolica')
         sistolica = models.IntegerField ( verbose_name='Sistolica')
@@ -100,13 +92,13 @@ class Control_Hipertensione (models.Model):
 
 class Control_Glucosa(models.Model):
     id_Glucosa = models.AutoField(primary_key=True , verbose_name='ID_Glucosa')
-    id_Usuario = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Usuario')
+    id_paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
     fecha = models.DateField(null=False, verbose_name='Fecha')
     glisemia = models.IntegerField ( verbose_name='Glisemia')
 
 class Control_Peso(models.Model):
     id_Peso = models.AutoField(primary_key=True , verbose_name='ID_Peso')
-    id_Usuario = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Usuario')
+    id_paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
     fecha = models.DateField(null=False, verbose_name='Fecha')
     Peso = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Peso')
     Altura = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Altura')
@@ -114,10 +106,10 @@ class Control_Peso(models.Model):
 
 class alarmas(models.Model):
         id_Alarmas = models.AutoField(primary_key=True , verbose_name='ID_Alerta')
-        id_Recetas = models.ForeignKey('receta', on_delete=models.CASCADE, verbose_name='ID_Recetas')
-        id_Paciente = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='ID_Paciente')
-        id_Cita = models.ForeignKey('cita', on_delete=models.CASCADE, verbose_name='ID_Cita')
-        id_Laboratorios = models.ForeignKey('laboratorio', on_delete=models.CASCADE, verbose_name='ID_Laboratorio')
+        id_Recetas = models.ForeignKey(receta, on_delete=models.CASCADE, verbose_name='ID_Recetas')
+        id_paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
+        id_Cita = models.ForeignKey(cita, on_delete=models.CASCADE, verbose_name='ID_Cita')
+        id_Laboratorios = models.ForeignKey(laboratorio, on_delete=models.CASCADE, verbose_name='ID_Laboratorio')
         fecha_Alarma = models.DateField(null=False, verbose_name='Fecha_Alarma')
 
 

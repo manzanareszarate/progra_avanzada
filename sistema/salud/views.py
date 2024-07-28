@@ -110,90 +110,35 @@ def eliminar(request, paciente_id):
 ###### vistas para citas 
 
 
-from django.views.generic import ListView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import cita, paciente  # Usa los nombres en minúscula
-
-class CitaListView(LoginRequiredMixin, ListView):
-    model = cita  # Usa el nombre del modelo en minúscula
-    template_name = 'citas_list.html'
-    context_object_name = 'citas'
-
-    def get_queryset(self):
-        """
-        Devuelve el conjunto de consultas para la vista, filtrando por los pacientes del usuario actual.
-        """
-        # Obtener todos los pacientes del usuario actual
-        pacientes_usuario = paciente.objects.filter(id_usuario=self.request.user)  # Usa el nombre del modelo en minúscula
-        # Obtener todas las citas asociadas a esos pacientes
-        return cita.objects.filter(paciente__in=pacientes_usuario) 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@login_required(login_url='/accounts/login/')
 def citas(request):
-    return render (request, 'Programar/citas.html')
+    # Obtener todos los pacientes del usuario actual
+    pacientes_usuario = paciente.objects.filter(id_usuario=request.user)
+
+    # Obtener todas las citas asociadas a esos pacientes
+    citas = cita.objects.filter(id_paciente__in=pacientes_usuario)
+
+    context = {
+        'citas': citas
+    }
+
+    return render(request, 'Programar/citas.html', context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def laboratorios(request):
