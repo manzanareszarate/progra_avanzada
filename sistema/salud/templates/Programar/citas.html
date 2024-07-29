@@ -1,65 +1,63 @@
+{% extends "base.html" %}
 
+{% block titulo %}Citas{% endblock %}
+
+{% block contenido %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Información de las Citas</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-            margin: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
         table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            border-collapse: collapse; /* Elimina el espacio entre bordes de las celdas */
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
+            border: 1px solid black; /* Borde de las celdas */
+            padding: 20px; /* Aumenta el espacio interno de las celdas */
+            text-align: center; /* Alinea el texto al centro */
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #f2f2f2; /* Color de fondo para los encabezados */
         }
-        tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
+        tbody tr {
+            border-bottom: 1px solid #ddd; /* Borde inferior de las filas (opcional) */
         }
         .button {
             padding: 8px 12px;
-            margin: 5px;
+            margin: 5px; /* Espacio entre los botones */
             border: none;
             border-radius: 4px;
             color: white;
             text-decoration: none;
             font-weight: bold;
-            display: inline-block;
-            text-align: center;
-            cursor: pointer;
+            display: inline-block; /* Asegura que el margen se aplique correctamente */
+            width: 120px; /* Ancho fijo para todos los botones */
+            text-align: center; /* Centra el texto dentro del botón */
+            box-sizing: border-box; /* Incluye padding y border en el ancho total */
         }
         .edit-button {
-            background-color: #4CAF50;
+            background-color: #4CAF50; /* Verde */
         }
         .delete-button {
-            background-color: #f44336;
+            background-color: #f44336; /* Rojo */
         }
         .edit-button:hover, .delete-button:hover {
             opacity: 0.8;
         }
         .add-button {
-            background-color: #008CBA;
-            display: block;
-            margin: 20px auto;
-            width: 200px;
-            text-align: center;
+            background-color: #008CBA; /* Azul */
+            display: block; /* Asegura que el botón ocupe toda la línea disponible */
+            margin: 20px auto; /* Centra el botón y añade espacio alrededor */
+            width: 200px; /* Ajusta el ancho del botón */
+            text-align: center; /* Centra el texto dentro del botón */
             text-decoration: none;
             color: white;
             padding: 10px;
             border-radius: 4px;
+        }
+        h1 {
+            text-align: center; /* Centra el título */
         }
     </style>
 </head>
@@ -70,7 +68,8 @@
         {% csrf_token %}
         <table>
             <thead>
-                <tr><th>Nombre</th>
+                <tr>
+                    <th>Nombre del Paciente</th>
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th>Lugar</th>
@@ -87,13 +86,13 @@
                     <td>{{ cita.lugar }}</td>
                     <td>{{ cita.especialidad }}</td>
                     <td>
-                        <a href="" class="button edit-button">Editar</a>
+                        <a href= "{% url 'editar_cita' cita.id_Cita %}"class="button edit-button">Editar</a>
                         <a href="" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar</a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5">No hay Citas disponibles.</td>
+                    <td colspan="6">No hay Citas disponibles.</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -102,3 +101,7 @@
     </form>
 </body>
 </html>
+
+
+
+{% endblock %}

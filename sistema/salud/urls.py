@@ -25,4 +25,5 @@ path('editar/<int:paciente_id>/', views.editar, name='editar'),
 path('eliminar/<int:paciente_id>/', views.eliminar, name='eliminar'),
 path('citas/', views.citas, name='citas'),
 path("agregar_cita/", views.agregar_cita, name='agregar_cita'),
+path('editar_cita/<int:cita_id>/', views.editar_cita, name='editar_cita'),
 ]

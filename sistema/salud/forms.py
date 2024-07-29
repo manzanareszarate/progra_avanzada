@@ -26,7 +26,7 @@ class CitaForm(forms.ModelForm):
             'especialidad': forms.TextInput(attrs={'placeholder': 'Especialidad'}),
         }
 
-
+# form para agregar citas
 class CitaAgregarForm(forms.ModelForm):
     class Meta:
         model = cita
@@ -40,15 +40,29 @@ class CitaAgregarForm(forms.ModelForm):
     id_paciente = forms.ModelChoiceField(
         queryset=paciente.objects.all(),
         empty_label="Selecciona un paciente",
+        label="Nombre del Paciente",
         widget=forms.Select(attrs={'class': 'form-control'})
     )
 
 
 
+    
 
-
-
-
+class CitaEditarForm(forms.ModelForm):
+    class Meta:
+        model = cita
+        fields = ['id_paciente', 'fecha', 'hora', 'lugar', 'especialidad']
+        widgets = {
+            'fecha': forms.DateInput(attrs={'type': 'date'}),
+            'hora': forms.TimeInput(attrs={'type': 'time'}),
+        }
+    
+    id_paciente = forms.ModelChoiceField(
+        queryset=paciente.objects.all(),
+        empty_label="Selecciona un paciente",
+        label="Nombre del Paciente",
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
 
 
 

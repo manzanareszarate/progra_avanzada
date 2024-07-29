@@ -21,6 +21,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import cita, paciente
 from .forms import CitaAgregarForm
+from .forms import CitaEditarForm
 
 
 # Create your views here.
@@ -45,7 +46,7 @@ def index(request):
     return render(request, 'Programar/index.html', {'pacientes': pacientes})
 
 
-        
+#agrergar un paciente     
 login_required(login_url='/accounts/login/')
 def agregar(request):
     if request.method == 'POST':
@@ -109,13 +110,12 @@ def eliminar(request, paciente_id):
 ###### vistas para citas 
 
 
+
+
 @login_required(login_url='/accounts/login/')
 def citas(request):
-    # Obtener todos los pacientes del usuario actual
-    pacientes_usuario = paciente.objects.filter(id_usuario=request.user)
-
-    # Obtener todas las citas asociadas a esos pacientes
-    citas = cita.objects.filter(id_paciente__in=pacientes_usuario)
+    # Obtener todas las citas asociadas al usuario actual
+    citas = cita.objects.filter(id_usuario=request.user)
 
     context = {
         'citas': citas
@@ -127,33 +127,46 @@ def citas(request):
 #agregar una cita
 # views.py
 
-
-
-
-
-
+#agregar cita
 @login_required(login_url='/accounts/login/')
 def agregar_cita(request):
     if request.method == 'POST':
         form = CitaAgregarForm(request.POST)
         if form.is_valid():
             instancia = form.save(commit=False)
-            instancia.id_usuario = request.user  # Asigna el usuario actual
+            instancia.id_usuario = request.user  # Asigna el usuario actual (si corresponde)
             instancia.save()
             return redirect('citas')  # Redirige a la página de citas
     else:
         form = CitaAgregarForm()
+        # Filtra los pacientes para el usuario autenticado
+        form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)
     
     return render(request, 'Programar/agregar_cita.html', {'form': form})
 
 
+#modificar cita
 
+@login_required(login_url='/accounts/login/')
+def editar_cita(request, cita_id):
+    # Obtener la instancia del paciente o devolver 404 si no se encuentra
+    cita_instance = get_object_or_404(cita, id_Cita=cita_id)
 
+    # Verificar que el paciente pertenece al usuario actual
+    if cita_instance.id_usuario != request.user:
+        return redirect('inicio')  # Redirige a una página de error o a una página de acceso denegado
 
+    if request.method == 'POST':
+        form = CitaEditarForm(request.POST, instance=cita_instance)
+        if form.is_valid():
+            instancia = form.save(commit=False)
+            instancia.id_usuario = request.user  # Mantener el usuario actual
+            instancia.save()
+            return redirect('index')  # Redirige a la página de inicio o a la página deseada
+    else:
+        form = CitaEditarForm(instance=cita_instance)
 
-
-
-
+    return render(request, 'Programar/editar_cita.html', {'form': form, 'cita': cita_instance})
 
 
 

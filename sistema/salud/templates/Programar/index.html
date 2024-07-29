@@ -32,6 +32,9 @@
             text-decoration: none;
             font-weight: bold;
             display: inline-block; /* Asegura que el margen se aplique correctamente */
+            width: 120px; /* Ancho fijo para todos los botones */
+            text-align: center; /* Centra el texto dentro del botón */
+            box-sizing: border-box; /* Incluye padding y border en el ancho total */
         }
         .edit-button {
             background-color: #4CAF50; /* Verde */
@@ -48,6 +51,9 @@
             margin: 20px auto; /* Centra el botón y añade espacio alrededor */
             width: 200px; /* Ajusta el ancho del botón */
             text-align: center; /* Centra el texto dentro del botón */
+        }
+        h1 {
+            text-align: center; /* Centra el título */
         }
     </style>
 </head>
@@ -100,4 +106,5 @@
     </form>
 </body>
 </html>
+
 {% endblock %}

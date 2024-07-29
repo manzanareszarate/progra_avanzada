@@ -18,6 +18,8 @@ class paciente(models.Model):
     email = models.EmailField( verbose_name='Email')
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     
+    def __str__(self):
+        return f"{self.nombre} {self.apellido}"
 
     
     
@@ -37,6 +39,7 @@ class cita(models.Model):
     lugar = models.CharField(max_length=200, verbose_name='Lugar')
     especialidad = models.CharField(max_length=50, verbose_name='Especialidad')
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    
 
 
 

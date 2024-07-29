@@ -80,6 +80,7 @@
     </style>
 </head>
 <body>
+    <br>
     <h1>Agregar Nuevo Paciente</h1>
     <div class="form-container">
         <form method="post">
@@ -100,6 +101,9 @@
             {% endfor %}
             <div class="form-group">
                 <button type="submit">Guardar Paciente</button>
+            </div>
+            <div class="form-group">
+                <a href="{% url 'index' %}">Volver a la lista de Pacientes</a>
             </div>
         </form>
     </div>
