@@ -27,6 +27,26 @@ class CitaForm(forms.ModelForm):
         }
 
 
+class CitaAgregarForm(forms.ModelForm):
+    class Meta:
+        model = cita
+        fields = ['id_paciente', 'fecha', 'hora', 'lugar', 'especialidad']
+        widgets = {
+            'fecha': forms.DateInput(attrs={'type': 'date'}),
+            'hora': forms.TimeInput(attrs={'type': 'time'}),
+        }
+    
+    # Se puede agregar un método para personalizar el campo de selección si es necesario
+    id_paciente = forms.ModelChoiceField(
+        queryset=paciente.objects.all(),
+        empty_label="Selecciona un paciente",
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+
+
+
+
 
 
 

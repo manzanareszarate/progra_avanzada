@@ -6,7 +6,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import static
 from django.urls import path
-#from .views import CitaListView
+
 from .views import cita
 
 urlpatterns = [
@@ -23,7 +23,6 @@ path('accounts/registro/', registro, name='registro'),
 path('alarmas/', views.alarmas, name='alarmas'),
 path('editar/<int:paciente_id>/', views.editar, name='editar'),
 path('eliminar/<int:paciente_id>/', views.eliminar, name='eliminar'),
-#path('citas/', CitaListView.as_view(), name='citas_list'),
 path('citas/', views.citas, name='citas'),
-
+path("agregar_cita/", views.agregar_cita, name='agregar_cita'),
 ]

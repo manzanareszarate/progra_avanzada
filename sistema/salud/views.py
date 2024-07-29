@@ -17,11 +17,10 @@ from django.contrib.auth.models import User
 from .forms import RegistroForm
 from .models import paciente
 from .models import cita
-from django.shortcuts import render
-from django.views.generic import ListView
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import cita, paciente
-
+from .forms import CitaAgregarForm
 
 
 # Create your views here.
@@ -123,6 +122,46 @@ def citas(request):
     }
 
     return render(request, 'Programar/citas.html', context)
+
+
+#agregar una cita
+# views.py
+
+
+
+
+
+
+@login_required(login_url='/accounts/login/')
+def agregar_cita(request):
+    if request.method == 'POST':
+        form = CitaAgregarForm(request.POST)
+        if form.is_valid():
+            instancia = form.save(commit=False)
+            instancia.id_usuario = request.user  # Asigna el usuario actual
+            instancia.save()
+            return redirect('citas')  # Redirige a la página de citas
+    else:
+        form = CitaAgregarForm()
+    
+    return render(request, 'Programar/agregar_cita.html', {'form': form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

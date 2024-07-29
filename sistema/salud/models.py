@@ -21,16 +21,8 @@ class paciente(models.Model):
 
     
     
-    def __str__(self):
-        return str (self.cedula) + '    ' + self.nombre + '    ' + self.apellido + '    ' + self.sexo + '    ' + str (self.fecha_Nacimiento) + '    ' +str( self.edad) + '    ' + self.direccion + '    ' + str (self.telefono) + '    ' + self.email
+    
 
-def save(self, *args, **kwargs):
-        # Calcular la edad basada en la fecha de nacimiento
-        if self.fecha_Nacimiento:
-            from datetime import date
-            today = date.today()
-            self.edad = today.year - self.fecha_Nacimiento.year - ((today.month, today.day) < (self.fecha_Nacimiento.month, self.fecha_Nacimiento.day))
-            super(paciente, self).save(*args, **kwargs)
 
 
 #########################################################
@@ -44,9 +36,7 @@ class cita(models.Model):
     hora = models.TimeField(null=False, verbose_name='Hora')
     lugar = models.CharField(max_length=200, verbose_name='Lugar')
     especialidad = models.CharField(max_length=50, verbose_name='Especialidad')
-
-def __str__(self):
-        return f'Cita {self.id_Cita} - Paciente: {self.id_paciente.nombre} {self.id_paciente.apellido} - Fecha: {self.fecha} - Hora: {self.hora} - Lugar: {self.lugar} - Especialidad: {self.especialidad}'
+    id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 
