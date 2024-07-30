@@ -88,7 +88,7 @@
                     <td>{{ laboratorio.lugar }}</td>
                     <td>{{ laboratorio.tipo_Muestra }}</td>
                     <td>
-                        <a href="{% url 'editar_laboratorio' laboratorio.id_Laboratorios%}" class="button edit-button">Editar</a>
+                        <a href="{% url 'editar_laboratorios' laboratorio.id_Laboratorios%}" class="button edit-button">Editar</a>
                         <a href="" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar este laboratorio?');">Eliminar</a>
                     </td>
                 </tr>

@@ -27,5 +27,5 @@ path('editar_cita/<int:cita_id>/', views.editar_cita, name='editar_cita'),
 path('eliminar_cita/<int:id_Eliminarcita>/', views.eliminar_cita, name='eliminar_cita'),
 path('laboratorios/', views.laboratorios, name='laboratorios'),
 path('agregar_laboratorio/', views.agregar_laboratorio, name='agregar_laboratorio'),
-path('editar_laboratorio/<int:laboratorio_id>/', views.editar_laboratorio, name='editar_laboratorio')
+path('editar_laboratorios/<int:laboratorio_id>/', views.editar_laboratorios, name='editar_laboratorios'),
 ]

@@ -243,7 +243,7 @@ def agregar_laboratorio(request):
 
 
 @login_required(login_url='/accounts/login/')
-def editar_laboratorio(request, laboratorio_id):
+def editar_laboratorios(request, laboratorio_id):
     # Obtener la instancia de la cita o devolver 404 si no se encuentra
     laboratorio_instance = get_object_or_404(laboratorio, id_Laboratorios=laboratorio_id)
 
@@ -263,7 +263,7 @@ def editar_laboratorio(request, laboratorio_id):
         form = Laboratorioeditarform (instance=laboratorio_instance)
         form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)
 
-    return render(request,'Programar/editar_laboratorio', {'form': form, 'laboratorio': laboratorio_instance})
+    return render(request,'Programar/editar_laboratorios', {'form': form, 'laboratorio': laboratorio_instance})
 
 ###################################################################################################################
 
