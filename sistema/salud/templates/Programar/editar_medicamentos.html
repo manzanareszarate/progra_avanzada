@@ -39,7 +39,7 @@
             color: #333;
             font-weight: 600;
         }
-        .form-group input, .form-group select, .form-group textarea {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 12px;
             border: 1px solid #dcdcdc;
@@ -49,7 +49,7 @@
             background-color: #f9f9f9;
             transition: border-color 0.3s ease;
         }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        .form-group input:focus, .form-group select:focus {
             border-color: #007bff;
             outline: none;
             background-color: #ffffff;
@@ -102,10 +102,9 @@
 </head>
 <body>
     <div class="form-container">
-        <h1>Editar Cita</h1>
+        <h1>Editar Medicamento</h1>
         <form method="post" action="{% url 'editar_medicamentos' medicamento.id_Medicamento %}">
             {% csrf_token %}
-            
             
             <div class="form-group">
                 <label for="{{ form.nombre_Medicamento.id_for_label }}">Nombre Medicamento</label>
@@ -116,10 +115,9 @@
                 {{ form.dosis }}
             </div>
             <div class="form-group">
-                <label for="{{ form.presentacion.id_for_label }}">Presentacion</label>
-                {{ form.lugar }}
+                <label for="{{ form.presentacion.id_for_label }}">Presentación</label>
+                {{ form.presentacion }}
             </div>
-            
 
             <div class="button-group">
                 <button type="submit">Actualizar Medicamento</button>

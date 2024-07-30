@@ -84,7 +84,7 @@
                     <td>{{medicamento.presentacion }}</td>
                     <td>
                         <a href= "{% url 'editar_medicamentos' medicamento.id_Medicamento %}"class="button edit-button">Editar</a>
-                        <a href="" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar este Medicamento?');">Eliminar</a>
+                        <a href="{% url 'eliminar_medicamentos' medicamento.id_Medicamento %}" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar este Medicamento?');">Eliminar</a>
                     </td>
                 </tr>
                 {% empty %}

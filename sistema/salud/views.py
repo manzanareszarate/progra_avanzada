@@ -351,7 +351,6 @@ def editar_medicamentos(request, medicamento_id):
 
     if request.method == 'POST':
         form = EditarMedicamentoForm (request.POST, instance=medicamento_instance)
-        form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)
         if form.is_valid():
             instancia = form.save(commit=False)
             instancia.id_usuario = request.user  # Mantener el usuario actual
@@ -367,7 +366,28 @@ def editar_medicamentos(request, medicamento_id):
 ##############################################################################################################3
 
 
+#eliminar medicamentos
 
+@login_required(login_url='/accounts/login/')
+def eliminar_medicamentos(request, id_Eliminarmedicamentos):
+    # Obtener la instancia de la cita o devolver 404 si no se encuentra
+    medicamentoeliminar_instance = get_object_or_404(medicamento, id_Medicamento=id_Eliminarmedicamentos)
+
+    # Verificar que la cita pertenece al usuario actual
+    if medicamentoeliminar_instance.id_usuario != request.user:
+        return redirect('inicio')  # Redirige a una página de error o a una página de acceso denegado
+
+    
+    if request.method == 'POST':
+        medicamentoeliminar_instance.delete()  # Eliminar la cita
+        return redirect('medicamentos')  # Redirige a la página de citas o a la página deseada
+
+    # Pasar los detalles de la cita y del paciente a la plantilla
+    context = {
+        'laboratorio': medicamentoeliminar_instance,
+        
+    }
+    return render(request, 'Programar/eliminar_medicamentos.html', context)
 
 
 
