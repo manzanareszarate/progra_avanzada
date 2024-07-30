@@ -66,8 +66,12 @@ def __str__(self):
 class medicamento(models.Model):
     id_Medicamento = models.AutoField(primary_key=True , verbose_name='ID_Medicamento')
     nombre_Medicamento = models.CharField(max_length=50, verbose_name='Nombre')
+    dosis = models.CharField(max_length=50, verbose_name='Dosis')
     presentacion = models.CharField(max_length=50, verbose_name='Presentacion')
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.nombre_Medicamento} {self.dosis} {self.presentacion}"
 
     ###########################################################################################
 
@@ -84,7 +88,7 @@ class receta_medicamento(models.Model):
     id_Receta_Medicamento = models.AutoField(primary_key=True , verbose_name='ID_Receta_Medicamento')
     receta = models.ForeignKey(receta, on_delete=models.CASCADE)
     medicamento = models.ForeignKey(medicamento, on_delete=models.CASCADE)
-    dosis = models.CharField(max_length=50, verbose_name='Dosis')
+    cantidad = models.CharField(max_length=50, verbose_name='Dosis')
     frecuencia = models.CharField(max_length=50, verbose_name='Frecuencia')
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     class Meta:

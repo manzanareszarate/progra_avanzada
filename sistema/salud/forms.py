@@ -132,15 +132,18 @@ class Laboratorioeditarform(forms.ModelForm):
 class MedicamentoForm(forms.ModelForm):
     class Meta:
         model = medicamento
-        fields = ['nombre_Medicamento', 'presentacion']
+        fields = ['nombre_Medicamento', 'dosis','presentacion',]
+
+#editar Medicamentos
 
 
+class EditarMedicamentoForm(forms.ModelForm):
+    class Meta:
+        model = medicamento
+        fields = ['nombre_Medicamento', 'dosis','presentacion',]
 
 
-
-
-
-
+################################################################################################3
 
 
 

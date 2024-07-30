@@ -70,7 +70,9 @@
             <thead>
                 <tr>
                     <th>Nombre del Medicamento</th>
+                    <th>Dosis</th>
                     <th>Presentacion</th>
+                    <th>Acciones</th>
                     
                 </tr>
             </thead>
@@ -78,9 +80,10 @@
                 {% for medicamento in medicamentos %}
                 <tr>
                     <td>{{medicamento.nombre_Medicamento}}</td>
+                    <td>{{medicamento.dosis}}</td>
                     <td>{{medicamento.presentacion }}</td>
                     <td>
-                        <a href= ""class="button edit-button">Editar</a>
+                        <a href= "{% url 'editar_medicamentos' medicamento.id_Medicamento %}"class="button edit-button">Editar</a>
                         <a href="" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar este Medicamento?');">Eliminar</a>
                     </td>
                 </tr>
@@ -91,7 +94,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a href="" class="button add-button">Agregar Nuevo Medicamento</a>
+        <a href="{% url 'agregar_medicamentos' %}" class="button add-button">Agregar Nuevo Medicamento</a>
         
     </form>
 </body>

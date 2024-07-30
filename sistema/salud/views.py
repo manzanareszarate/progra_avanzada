@@ -22,6 +22,7 @@ from .forms import CitaEditarForm
 from .forms import LaboratorioAgregarForm
 from .forms import Laboratorioeditarform
 from .forms import MedicamentoForm
+from .forms import EditarMedicamentoForm
 
 # Create your views here.
 
@@ -335,10 +336,35 @@ def agregar_medicamentos(request):
 
 
 
+##############################################################################################################3
+#editar medicamentos
 
 
+@login_required(login_url='/accounts/login/')
+def editar_medicamentos(request, medicamento_id):
+    # Obtener la instancia del medicamento o devolver 404 si no se encuentra
+    medicamento_instance = get_object_or_404(medicamento, id_Medicamento=medicamento_id)
+
+    # Verificar que el medicamento pertenece al usuario actual
+    if medicamento_instance.id_usuario != request.user:
+        return redirect('inicio')  # Redirige a una página de error o a una página de acceso denegado
+
+    if request.method == 'POST':
+        form = EditarMedicamentoForm (request.POST, instance=medicamento_instance)
+        form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)
+        if form.is_valid():
+            instancia = form.save(commit=False)
+            instancia.id_usuario = request.user  # Mantener el usuario actual
+            instancia.save()
+            return redirect('medicamentos')  # Redirige a la página de inicio o a la página deseada
+    else:
+        form = EditarMedicamentoForm (instance=medicamento_instance)
+        
+
+    return render(request,'Programar/editar_medicamentos.html', {'form': form, 'medicamento': medicamento_instance})
 
 
+##############################################################################################################3
 
 
 
