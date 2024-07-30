@@ -4,7 +4,6 @@ from django.contrib.auth import logout
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.db import models
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.models import User
@@ -15,14 +14,12 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .forms import RegistroForm
-from .models import paciente
-from .models import cita
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import cita, paciente,laboratorio
 from .forms import CitaAgregarForm
 from .forms import CitaEditarForm
-
+from .forms import LaboratorioAgregarForm,CitaForm
 
 # Create your views here.
 
@@ -218,14 +215,13 @@ def laboratorios(request):
 
 
 
+##############################################################################################################3
+
+#agrergar un laboratorio
 
 
 
-
-
-
-
-
+###################################################################################################################
 
 
 
