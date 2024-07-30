@@ -28,4 +28,6 @@ path('eliminar_cita/<int:id_Eliminarcita>/', views.eliminar_cita, name='eliminar
 path('laboratorios/', views.laboratorios, name='laboratorios'),
 path('agregar_laboratorio/', views.agregar_laboratorio, name='agregar_laboratorio'),
 path('editar_laboratorios/<int:laboratorio_id>/', views.editar_laboratorios, name='editar_laboratorios'),
+path('eliminar_laboratorios/<int:id_Eliminarlaboratorios>/', views.eliminar_laboratorios, name='eliminar_laboratorios'),
+path('agregar_medicamentos/', views.agregar_medicamentos, name='agregar_medicamentos'),
 ]

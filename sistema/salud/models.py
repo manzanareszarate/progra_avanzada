@@ -67,13 +67,44 @@ class medicamento(models.Model):
     id_Medicamento = models.AutoField(primary_key=True , verbose_name='ID_Medicamento')
     nombre_Medicamento = models.CharField(max_length=50, verbose_name='Nombre')
     presentacion = models.CharField(max_length=50, verbose_name='Presentacion')
+    id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    ###########################################################################################
 
 class receta (models.Model):
         id_Recetas = models.AutoField(primary_key=True , verbose_name='ID_Recetas')
         id_paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
-        id_Medicamento = models.ForeignKey(medicamento, on_delete=models.CASCADE, verbose_name='ID_Medicamento')
         fecha_Emision = models.DateField(null=False, verbose_name='Fecha_Emision')
         fecha_Reposicion = models.DateField(null=False, verbose_name='Fecha_Reposicion')
+        lista_Medicamentos = models.ManyToManyField(medicamento, through='receta_medicamento',verbose_name='Lista de Medicamentos')
+        id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+        lugar = models.CharField(max_length=200, verbose_name='Lugar')
+
+class receta_medicamento(models.Model):
+    id_Receta_Medicamento = models.AutoField(primary_key=True , verbose_name='ID_Receta_Medicamento')
+    receta = models.ForeignKey(receta, on_delete=models.CASCADE)
+    medicamento = models.ForeignKey(medicamento, on_delete=models.CASCADE)
+    dosis = models.CharField(max_length=50, verbose_name='Dosis')
+    frecuencia = models.CharField(max_length=50, verbose_name='Frecuencia')
+    id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    class Meta:
+        unique_together = ('receta', 'medicamento')
+
+
+
+
+    ###########################################################################################
+
+
+
+
+
+
+
+
+
+
+
 
 class Control_Hipertensione (models.Model):
         id_Hipertension = models.AutoField(primary_key=True , verbose_name='ID_Hipertension')

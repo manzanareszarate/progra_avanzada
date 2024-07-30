@@ -103,7 +103,7 @@
 <body>
     <div class="form-container">
         <h1>Editar Laboratorio</h1>
-        <form method="post" action="{% url 'Programar/editar_laboratorios' laboratorio.id_Laboratorios %}">
+        <form method="post" action="{% url 'editar_laboratorios' laboratorio.id_Laboratorios %}">
             {% csrf_token %}
             
             <div class="form-group">

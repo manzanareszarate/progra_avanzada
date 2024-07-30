@@ -8,7 +8,7 @@ from .models import Control_Hipertensione
 from .models import Control_Glucosa
 from .models import Control_Peso
 from .models import alarmas
-
+from .models import receta_medicamento
 
 
 
@@ -22,7 +22,7 @@ admin.site.register(Control_Hipertensione)
 admin.site.register(Control_Glucosa)
 admin.site.register(Control_Peso)
 admin.site.register(alarmas)
-
+admin.site.register(receta_medicamento)
 
 
 

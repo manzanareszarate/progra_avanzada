@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import cita
 from .models import paciente
 from .models import laboratorio
+from .models import medicamento
 
 class pacienteForm(forms.ModelForm):#formulario para el modelo paciente
     class Meta:
@@ -125,6 +126,13 @@ class Laboratorioeditarform(forms.ModelForm):
 
 
 
+######## agregar medicamentos 
+
+
+class MedicamentoForm(forms.ModelForm):
+    class Meta:
+        model = medicamento
+        fields = ['nombre_Medicamento', 'presentacion']
 
 
 

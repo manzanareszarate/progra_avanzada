@@ -16,11 +16,12 @@ from django.contrib.auth.models import User
 from .forms import RegistroForm
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import cita, paciente,laboratorio
+from .models import cita, paciente,laboratorio,medicamento
 from .forms import CitaAgregarForm
 from .forms import CitaEditarForm
 from .forms import LaboratorioAgregarForm
 from .forms import Laboratorioeditarform
+from .forms import MedicamentoForm
 
 # Create your views here.
 
@@ -263,10 +264,72 @@ def editar_laboratorios(request, laboratorio_id):
         form = Laboratorioeditarform (instance=laboratorio_instance)
         form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)
 
-    return render(request,'Programar/editar_laboratorios', {'form': form, 'laboratorio': laboratorio_instance})
+    return render(request,'Programar/editar_laboratorios.html', {'form': form, 'laboratorio': laboratorio_instance})
 
 ###################################################################################################################
 
+#Eliminar laboratorio
+
+
+@login_required(login_url='/accounts/login/')
+def eliminar_laboratorios(request, id_Eliminarlaboratorios):
+    # Obtener la instancia de la cita o devolver 404 si no se encuentra
+    laboratorioeliminar_instance = get_object_or_404(laboratorio, id_Laboratorios=id_Eliminarlaboratorios)
+
+    # Verificar que la cita pertenece al usuario actual
+    if laboratorioeliminar_instance.id_usuario != request.user:
+        return redirect('inicio')  # Redirige a una página de error o a una página de acceso denegado
+
+    # Obtener el paciente asociado
+    paciente_instance = laboratorioeliminar_instance.id_paciente
+    
+    
+
+    if request.method == 'POST':
+        laboratorioeliminar_instance.delete()  # Eliminar la cita
+        return redirect('laboratorios')  # Redirige a la página de citas o a la página deseada
+
+    # Pasar los detalles de la cita y del paciente a la plantilla
+    context = {
+        'laboratorio': laboratorioeliminar_instance,
+        'paciente': paciente_instance
+    }
+    return render(request, 'Programar/eliminar_laboratorios.html', context)
+
+##############################################################################################################3
+
+#ver medicamentos
+
+@login_required(login_url='/accounts/login/')
+def medicamentos(request):
+    # Obtener todos los medicamentos asociados al usuario actual
+    medicamentos = medicamento.objects.filter(id_usuario=request.user)
+
+    context = {
+        'medicamentos': medicamentos
+    }
+
+    return render(request, 'Programar/medicamentos.html', context)
+
+
+##############################################################################################################3
+#Agreagar medicamentos
+
+
+
+@login_required(login_url='/accounts/login/')
+def agregar_medicamentos(request):
+    if request.method == 'POST':
+        form = MedicamentoForm(request.POST)
+        if form.is_valid():
+            medicamento = form.save(commit=False)
+            medicamento.id_usuario = request.user
+            medicamento.save()
+            return redirect('medicamentos')  # Cambia a la vista a la que quieras redirigir
+    else:
+        form = MedicamentoForm()
+
+    return render(request, 'Programar/agregar_medicamentos.html', {'form': form})
 
 
 
@@ -318,17 +381,6 @@ def editar_laboratorios(request, laboratorio_id):
 
 
 
-
-
-
-
-
-
-
-
-
-def medicamentos (request):
-    return render (request, 'Programar/medicamentos.html')
 
 def recetas(request):
     return render (request, 'Programar/recetas.html')
