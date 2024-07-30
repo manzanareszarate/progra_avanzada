@@ -19,7 +19,7 @@ from .models import paciente
 from .models import cita
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import cita, paciente
+from .models import cita, paciente,laboratorio
 from .forms import CitaAgregarForm
 from .forms import CitaEditarForm
 
@@ -149,52 +149,149 @@ def agregar_cita(request):
 
 @login_required(login_url='/accounts/login/')
 def editar_cita(request, cita_id):
-    # Obtener la instancia del paciente o devolver 404 si no se encuentra
+    # Obtener la instancia de la cita o devolver 404 si no se encuentra
     cita_instance = get_object_or_404(cita, id_Cita=cita_id)
 
-    # Verificar que el paciente pertenece al usuario actual
+    # Verificar que la cita pertenece al usuario actual
     if cita_instance.id_usuario != request.user:
         return redirect('inicio')  # Redirige a una página de error o a una página de acceso denegado
 
     if request.method == 'POST':
         form = CitaEditarForm(request.POST, instance=cita_instance)
+        form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)
         if form.is_valid():
             instancia = form.save(commit=False)
             instancia.id_usuario = request.user  # Mantener el usuario actual
             instancia.save()
-            return redirect('index')  # Redirige a la página de inicio o a la página deseada
+            return redirect('citas')  # Redirige a la página de inicio o a la página deseada
     else:
         form = CitaEditarForm(instance=cita_instance)
+        form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)
 
     return render(request, 'Programar/editar_cita.html', {'form': form, 'cita': cita_instance})
 
 
+#eliminar cita
+
+
+@login_required(login_url='/accounts/login/')
+def eliminar_cita(request, id_Eliminarcita):
+    # Obtener la instancia de la cita o devolver 404 si no se encuentra
+    citaeliminar_instance = get_object_or_404(cita, id_Cita=id_Eliminarcita)
+
+    # Verificar que la cita pertenece al usuario actual
+    if citaeliminar_instance.id_usuario != request.user:
+        return redirect('inicio')  # Redirige a una página de error o a una página de acceso denegado
+
+    # Obtener el paciente asociado
+    paciente_instance = citaeliminar_instance.id_paciente
+    
+    
+
+    if request.method == 'POST':
+        citaeliminar_instance.delete()  # Eliminar la cita
+        return redirect('citas')  # Redirige a la página de citas o a la página deseada
+
+    # Pasar los detalles de la cita y del paciente a la plantilla
+    context = {
+        'cita': citaeliminar_instance,
+        'paciente': paciente_instance
+    }
+    return render(request, 'Programar/eliminar_cita.html', context)
 
 
 
 
+############################################ver laboratorios ########################################################
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@login_required(login_url='/accounts/login/')
 def laboratorios(request):
-    return render (request, 'Programar/laboratorios.html')
+    # Obtener todos los laboratorios asociados al usuario actual
+    laboratorios = laboratorio.objects.filter(id_usuario=request.user)
+
+    context = {
+        'laboratorios': laboratorios
+    }
+
+    return render(request, 'Programar/laboratorios.html', context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def medicamentos (request):
     return render (request, 'Programar/medicamentos.html')

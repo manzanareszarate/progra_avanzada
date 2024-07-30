@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import cita
 from .models import paciente
+from .models import laboratorio
 
 class pacienteForm(forms.ModelForm):#formulario para el modelo paciente
     class Meta:
@@ -46,8 +47,7 @@ class CitaAgregarForm(forms.ModelForm):
 
 
 
-    
-
+    #Editar citas
 class CitaEditarForm(forms.ModelForm):
     class Meta:
         model = cita
@@ -56,15 +56,26 @@ class CitaEditarForm(forms.ModelForm):
             'fecha': forms.DateInput(attrs={'type': 'date'}),
             'hora': forms.TimeInput(attrs={'type': 'time'}),
         }
-    
+
     id_paciente = forms.ModelChoiceField(
-        queryset=paciente.objects.all(),
+        queryset=paciente.objects.none(),  # Inicialmente vacío
         empty_label="Selecciona un paciente",
         label="Nombre del Paciente",
         widget=forms.Select(attrs={'class': 'form-control'})
     )
 
+#Mostar Laboratorios
 
+class LaboratorioForm(forms.ModelForm):
+    class Meta:
+        model = laboratorio
+        fields = ['fecha', 'hora', 'lugar', 'tipo_Muestra']
+        widgets = {
+            'fecha': forms.DateInput(attrs={'type': 'date'}),
+            'hora': forms.TimeInput(attrs={'type': 'time'}),
+            'lugar': forms.TextInput(attrs={'placeholder': 'Lugar del laboratorio'}),
+            'tipo_Muestra': forms.TextInput(attrs={'placeholder': 'Tipo de muestra'}),
+        }
 
 
 

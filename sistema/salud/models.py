@@ -41,26 +41,26 @@ class cita(models.Model):
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     
 
+def __str__(self):
+        return f"{self.fecha} {self.hora} {self.lugar} {self.especialidad}"
 
 
 
 
-
-
-
-
-
-
-#################################################################################3
-class laboratorio(models.Model):
+#################################################################################
+class laboratorio (models.Model):
     id_Laboratorios = models.AutoField(primary_key=True , verbose_name='ID_Laboratorio')
     id_paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
     fecha = models.DateField(null=False, verbose_name='Fecha')
     hora = models.TimeField(null=False, verbose_name='Hora')
     lugar = models.CharField(max_length=200, verbose_name='Lugar')
     tipo_Muestra = models.CharField(max_length=50, verbose_name='Tipo de Muestra')
+    id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+def __str__(self):
+        return f"{self.fecha} {self.hora} {self.lugar} {self.tipo_Muestra}"
 
 
+########################################################################################
 
 class medicamento(models.Model):
     id_Medicamento = models.AutoField(primary_key=True , verbose_name='ID_Medicamento')

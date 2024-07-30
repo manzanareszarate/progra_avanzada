@@ -87,7 +87,7 @@
                     <td>{{ cita.especialidad }}</td>
                     <td>
                         <a href= "{% url 'editar_cita' cita.id_Cita %}"class="button edit-button">Editar</a>
-                        <a href="" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar</a>
+                        <a href="{% url 'eliminar_cita' cita.id_Cita %}" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar</a>
                     </td>
                 </tr>
                 {% empty %}
@@ -98,6 +98,7 @@
             </tbody>
         </table>
         <a href="{% url 'agregar_cita' %}" class="button add-button">Agregar Nueva Cita</a>
+        
     </form>
 </body>
 </html>

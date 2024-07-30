@@ -46,3 +46,4 @@ class pacienteAdmin(admin.ModelAdmin):
     
 admin.site.register(paciente, pacienteAdmin)
 
+
