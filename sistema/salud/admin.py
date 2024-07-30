@@ -15,7 +15,7 @@ from .models import alarmas
 
 # Register your models here.
 
-admin.site.register(laboratorio)
+
 admin.site.register(medicamento)
 admin.site.register(receta)
 admin.site.register(Control_Hipertensione)
@@ -47,3 +47,11 @@ class pacienteAdmin(admin.ModelAdmin):
 admin.site.register(paciente, pacienteAdmin)
 
 
+class laboratorioAdmin(admin.ModelAdmin):
+    list_display = ('paciente_nombre_apellido', 'fecha', 'hora', 'lugar', 'tipo_Muestra')
+
+    def paciente_nombre_apellido(self, obj):
+        return f'{obj.id_paciente.nombre} {obj.id_paciente.apellido}'
+    paciente_nombre_apellido.short_description = 'Paciente'
+
+admin.site.register(laboratorio, laboratorioAdmin)

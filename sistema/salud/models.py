@@ -56,6 +56,7 @@ class laboratorio (models.Model):
     lugar = models.CharField(max_length=200, verbose_name='Lugar')
     tipo_Muestra = models.CharField(max_length=50, verbose_name='Tipo de Muestra')
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    
 def __str__(self):
         return f"{self.fecha} {self.hora} {self.lugar} {self.tipo_Muestra}"
 

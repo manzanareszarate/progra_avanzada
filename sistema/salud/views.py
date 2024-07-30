@@ -19,7 +19,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import cita, paciente,laboratorio
 from .forms import CitaAgregarForm
 from .forms import CitaEditarForm
-from .forms import LaboratorioAgregarForm,CitaForm
+from .forms import LaboratorioAgregarForm
+from .forms import Laboratorioeditarform
 
 # Create your views here.
 
@@ -218,16 +219,53 @@ def laboratorios(request):
 ##############################################################################################################3
 
 #agrergar un laboratorio
+@login_required(login_url='/accounts/login/')
+def agregar_laboratorio(request):
+    if request.method == 'POST':
+        form = LaboratorioAgregarForm(request.POST)
+        if form.is_valid():
+            instancia = form.save(commit=False)
+            instancia.id_usuario = request.user  # Asigna el usuario actual (si corresponde)
+            instancia.save()
+            return redirect('laboratorios')  # Redirige a la página de citas
+    else:
+        form = LaboratorioAgregarForm()
+        # Filtra los pacientes para el usuario autenticado
+        form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)
+    
+    return render(request, 'Programar/agregar_laboratorio.html', {'form': form})
 
 
 
 ###################################################################################################################
+#editar laboratorio
 
 
 
+@login_required(login_url='/accounts/login/')
+def editar_laboratorio(request, laboratorio_id):
+    # Obtener la instancia de la cita o devolver 404 si no se encuentra
+    laboratorio_instance = get_object_or_404(laboratorio, id_Laboratorios=laboratorio_id)
 
+    # Verificar que el laboratorio pertenece al usuario actual
+    if laboratorio_instance.id_usuario != request.user:
+        return redirect('inicio')  # Redirige a una página de error o a una página de acceso denegado
 
+    if request.method == 'POST':
+        form = Laboratorioeditarform (request.POST, instance=laboratorio_instance)
+        form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)
+        if form.is_valid():
+            instancia = form.save(commit=False)
+            instancia.id_usuario = request.user  # Mantener el usuario actual
+            instancia.save()
+            return redirect('laboratorios')  # Redirige a la página de inicio o a la página deseada
+    else:
+        form = Laboratorioeditarform (instance=laboratorio_instance)
+        form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)
 
+    return render(request,'Programar/editar_laboratorio', {'form': form, 'laboratorio': laboratorio_instance})
+
+###################################################################################################################
 
 
 
