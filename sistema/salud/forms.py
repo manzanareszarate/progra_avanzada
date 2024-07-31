@@ -6,6 +6,8 @@ from .models import paciente
 from .models import laboratorio
 from .models import medicamento
 from .models import receta  
+from .models import receta_medicamento
+from django.forms import inlineformset_factory, BaseFormSet, formset_factory
 
 class pacienteForm(forms.ModelForm):#formulario para el modelo paciente
     class Meta:
@@ -146,12 +148,55 @@ class EditarMedicamentoForm(forms.ModelForm):
 
 ################################################################################################3
 
-####ver receta form################################
+####Agregar  receta  y recetamedicamento form ################################
+
+#######################################################################################################3
 
 
 
 
 
+
+
+class RecetaForm(forms.ModelForm):
+    class Meta:
+        model = receta
+        fields = ['id_paciente', 'fecha_Emision', 'fecha_Reposicion', 'medico', 'lugar']
+        widgets = {
+            'fecha_Emision': forms.DateInput(attrs={'type': 'date'}),
+            'fecha_Reposicion': forms.DateInput(attrs={'type': 'date'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(RecetaForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=user)
+
+class RecetaMedicamentoForm(forms.ModelForm):
+    class Meta:
+        model = receta_medicamento
+        fields = ['medicamento', 'cantidad', 'frecuencia']
+    
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(RecetaMedicamentoForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['medicamento'].queryset = medicamento.objects.filter(id_usuario=user)
+            # Mostrar información adicional en el widget select
+            self.fields['medicamento'].widget.attrs.update({'data-dosis': 'dosis', 'data-presentacion': 'presentacion'})
+
+
+
+
+
+RecetaMedicamentoFormSet = inlineformset_factory(
+    receta,
+    receta_medicamento,
+    form=RecetaMedicamentoForm,
+    extra=1,  # Número inicial de formularios vacíos
+    can_delete=True  # Permitir eliminar formularios
+)
 
 
 

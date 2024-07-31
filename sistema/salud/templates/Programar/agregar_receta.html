@@ -1,0 +1,32 @@
+<!-- templates/Programar/agregar_receta.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Agregar Receta</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ receta_form.as_p }}
+    {{ receta_medicamento_formset.management_form }}
+    <table>
+    {% for form in receta_medicamento_formset.forms %}
+        <tr>
+        <td>{{ form.as_p }}</td>
+        <td>
+            {% if form.instance.pk %}
+            <button type="button" class="btn btn-danger" onclick="removeForm(this)">Eliminar</button>
+            {% endif %}
+        </td>
+        </tr>
+    {% endfor %}
+    </table>
+    <button type="submit">Guardar Receta</button>
+</form>
+
+<script>
+    function removeForm(button) {
+    var row = button.closest('tr');
+    row.querySelector('input[name$="-DELETE"]').value = 'on';
+    row.style.display = 'none';
+    }
+</script>
+{% endblock %}
