@@ -5,6 +5,7 @@ from .models import cita
 from .models import paciente
 from .models import laboratorio
 from .models import medicamento
+from .models import receta  
 
 class pacienteForm(forms.ModelForm):#formulario para el modelo paciente
     class Meta:
@@ -144,6 +145,25 @@ class EditarMedicamentoForm(forms.ModelForm):
 
 
 ################################################################################################3
+
+####ver receta form################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

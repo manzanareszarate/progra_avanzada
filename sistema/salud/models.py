@@ -81,8 +81,16 @@ class receta (models.Model):
         fecha_Emision = models.DateField(null=False, verbose_name='Fecha_Emision')
         fecha_Reposicion = models.DateField(null=False, verbose_name='Fecha_Reposicion')
         lista_Medicamentos = models.ManyToManyField(medicamento, through='receta_medicamento',verbose_name='Lista de Medicamentos')
+        medico = models.CharField(max_length=50, verbose_name='Medico')
         id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
         lugar = models.CharField(max_length=200, verbose_name='Lugar')
+
+def __str__(self):
+        return f"{self.fecha_Emision} {self.fecha_Reposicion} {self.medico} {self.lugar}"
+
+###########################################################################################
+
+
 
 class receta_medicamento(models.Model):
     id_Receta_Medicamento = models.AutoField(primary_key=True , verbose_name='ID_Receta_Medicamento')

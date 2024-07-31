@@ -73,9 +73,9 @@
         <h1>Eliminar Medicamento</h1>
         <p class="message">¿Estás seguro de que quieres eliminar el medicamento?</p>
         <div class="details">
-            <p><strong>Paciente:</strong> {{ medicamento.nombre_Medicamento }}</p>
-            <p><strong>Lugar:</strong> {{ medicamento.dosis }}</p>
-            <p><strong>Especialidad:</strong> {{ medicamento.presentacion }}</p>
+            <p><strong>Medicamento:</strong> {{ medicamento.nombre_Medicamento }}</p>
+            <p><strong>Dosis:</strong> {{ medicamento.dosis }}</p>
+            <p><strong>Presentacion:</strong> {{ medicamento.presentacion }}</p>
         </div>
         <form method="post">
             {% csrf_token %}

@@ -16,7 +16,7 @@ from django.contrib.auth.models import User
 from .forms import RegistroForm
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import cita, paciente,laboratorio,medicamento
+from .models import cita, paciente,laboratorio,medicamento,receta
 from .forms import CitaAgregarForm
 from .forms import CitaEditarForm
 from .forms import LaboratorioAgregarForm
@@ -384,52 +384,66 @@ def eliminar_medicamentos(request, id_Eliminarmedicamentos):
 
     # Pasar los detalles de la cita y del paciente a la plantilla
     context = {
-        'laboratorio': medicamentoeliminar_instance,
+        'medicamento': medicamentoeliminar_instance,
         
     }
     return render(request, 'Programar/eliminar_medicamentos.html', context)
 
 
 
+#############################################################################################################################33
+#vista para recetas
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@login_required(login_url='/accounts/login/')
 def recetas(request):
-    return render (request, 'Programar/recetas.html')
+    # Obtén las recetas asociadas al usuario logueado
+    recetas_usuario = receta.objects.filter(id_usuario=request.user)
+    
+    # Obtén los medicamentos asociados a las recetas del usuario
+    medicamentos_usuario = medicamento.objects.filter(id_usuario=request.user)
+    
+    return render(request, 'recetas.html', {
+        'recetas': recetas_usuario,
+        'medicamentos': medicamentos_usuario
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ####################################################################################################3

@@ -16,7 +16,7 @@ from .models import receta_medicamento
 # Register your models here.
 
 
-admin.site.register(medicamento)
+
 admin.site.register(receta)
 admin.site.register(Control_Hipertensione)
 admin.site.register(Control_Glucosa)
@@ -55,3 +55,9 @@ class laboratorioAdmin(admin.ModelAdmin):
     paciente_nombre_apellido.short_description = 'Paciente'
 
 admin.site.register(laboratorio, laboratorioAdmin)
+
+
+class medicamentoAdmin(admin.ModelAdmin):
+    list_display = ('nombre_Medicamento', 'dosis', 'presentacion', 'id_usuario')
+
+admin.site.register(medicamento, medicamentoAdmin)
