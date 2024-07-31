@@ -96,7 +96,7 @@ class receta_medicamento(models.Model):
     id_Receta_Medicamento = models.AutoField(primary_key=True , verbose_name='ID_Receta_Medicamento')
     receta = models.ForeignKey(receta, on_delete=models.CASCADE)
     medicamento = models.ForeignKey(medicamento, on_delete=models.CASCADE)
-    cantidad = models.CharField(max_length=50, verbose_name='Dosis')
+    cantidad = models.CharField(max_length=50, verbose_name='Cantidad')
     frecuencia = models.CharField(max_length=50, verbose_name='Frecuencia')
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     class Meta:

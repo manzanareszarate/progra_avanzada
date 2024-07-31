@@ -427,29 +427,24 @@ def recetas(request):
 
 
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .models import receta, receta_medicamento
-from .forms import RecetaForm, RecetaMedicamentoFormSet
-
-@login_required (login_url='/accounts/login/')
+@login_required
 def agregar_receta(request):
     if request.method == 'POST':
         receta_form = RecetaForm(request.POST, user=request.user)
-        formset = RecetaMedicamentoFormSet(request.POST)
+        formset = RecetaMedicamentoFormSet(request.POST, request.FILES)
 
         if receta_form.is_valid() and formset.is_valid():
             receta_instance = receta_form.save(commit=False)
             receta_instance.id_usuario = request.user
             receta_instance.save()
 
-            # Asignar la instancia de receta al formset
+            # Guardar los medicamentos asociados
             for form in formset:
-                if form.cleaned_data and form.cleaned_data.get('medicamento'):
-                    receta_medicamento_instance = form.save(commit=False)
-                    receta_medicamento_instance.receta = receta_instance
-                    receta_medicamento_instance.id_usuario = request.user
-                    receta_medicamento_instance.save()
+                if form.cleaned_data:
+                    medicamento_instance = form.save(commit=False)
+                    medicamento_instance.receta = receta_instance
+                    medicamento_instance.id_usuario = request.user
+                    medicamento_instance.save()
 
             return redirect('recetas')  # Redirige a la lista de recetas o a otra página
             
@@ -461,7 +456,6 @@ def agregar_receta(request):
         'receta_form': receta_form,
         'formset': formset,
     })
-
 
 
 
