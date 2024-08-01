@@ -155,6 +155,8 @@ class EditarMedicamentoForm(forms.ModelForm):
 
 
 
+
+
 class RecetaForm(forms.ModelForm):
     class Meta:
         model = receta
@@ -164,33 +166,15 @@ class RecetaForm(forms.ModelForm):
             'fecha_Reposicion': forms.DateInput(attrs={'type': 'date'}),
         }
 
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super(RecetaForm, self).__init__(*args, **kwargs)
-        if user:
-            self.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=user)
-
 class RecetaMedicamentoForm(forms.ModelForm):
     class Meta:
         model = receta_medicamento
         fields = ['medicamento', 'cantidad', 'frecuencia']
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super(RecetaMedicamentoForm, self).__init__(*args, **kwargs)
-        if user:
-            self.fields['medicamento'].queryset = medicamento.objects.filter(id_usuario=user)
-            
-    def clean(self):
-        cleaned_data = super().clean()
-        medicamento = cleaned_data.get('medicamento')
-        receta = self.instance.receta if self.instance else None
-
-        if medicamento and receta:
-            if receta.receta_medicamento_set.filter(medicamento=medicamento).exists():
-                self.add_error('medicamento', 'Este medicamento ya está en la receta.')
-
-        return cleaned_data
+        widgets = {
+            'medicamento': forms.Select(),
+            'cantidad': forms.TextInput(attrs={'placeholder': 'Cantidad'}),
+            'frecuencia': forms.TextInput(attrs={'placeholder': 'Frecuencia'}),
+        }
 
 
 
