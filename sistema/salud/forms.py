@@ -7,6 +7,7 @@ from .models import laboratorio
 from .models import medicamento
 from .models import receta  
 from .models import receta_medicamento
+
 from django.forms import inlineformset_factory, BaseFormSet, formset_factory
 
 class pacienteForm(forms.ModelForm):#formulario para el modelo paciente
@@ -157,24 +158,6 @@ class EditarMedicamentoForm(forms.ModelForm):
 
 
 
-class RecetaForm(forms.ModelForm):
-    class Meta:
-        model = receta
-        fields = ['id_paciente', 'fecha_Emision', 'fecha_Reposicion', 'medico', 'lugar']
-        widgets = {
-            'fecha_Emision': forms.DateInput(attrs={'type': 'date'}),
-            'fecha_Reposicion': forms.DateInput(attrs={'type': 'date'}),
-        }
-
-class RecetaMedicamentoForm(forms.ModelForm):
-    class Meta:
-        model = receta_medicamento
-        fields = ['medicamento', 'cantidad', 'frecuencia']
-        widgets = {
-            'medicamento': forms.Select(),
-            'cantidad': forms.TextInput(attrs={'placeholder': 'Cantidad'}),
-            'frecuencia': forms.TextInput(attrs={'placeholder': 'Frecuencia'}),
-        }
 
 
 
@@ -186,6 +169,64 @@ class RecetaMedicamentoForm(forms.ModelForm):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#####################################################################################################################
 class RegistroForm(UserCreationForm):
     email = forms.EmailField(required=True)
 

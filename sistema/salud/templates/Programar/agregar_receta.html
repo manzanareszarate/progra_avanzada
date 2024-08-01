@@ -1,24 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de la Receta</title>
+</head>
+<body>
+    <h1>Detalle de la Receta</h1>
+    <p>Fecha de Emisión: {{ receta.fecha_Emision }}</p>
+    <p>Fecha de Reposición: {{ receta.fecha_Reposicion }}</p>
+    <p>Medico: {{ receta.medico }}</p>
+    <p>Lugar: {{ receta.lugar }}</p>
 
-{% extends "base_generic.html" %}
+    <h2>Medicamentos en la Receta</h2>
+    <ul>
+        {% for detalle in receta.recetamedicamento_set.all %}
+            <li>
+                {{ detalle.medicamento.nombre_Medicamento }} - {{ detalle.cantidad }} - {{ detalle.frecuencia }}
+            </li>
+        {% empty %}
+            <li>No hay medicamentos en esta receta.</li>
+        {% endfor %}
+    </ul>
 
-{% block content %}
-<h2>Agregar Receta</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ receta_form.as_p }}
+    <h2>Agregar Medicamento</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Agregar</button>
+    </form>
 
-    <h3>Medicamentos</h3>
-    {% for form in medicamento_forms %}
-    <div class="medicamento-form">
-        {{ form.medicamento.label_tag }} {{ form.medicamento }}
-        {{ form.cantidad.label_tag }} {{ form.cantidad }}
-        {{ form.frecuencia.label_tag }} {{ form.frecuencia }}
-    </div>
-    {% endfor %}
-    
-    <button type="submit">Guardar Receta</button>
-</form>
-{% endblock %}
+    <a href="{% url 'lista_recetas' %}">Volver a la lista de recetas</a>
+</body>
+</html>
+
 
 
 

@@ -1,15 +1,13 @@
 from django.forms import inlineformset_factory
 from .models import receta, receta_medicamento
-
-
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
 from django.db import IntegrityError
-from .forms import RecetaForm, RecetaMedicamentoForm
+from .models import receta, medicamento
+from django.contrib.auth.decorators import login_required
 
-from .forms import RecetaForm
-
-from django.forms import formset_factory
-
-from .forms import RecetaForm, RecetaMedicamentoForm
 from .models import receta, medicamento
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import login_required
@@ -324,10 +322,8 @@ def medicamentos(request):
     }
 
     return render(request, 'Programar/medicamentos.html', context)
-
-
-##############################################################################################################3
-#Agreagar medicamentos
+##############################################################################################################################
+#agregar medicamentos
 @login_required(login_url='/accounts/login/')
 def agregar_medicamentos(request):
     if request.method == 'POST':
@@ -341,10 +337,11 @@ def agregar_medicamentos(request):
         form = MedicamentoForm()
 
     return render(request, 'Programar/agregar_medicamentos.html', {'form': form})
-###############################################################################################################
 
+##############################################################################################################3
+########3 editar medicamentos
 
-login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login/')
 def editar_medicamentos(request, medicamento_id):
     # Obtener la instancia del medicamento o devolver 404 si no se encuentra
     medicamento_instance = get_object_or_404(medicamento, id_Medicamento=medicamento_id)
@@ -362,16 +359,13 @@ def editar_medicamentos(request, medicamento_id):
             return redirect('medicamentos')  # Redirige a la página de inicio o a la página deseada
     else:
         form = EditarMedicamentoForm (instance=medicamento_instance)
-
+        
 
     return render(request,'Programar/editar_medicamentos.html', {'form': form, 'medicamento': medicamento_instance})
 
-
-##############################################################################################################3
-
-
-#eliminar medicamentos
-
+##########33##############################################################################################################3
+########3 eliminar medicamentos
+    
 @login_required(login_url='/accounts/login/')
 def eliminar_medicamentos(request, id_Eliminarmedicamentos):
     # Obtener la instancia de la cita o devolver 404 si no se encuentra
@@ -381,7 +375,7 @@ def eliminar_medicamentos(request, id_Eliminarmedicamentos):
     if medicamentoeliminar_instance.id_usuario != request.user:
         return redirect('inicio')  # Redirige a una página de error o a una página de acceso denegado
 
-
+    
     if request.method == 'POST':
         medicamentoeliminar_instance.delete()  # Eliminar la cita
         return redirect('medicamentos')  # Redirige a la página de citas o a la página deseada
@@ -389,60 +383,53 @@ def eliminar_medicamentos(request, id_Eliminarmedicamentos):
     # Pasar los detalles de la cita y del paciente a la plantilla
     context = {
         'medicamento': medicamentoeliminar_instance,
-
+        
     }
     return render(request, 'Programar/eliminar_medicamentos.html', context)
 
 
 
-#############################################################################################################################33
-#vista para recetas
-
-@login_required(login_url='/accounts/login/')
-def recetas(request):
-    # Obtén las recetas asociadas al usuario logueado
-    recetas_usuario = receta.objects.filter(id_usuario=request.user)
-
-    # Obtén los medicamentos asociados a las recetas del usuario
-    medicamentos_usuario = medicamento.objects.filter(id_usuario=request.user)
-
-    return render(request, 'Programar/recetas.html', {
-        'recetas': recetas_usuario,
-        'medicamentos': medicamentos_usuario
-    })
 
 
 ##############################################################################################################3
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .models import receta, receta_medicamento
-from .forms import RecetaForm, RecetaMedicamentoForm
+########3 ver recetas
+@login_required(login_url='/accounts/login/')
+def recetas(request):
+    user = request.user
+    recetas = receta.objects.filter(id_usuario=user)
+    return render(request, 'Programar/recetas.html', {'recetas': recetas})
 
-@login_required
-def agregar_receta(request):
-    if request.method == 'POST':
-        receta_form = RecetaForm(request.POST)
-        if receta_form.is_valid():
-            receta_obj = receta_form.save(commit=False)
-            receta_obj.id_usuario = request.user
-            receta_obj.save()
-            
-            # Obtener los medicamentos asociados
-            medicamento_forms = [RecetaMedicamentoForm(request.POST, prefix=str(i)) for i in range(len(request.POST.getlist('medicamento')))]
-            
-            for form in medicamento_forms:
-                if form.is_valid():
-                    receta_medicamento_obj = form.save(commit=False)
-                    receta_medicamento_obj.receta = receta_obj
-                    receta_medicamento_obj.id_usuario = request.user
-                    receta_medicamento_obj.save()
-                    
-            return redirect('ver_recetas')  # Redirige a la vista que muestra las recetas guardadas
-    else:
-        receta_form = RecetaForm()
-        medicamento_forms = [RecetaMedicamentoForm(prefix=str(i)) for i in range(5)]  # Mostrar hasta 5 medicamentos
-        
-    return render(request, 'Programar/agregar_receta.html', {'receta_form': receta_form, 'medicamento_forms': medicamento_forms})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

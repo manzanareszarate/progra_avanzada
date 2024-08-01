@@ -1,163 +1,113 @@
 
 
-{% extends "base.html" %}
-
-{% block titulo %}Agregar Citas{% endblock %}
-
-{% block contenido %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Receta</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <script src="{% static 'js/scripts.js' %}" defer></script>
+    <title>Agregar Citas</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
             margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
+            padding: 0;
         }
-
-        h1 {
-            color: #333;
-        }
-
-        form {
+        .form-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            max-width: 800px;
-            margin: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
-        fieldset {
-            border: 1px solid #ddd;
-            padding: 10px 20px;
+        h1 {
+            text-align: center;
+            color: #333;
             margin-bottom: 20px;
-            border-radius: 8px;
+            font-size: 24px;
         }
-
-        legend {
-            font-weight: bold;
-            font-size: 1.2em;
-            padding: 0 10px;
+        .form-group {
+            margin-bottom: 20px;
         }
-
-        label {
+        .form-group label {
             display: block;
-            margin: 10px 0 5px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
         }
-
-        input[type="text"], select {
+        .form-group input, .form-group select {
             width: 100%;
-            padding: 8px;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            margin-bottom: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
         }
-
-        .medicamento-container {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            position: relative;
+        .form-group input:focus, .form-group select:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
         }
-
-        .medicamento-container button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #e74c3c;
-            color: #fff;
+        .form-group button {
+            padding: 12px 20px;
             border: none;
             border-radius: 4px;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-
-        .medicamento-container button:hover {
-            background-color: #c0392b;
-        }
-
-        .btn-submit {
-            background-color: #3498db;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            padding: 10px 20px;
+            color: white;
+            background-color: #4CAF50;
+            font-weight: bold;
             cursor: pointer;
             font-size: 16px;
-            font-weight: bold;
+            transition: background-color 0.3s ease;
         }
-
-        .btn-submit:hover {
-            background-color: #2980b9;
+        .form-group button:hover {
+            background-color: #45a049;
         }
-
-        .error {
-            color: #e74c3c;
-            margin-top: 10px;
+        .form-group button:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
+        }
+        .form-group .form-error {
+            color: #f44336;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .form-group a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .form-group a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <h1>Agregar Receta</h1>
-    <form method="post">
-        {% csrf_token %}
-        
-        <fieldset>
-            <legend>Información de la Receta</legend>
-            {{ receta_form.as_p }}
-        </fieldset>
-        
-        <fieldset>
-            <legend>Medicamentos</legend>
-            <div id="medicamentos-container">
-                <!-- Secciones de medicamentos dinámicamente generadas aquí -->
+    <h1>Agregar Citas</h1>
+    <div class="form-container">
+        <form method="post" action="{% url 'agregar_cita' %}">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="form-error">
+                            {% for error in field.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div class="form-group">
+                <button type="submit">Guardar</button>
             </div>
-            <button type="button" id="add-medication">Agregar otro medicamento</button>
-        </fieldset>
-        
-        <button type="submit" class="btn-submit">Guardar</button>
-    </form>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let count = 0;
-
-            document.getElementById('add-medication').addEventListener('click', function() {
-                count++;
-                let container = document.getElementById('medicamentos-container');
-                
-                let newDiv = document.createElement('div');
-                newDiv.classList.add('medicamento-container');
-                newDiv.innerHTML = `
-                    <button type="button" onclick="this.parentElement.remove()">Eliminar</button>
-                    <label for="medicamento_${count}">Seleccionar Medicamento:</label>
-                    <select name="medicamento_ids" id="medicamento_${count}">
-                        {% for medicamento in medicamentos %}
-                            <option value="{{ medicamento.id_Medicamento }}">
-                                {{ medicamento.nombre_Medicamento }} ({{ medicamento.dosis }}, {{ medicamento.presentacion }})
-                            </option>
-                        {% endfor %}
-                    </select>
-                    <input type="text" name="cantidad_${count}" placeholder="Cantidad">
-                    <input type="text" name="frecuencia_${count}" placeholder="Frecuencia">
-                `;
-                
-                container.appendChild(newDiv);
-            });
-        });
-    </script>
+            <div class="form-group">
+                <a href="{% url 'citas' %}">Volver a la lista de Citas</a>
+            </div>
+        </form>
+    </div>
 </body>
 </html>
-
-{% endblock %}
