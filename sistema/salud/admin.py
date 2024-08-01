@@ -17,12 +17,13 @@ from .models import receta_medicamento
 
 
 
-admin.site.register(receta)
+
 admin.site.register(Control_Hipertensione)
 admin.site.register(Control_Glucosa)
 admin.site.register(Control_Peso)
 admin.site.register(alarmas)
-admin.site.register(receta_medicamento)
+
+
 
 
 
@@ -61,3 +62,28 @@ class medicamentoAdmin(admin.ModelAdmin):
     list_display = ('nombre_Medicamento', 'dosis', 'presentacion', 'id_usuario')
 
 admin.site.register(medicamento, medicamentoAdmin)
+
+
+class RecetaAdmin(admin.ModelAdmin):
+    list_display = ('paciente_nombre_apellido', 'fecha_Emision', 'id_usuario', 'lista_medicamentos')
+
+    def paciente_nombre_apellido(self, obj):
+        # Devuelve el nombre completo del paciente
+        return f'{obj.id_paciente.nombre} {obj.id_paciente.apellido}'
+    paciente_nombre_apellido.short_description = 'Paciente'
+
+    def lista_medicamentos(self, obj):
+        # Devuelve una lista de medicamentos asociados, separados por comas
+        return ', '.join([medicamento.nombre_Medicamento for medicamento in obj.lista_Medicamentos.all()])
+    lista_medicamentos.short_description = 'Medicamentos'
+
+admin.site.register(receta, RecetaAdmin)
+
+
+
+class RecetaMedicamentoAdmin(admin.ModelAdmin):
+    list_display = ('receta', 'medicamento', 'cantidad', 'frecuencia', 'id_usuario')
+    search_fields = ('receta__id_Recetas', 'medicamento__nombre_Medicamento', 'cantidad', 'frecuencia')
+    list_filter = ('receta', 'medicamento')
+
+admin.site.register(receta_medicamento, RecetaMedicamentoAdmin)

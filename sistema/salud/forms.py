@@ -155,9 +155,6 @@ class EditarMedicamentoForm(forms.ModelForm):
 
 
 
-
-
-
 class RecetaForm(forms.ModelForm):
     class Meta:
         model = receta
@@ -166,7 +163,7 @@ class RecetaForm(forms.ModelForm):
             'fecha_Emision': forms.DateInput(attrs={'type': 'date'}),
             'fecha_Reposicion': forms.DateInput(attrs={'type': 'date'}),
         }
-    
+
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super(RecetaForm, self).__init__(*args, **kwargs)
@@ -177,33 +174,23 @@ class RecetaMedicamentoForm(forms.ModelForm):
     class Meta:
         model = receta_medicamento
         fields = ['medicamento', 'cantidad', 'frecuencia']
-    
+
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super(RecetaMedicamentoForm, self).__init__(*args, **kwargs)
         if user:
             self.fields['medicamento'].queryset = medicamento.objects.filter(id_usuario=user)
-            # Mostrar información adicional en el widget select
-            self.fields['medicamento'].widget.attrs.update({'data-dosis': 'dosis', 'data-presentacion': 'presentacion'})
+            
+    def clean(self):
+        cleaned_data = super().clean()
+        medicamento = cleaned_data.get('medicamento')
+        receta = self.instance.receta if self.instance else None
 
+        if medicamento and receta:
+            if receta.receta_medicamento_set.filter(medicamento=medicamento).exists():
+                self.add_error('medicamento', 'Este medicamento ya está en la receta.')
 
-
-
-
-RecetaMedicamentoFormSet = inlineformset_factory(
-    receta,
-    receta_medicamento,
-    form=RecetaMedicamentoForm,
-    extra=1,  # Número inicial de formularios vacíos
-    can_delete=True  # Permitir eliminar formularios
-)
-
-
-
-
-
-
-
+        return cleaned_data
 
 
 

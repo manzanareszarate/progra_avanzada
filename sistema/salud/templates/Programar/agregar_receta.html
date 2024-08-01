@@ -4,6 +4,7 @@
 
 {% block contenido %}
 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,32 +14,56 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <script src="{% static 'js/scripts.js' %}" defer></script>
+    <style>
+        .medicamento-container { margin-bottom: 15px; }
+        .medicamento-container input { display: block; margin-bottom: 5px; }
+    </style>
 </head>
 <body>
     <h1>Agregar Receta</h1>
     <form method="post">
         {% csrf_token %}
-        {{ receta_form.as_p }}
         
-        <h2>Medicamentos</h2>
-        {{ formset.management_form }}
-        {% for form in formset %}
-            <div class="formset-row">
-                {{ form.as_p }}
-                <button type="button" class="remove-form">Eliminar</button>
+        <fieldset>
+            <legend>Información de la Receta</legend>
+            {{ receta_form.as_p }}
+        </fieldset>
+        
+        <fieldset>
+            <legend>Medicamentos</legend>
+            <div id="medicamentos-container">
+                <!-- Secciones de medicamentos dinámicamente generadas aquí -->
             </div>
-        {% endfor %}
+            <button type="button" id="add-medication">Agregar otro medicamento</button>
+        </fieldset>
         
         <button type="submit">Guardar</button>
     </form>
 
     <script>
-        // Script para manejar el comportamiento de eliminación del formset
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.remove-form').forEach(button => {
-                button.addEventListener('click', function() {
-                    this.closest('.formset-row').remove();
-                });
+            let count = 0;
+
+            document.getElementById('add-medication').addEventListener('click', function() {
+                count++;
+                let container = document.getElementById('medicamentos-container');
+                
+                let newDiv = document.createElement('div');
+                newDiv.classList.add('medicamento-container');
+                newDiv.innerHTML = `
+                    <label for="medicamento_${count}">Seleccionar Medicamento:</label>
+                    <select name="medicamento_ids" id="medicamento_${count}">
+                        {% for medicamento in medicamentos %}
+                            <option value="{{ medicamento.id_Medicamento }}">
+                                {{ medicamento.nombre_Medicamento }} ({{ medicamento.dosis }}, {{ medicamento.presentacion }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <input type="text" name="cantidad_${count}" placeholder="Cantidad">
+                    <input type="text" name="frecuencia_${count}" placeholder="Frecuencia">
+                `;
+                
+                container.appendChild(newDiv);
             });
         });
     </script>
