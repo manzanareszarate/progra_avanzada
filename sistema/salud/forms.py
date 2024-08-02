@@ -166,45 +166,8 @@ class MedicamentoForm(forms.ModelForm):
             'presentacion': forms.TextInput(attrs={'placeholder': 'Presentación'}),
         }
 
-
-
-
-
-class RecetaForm(forms.ModelForm):
-    class Meta:
-        model = receta
-        fields = ['id_paciente', 'fecha_Emision', 'fecha_Reposicion', 'medico', 'lugar']
-
-class RecetaMedicamentoForm(forms.ModelForm):
-    class Meta:
-        model = receta_medicamento
-        fields = ['medicamento', 'cantidad', 'frecuencia']
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+##############################################################################################################
+# forms.py
 
 
 

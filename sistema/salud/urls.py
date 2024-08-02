@@ -33,4 +33,6 @@ path('editar_medicamentos/<int:medicamento_id>/', views.editar_medicamentos, nam
 path('eliminar_medicamentos/<int:id_Eliminarmedicamentos>/', views.eliminar_medicamentos, name='eliminar_medicamentos'),
 path('recetas/', views.recetas, name='recetas'),
 path('agregar_receta/', views.agregar_receta, name='agregar_receta'),
+path('asociar_medicamentos/<int:receta_id>/', views.asociar_medicamentos, name='asociar_medicamentos'),
+path('detalles_receta/<int:receta_id>/', views.detalles_receta, name='detalles_receta'),
 ]

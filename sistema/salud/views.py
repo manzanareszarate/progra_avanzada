@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from .models import receta, medicamento
 from django.contrib.auth.decorators import login_required
-
+from django.http import HttpResponseBadRequest
 from .models import receta, medicamento
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import login_required
@@ -18,7 +18,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.models import User
-from .forms import pacienteForm
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
@@ -33,7 +33,7 @@ from .forms import CitaEditarForm
 from .forms import LaboratorioAgregarForm
 from .forms import Laboratorioeditarform
 from .forms import MedicamentoForm
-from .forms import EditarMedicamentoForm,RecetaForm
+from .forms import EditarMedicamentoForm,RecetaForm,RecetaMedicamentoForm
 
 # Create your views here.
 
@@ -405,62 +405,41 @@ def recetas(request):
 ############33##############################################################################################################3
 ########3 agregar recetas
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from .models import medicamento, paciente, receta, receta_medicamento
-from .forms import RecetaForm  # Ajusta según tu configuración de formularios
 
-@login_required
 def agregar_receta(request):
     if request.method == 'POST':
-        receta_form = RecetaForm(request.POST)
-        
-        if receta_form.is_valid():
-            nueva_receta = receta_form.save(commit=False)
-            nueva_receta.id_usuario = request.user
-            paciente_seleccionado_id = request.POST.get('paciente')
-            nueva_receta.paciente = get_object_or_404(paciente, id=paciente_seleccionado_id)  # Asumiendo que el campo es 'id'
-            nueva_receta.save()
-
-            medicamentos_seleccionados = request.POST.getlist('medicamentos')
-
-            for medicamento_id in medicamentos_seleccionados:
-                medicamento_instance = get_object_or_404(medicamento, id=medicamento_id)
-                receta_medicamento.objects.create(
-                    receta=nueva_receta,
-                    medicamento=medicamento_instance,
-                    cantidad=request.POST.get(f'cantidad_{medicamento_id}'),
-                    frecuencia=request.POST.get(f'frecuencia_{medicamento_id}'),
-                    id_usuario=request.user
-                )
-
-            return redirect('recetas')
+        form = RecetaForm(request.POST, user=request.user)
+        if form.is_valid():
+            receta_instancia = form.save(commit=False)
+            receta_instancia.id_usuario = request.user
+            receta_instancia.save()  # Guardar la receta antes de acceder a su id
+            return redirect('Programar/asociar_medicamentos.html', receta_id=receta_instancia.id)
     else:
-        receta_form = RecetaForm()
-        # Filtrar medicamentos y pacientes para el usuario actual
-        lista_medicamentos = medicamento.objects.filter(id_usuario=request.user)
-        lista_pacientes = paciente.objects.filter(id_usuario=request.user)
-    
-    return render(request, 'Programar/agregar_receta.html', {
-        'receta_form': receta_form,
-        'lista_medicamentos': lista_medicamentos,
-        'lista_pacientes': lista_pacientes
-    })
+        form = RecetaForm(user=request.user)
+    return render(request, 'Programar/agregar_recetas.html', {'form': form})
+
+def asociar_medicamentos(request, receta_id):
+    receta_instancia = get_object_or_404(receta, id_Recetas=receta_id)
+    if request.method == 'POST':
+        form = RecetaMedicamentoForm(request.POST, receta=receta_instancia, user=request.user)
+        if form.is_valid():
+            receta_medicamento = form.save(commit=False)
+            receta_medicamento.receta = receta_instancia
+            receta_medicamento.save()
+            return redirect('detalle_receta', receta_id=receta_instancia.id_Recetas)
+    else:
+        form = RecetaMedicamentoForm(receta=receta_instancia, user=request.user)
+    return render(request, 'Programar/asociar_medicamentos.html', {'form': form, 'receta': receta_instancia})
+
+def detalles_receta(request, receta_id):
+    receta_instancia = get_object_or_404(receta, id_Recetas=receta_id)
+    return render(request, 'Programar/detalles_receta.html', {'receta': receta_instancia})
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+###########################################################################################33
+#asociar medicamentos
+# views.py
 
 
 

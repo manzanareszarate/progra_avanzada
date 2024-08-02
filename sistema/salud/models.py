@@ -102,7 +102,7 @@ class receta_medicamento(models.Model):
     class Meta:
         unique_together = ('receta', 'medicamento')
         def __str__(self):
-                return f"Receta: {self.receta.id_Receta} - Medicamento: {self.medicamento.nombre_Medicamento}"
+            return f"{self.receta} {self.medicamento} {self.cantidad} {self.frecuencia}"
 
 
 

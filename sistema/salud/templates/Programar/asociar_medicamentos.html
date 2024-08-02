@@ -1,0 +1,17 @@
+<!-- templates/asociar_medicamentos.html -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Asociar Medicamentos</title>
+</head>
+<body>
+    <h1>Asociar Medicamentos a la Receta</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Agregar Medicamento</button>
+    </form>
+</body>
+</html>
