@@ -33,7 +33,7 @@ from .forms import CitaEditarForm
 from .forms import LaboratorioAgregarForm
 from .forms import Laboratorioeditarform
 from .forms import MedicamentoForm
-from .forms import EditarMedicamentoForm,RecetaForm,RecetaMedicamentoForm
+from .forms import EditarMedicamentoForm
 
 # Create your views here.
 
@@ -404,10 +404,26 @@ def recetas(request):
 
 ############33##############################################################################################################3
 ########3 agregar recetas
+# views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import RecetaForm
+from .models import receta
 
-
-
-
+@login_required
+def agregar_receta(request):
+    if request.method == 'POST':
+        form = RecetaForm(request.POST, user=request.user)
+        if form.is_valid():
+            receta_instance = form.save(commit=False)
+            receta_instance.id_usuario = request.user
+            receta_instance.save()
+            form.save_m2m()  # Guardar la relación ManyToMany
+            return redirect('recetas')  # Cambia 'success_url' por la URL de éxito que quieras
+    else:
+        form = RecetaForm(user=request.user)
+    
+    return render(request, 'Programar/agregar_receta.html', {'form': form})
 
 
 ####################################################################################################3

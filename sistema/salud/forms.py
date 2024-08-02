@@ -167,26 +167,35 @@ class MedicamentoForm(forms.ModelForm):
         }
 
 ##############################################################################################################
+#agregar receta
 # forms.py
 
+from django import forms
+from .models import receta, medicamento, receta_medicamento, paciente
 
+class RecetaForm(forms.ModelForm):
+    class Meta:
+        model = receta
+        fields = ['id_paciente', 'fecha_Emision', 'fecha_Reposicion', 'lista_Medicamentos', 'medico', 'lugar']
+        widgets = {
+            'lista_Medicamentos': forms.CheckboxSelectMultiple
+        }
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=user)
+            self.fields['lista_Medicamentos'].queryset = medicamento.objects.filter(id_usuario=user)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    def clean(self):
+        cleaned_data = super().clean()
+        medicamentos = cleaned_data.get('lista_Medicamentos')
+        if medicamentos:
+            medicamento_ids = [med.id for med in medicamentos]
+            if len(medicamento_ids) != len(set(medicamento_ids)):
+                raise forms.ValidationError("No se pueden repetir medicamentos en una misma receta.")
+        return cleaned_data
 
 
 
