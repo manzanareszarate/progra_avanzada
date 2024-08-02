@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Información de las Citas</title>
+    <title>Citas</title>
     <style>
         table {
             width: 100%;
@@ -51,10 +51,6 @@
             margin: 20px auto; /* Centra el botón y añade espacio alrededor */
             width: 200px; /* Ajusta el ancho del botón */
             text-align: center; /* Centra el texto dentro del botón */
-            text-decoration: none;
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
         }
         h1 {
             text-align: center; /* Centra el título */
@@ -74,7 +70,7 @@
                     <th>Hora</th>
                     <th>Lugar</th>
                     <th>Especialidad</th>
-                    <th>Acciones</th>
+                    <th>Acciones</th> <!-- Nueva columna para los botones -->
                 </tr>
             </thead>
             <tbody>
@@ -86,23 +82,21 @@
                     <td>{{ cita.lugar }}</td>
                     <td>{{ cita.especialidad }}</td>
                     <td>
-                        <a href= "{% url 'editar_cita' cita.id_Cita %}"class="button edit-button">Editar</a>
+                        <a href="{% url 'editar_cita' cita.id_Cita %}" class="button edit-button">Editar</a>
                         <a href="{% url 'eliminar_cita' cita.id_Cita %}" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar</a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6">No hay Citas disponibles.</td>
+                    <td colspan="6">No hay citas disponibles.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <!-- Botón para agregar una nueva cita -->
         <a href="{% url 'agregar_cita' %}" class="button add-button">Agregar Nueva Cita</a>
-        
     </form>
 </body>
 </html>
-
-
 
 {% endblock %}

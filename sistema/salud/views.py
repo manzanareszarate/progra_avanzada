@@ -1,5 +1,5 @@
 from django.forms import inlineformset_factory
-from .models import receta, receta_medicamento
+from .models import receta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
@@ -33,8 +33,8 @@ from .forms import CitaEditarForm
 from .forms import LaboratorioAgregarForm
 from .forms import Laboratorioeditarform
 from .forms import MedicamentoForm
-from .forms import EditarMedicamentoForm
-from .forms import pacienteForm, RecetaForm, MedicamentoSelectionForm
+from .forms import EditarMedicamentoForm, pacienteForm
+
 
 # Create your views here.
 
@@ -403,7 +403,7 @@ def eliminar_medicamentos(request, id_Eliminarmedicamentos):
 
 
 
-
+##############################################################################################################3
 
 
 

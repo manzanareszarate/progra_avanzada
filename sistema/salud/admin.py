@@ -8,7 +8,7 @@ from .models import Control_Hipertensione
 from .models import Control_Glucosa
 from .models import Control_Peso
 from .models import alarmas
-from .models import receta_medicamento
+
 
 
 
@@ -80,10 +80,3 @@ class RecetaAdmin(admin.ModelAdmin):
 admin.site.register(receta, RecetaAdmin)
 
 
-
-class RecetaMedicamentoAdmin(admin.ModelAdmin):
-    list_display = ('receta', 'medicamento', 'cantidad', 'frecuencia', 'id_usuario')
-    search_fields = ('receta__id_Recetas', 'medicamento__nombre_Medicamento', 'cantidad', 'frecuencia')
-    list_filter = ('receta', 'medicamento')
-
-admin.site.register(receta_medicamento, RecetaMedicamentoAdmin)
