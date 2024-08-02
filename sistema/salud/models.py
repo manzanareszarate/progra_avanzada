@@ -101,6 +101,8 @@ class receta_medicamento(models.Model):
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     class Meta:
         unique_together = ('receta', 'medicamento')
+        def __str__(self):
+                return f"Receta: {self.receta.id_Receta} - Medicamento: {self.medicamento.nombre_Medicamento}"
 
 
 

@@ -33,7 +33,7 @@ from .forms import CitaEditarForm
 from .forms import LaboratorioAgregarForm
 from .forms import Laboratorioeditarform
 from .forms import MedicamentoForm
-from .forms import EditarMedicamentoForm
+from .forms import EditarMedicamentoForm,RecetaForm
 
 # Create your views here.
 
@@ -50,13 +50,14 @@ def soporte(request):
     
 
 
-
+##############################################################################################################3
+###### ver pacientes
 @login_required(login_url='/accounts/login/')
 def index(request):
     pacientes = paciente.objects.filter(id_usuario=request.user)
     return render(request, 'Programar/index.html', {'pacientes': pacientes})
 
-
+##############################################################################################################3
 #agrergar un paciente     
 login_required(login_url='/accounts/login/')
 def agregar(request):
@@ -73,7 +74,7 @@ def agregar(request):
     
     return render(request, 'Programar/agregar.html', {'form': form})
 
-
+##############################################################################################################3
 #vista para editar un paciente
 
 
@@ -98,7 +99,7 @@ def editar(request, paciente_id):
 
     return render(request, 'Programar/editar.html', {'form': form, 'paciente': paciente_instance})
 
-
+##############################################################################################################3
 #vista para eliminar un paciente
 
 @login_required(login_url='/accounts/login/')
@@ -122,7 +123,8 @@ def eliminar(request, paciente_id):
 
 
 
-
+##############################################################################################################3
+#ver citas
 @login_required(login_url='/accounts/login/')
 def citas(request):
     # Obtener todas las citas asociadas al usuario actual
@@ -135,10 +137,9 @@ def citas(request):
     return render(request, 'Programar/citas.html', context)
 
 
-#agregar una cita
-# views.py
-
+##############################################################################################################3
 #agregar cita
+
 @login_required(login_url='/accounts/login/')
 def agregar_cita(request):
     if request.method == 'POST':
@@ -154,8 +155,7 @@ def agregar_cita(request):
         form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)
     
     return render(request, 'Programar/agregar_cita.html', {'form': form})
-
-
+###########3##############################################################################################################3
 #modificar cita
 
 @login_required(login_url='/accounts/login/')
@@ -181,7 +181,7 @@ def editar_cita(request, cita_id):
 
     return render(request, 'Programar/editar_cita.html', {'form': form, 'cita': cita_instance})
 
-
+##############################################################################################################3
 #eliminar cita
 
 
@@ -214,6 +214,8 @@ def eliminar_cita(request, id_Eliminarcita):
 
 
 ############################################ver laboratorios ########################################################
+##############################################################################################################3
+#ver laboratorios
 
 
 @login_required(login_url='/accounts/login/')
@@ -400,20 +402,50 @@ def recetas(request):
     return render(request, 'Programar/recetas.html', {'recetas': recetas})
 
 
+############33##############################################################################################################3
+########3 agregar recetas
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import medicamento, paciente, receta, receta_medicamento
+from .forms import RecetaForm  # Ajusta según tu configuración de formularios
 
+@login_required
+def agregar_receta(request):
+    if request.method == 'POST':
+        receta_form = RecetaForm(request.POST)
+        
+        if receta_form.is_valid():
+            nueva_receta = receta_form.save(commit=False)
+            nueva_receta.id_usuario = request.user
+            paciente_seleccionado_id = request.POST.get('paciente')
+            nueva_receta.paciente = get_object_or_404(paciente, id=paciente_seleccionado_id)  # Asumiendo que el campo es 'id'
+            nueva_receta.save()
 
+            medicamentos_seleccionados = request.POST.getlist('medicamentos')
 
+            for medicamento_id in medicamentos_seleccionados:
+                medicamento_instance = get_object_or_404(medicamento, id=medicamento_id)
+                receta_medicamento.objects.create(
+                    receta=nueva_receta,
+                    medicamento=medicamento_instance,
+                    cantidad=request.POST.get(f'cantidad_{medicamento_id}'),
+                    frecuencia=request.POST.get(f'frecuencia_{medicamento_id}'),
+                    id_usuario=request.user
+                )
 
-
-
-
-
-
-
-
-
-
+            return redirect('recetas')
+    else:
+        receta_form = RecetaForm()
+        # Filtrar medicamentos y pacientes para el usuario actual
+        lista_medicamentos = medicamento.objects.filter(id_usuario=request.user)
+        lista_pacientes = paciente.objects.filter(id_usuario=request.user)
+    
+    return render(request, 'Programar/agregar_receta.html', {
+        'receta_form': receta_form,
+        'lista_medicamentos': lista_medicamentos,
+        'lista_pacientes': lista_pacientes
+    })
 
 
 
@@ -435,6 +467,7 @@ def recetas(request):
 
 
 ####################################################################################################3
+###login y registro
 def registro(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)
@@ -471,6 +504,3 @@ def logout_view(request):
 
 def alarmas (request):
     return render (request, 'Programar/alarmas.html')
-
-
-

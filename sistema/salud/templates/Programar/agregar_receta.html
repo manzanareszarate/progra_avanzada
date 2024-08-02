@@ -1,39 +1,51 @@
+<!-- templates/Programar/agregar_receta.html -->
+{% extends "base.html" %}
+
+{% block titulo %}Agregar Medicamentos{% endblock %}
+
+{% block contenido %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Detalle de la Receta</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Receta</title>
+    <script>
+        function addMedicationRow() {
+            const medicationsDiv = document.getElementById('medications');
+            const medicationCount = medicationsDiv.getElementsByClassName('medication-row').length;
+            const newRow = document.createElement('div');
+            newRow.className = 'medication-row';
+            newRow.innerHTML = `
+                <select name="medicamentos" required>
+                    {% for medicamento in medicamentos %}
+                        <option value="{{ medicamento.id_Medicamento }}">{{ medicamento.nombre_Medicamento }}</option>
+                    {% endfor %}
+                </select>
+                <input type="text" name="cantidad_${medicationCount}" placeholder="Cantidad" required>
+                <input type="text" name="frecuencia_${medicationCount}" placeholder="Frecuencia" required>
+            `;
+            medicationsDiv.appendChild(newRow);
+        }
+    </script>
 </head>
 <body>
-    <h1>Detalle de la Receta</h1>
-    <p>Fecha de Emisión: {{ receta.fecha_Emision }}</p>
-    <p>Fecha de Reposición: {{ receta.fecha_Reposicion }}</p>
-    <p>Medico: {{ receta.medico }}</p>
-    <p>Lugar: {{ receta.lugar }}</p>
-
-    <h2>Medicamentos en la Receta</h2>
-    <ul>
-        {% for detalle in receta.recetamedicamento_set.all %}
-            <li>
-                {{ detalle.medicamento.nombre_Medicamento }} - {{ detalle.cantidad }} - {{ detalle.frecuencia }}
-            </li>
-        {% empty %}
-            <li>No hay medicamentos en esta receta.</li>
-        {% endfor %}
-    </ul>
-
-    <h2>Agregar Medicamento</h2>
+    <h1>Agregar Receta</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Agregar</button>
-    </form>
+        {{ receta_form.as_p }}
 
-    <a href="{% url 'lista_recetas' %}">Volver a la lista de recetas</a>
+        <h2>Agregar Medicamentos</h2>
+        <div id="medications">
+            <!-- Aquí se agregarán las filas de medicamentos -->
+        </div>
+        <button type="button" onclick="addMedicationRow()">Agregar Medicamento</button>
+        
+        <button type="submit">Guardar Receta</button>
+    </form>
 </body>
 </html>
-
-
+{% endblock %}
 
 
 

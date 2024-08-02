@@ -156,10 +156,29 @@ class EditarMedicamentoForm(forms.ModelForm):
 
 
 
+class MedicamentoForm(forms.ModelForm):
+    class Meta:
+        model = medicamento
+        fields = ['nombre_Medicamento', 'dosis', 'presentacion']
+        widgets = {
+            'nombre_Medicamento': forms.TextInput(attrs={'placeholder': 'Nombre del medicamento'}),
+            'dosis': forms.TextInput(attrs={'placeholder': 'Dosis'}),
+            'presentacion': forms.TextInput(attrs={'placeholder': 'Presentación'}),
+        }
 
 
 
 
+
+class RecetaForm(forms.ModelForm):
+    class Meta:
+        model = receta
+        fields = ['id_paciente', 'fecha_Emision', 'fecha_Reposicion', 'medico', 'lugar']
+
+class RecetaMedicamentoForm(forms.ModelForm):
+    class Meta:
+        model = receta_medicamento
+        fields = ['medicamento', 'cantidad', 'frecuencia']
 
 
 
