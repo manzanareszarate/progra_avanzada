@@ -1,14 +1,88 @@
-<!-- agregar_receta.html -->
-{% extends 'base_generic.html' %}
 
-{% block content %}
-<h2>Agregar Receta</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar</button>
-</form>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Receta</title>
+    <style>
+        /* Agrega aquí tus estilos si es necesario */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        label {
+            margin-top: 10px;
+            display: block;
+        }
+        input[type="number"], input[type="text"] {
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+        #selected-medicamentos {
+            margin-top: 15px;
+            list-style-type: none;
+            padding: 0;
+        }
+        #selected-medicamentos li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Agregar Receta</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <label for="medicamentos">Selecciona Medicamentos:</label>
+        <select id="medicamentos" multiple>
+            {% for med in medicamentos %}
+                <option value="{{ med.id }}">{{ med.nombre_Medicamento }}</option>
+            {% endfor %}
+        </select>
+
+        <h3>Medicamentos Seleccionados:</h3>
+        <ul id="selected-medicamentos">
+            <!-- Los medicamentos seleccionados aparecerán aquí -->
+        </ul>
+
+        <input type="submit" value="Agregar Receta">
+    </form>
+
+    <script>
+        const selectMedicamentos = document.getElementById('medicamentos');
+        const selectedMedicamentosList = document.getElementById('selected-medicamentos');
+
+        selectMedicamentos.addEventListener('change', function() {
+            const selectedOptions = Array.from(selectMedicamentos.selectedOptions);
+            selectedOptions.forEach(option => {
+                const li = document.createElement('li');
+                li.textContent = option.text; // Muestra el nombre del medicamento
+
+                // Crear campos de entrada para cantidad y frecuencia
+                const cantidadInput = document.createElement('input');
+                cantidadInput.type = 'number';
+                cantidadInput.placeholder = 'Cantidad';
+                cantidadInput.name = 'cantidad_' + option.value; // Usar un nombre único
+
+                const frecuenciaInput = document.createElement('input');
+                frecuenciaInput.type = 'text';
+                frecuenciaInput.placeholder = 'Frecuencia';
+                frecuenciaInput.name = 'frecuencia_' + option.value; // Usar un nombre único
+
+                li.appendChild(cantidadInput);
+                li.appendChild(frecuenciaInput);
+                selectedMedicamentosList.appendChild(li);
+                option.remove(); // Quita el medicamento de la lista disponible
+            });
+        });
+    </script>
+</body>
+</html>
 
 
 

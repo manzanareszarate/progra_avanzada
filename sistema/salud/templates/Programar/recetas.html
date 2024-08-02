@@ -3,6 +3,7 @@
 {% block titulo %}Recetas{% endblock %}
 
 {% block contenido %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -79,7 +80,7 @@
         <tbody>
             {% for receta in recetas %}
             <tr>
-                <td>{{ receta.id_paciente }}</td>
+                <td>{{ receta.id_paciente.nombre }}</td> <!-- Muestra el nombre del paciente -->
                 <td>{{ receta.fecha_Emision }}</td>
                 <td>{{ receta.fecha_Reposicion }}</td>
                 <td>{{ receta.medico }}</td>
@@ -105,7 +106,7 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href=="{% url 'agregar_receta' %}"  class="button add-button">Agregar Nueva Receta</a>
+    <a href="{% url 'agregar_receta' %}" class="button add-button">Agregar Nueva Receta</a>
 </body>
 </html>
 
