@@ -406,41 +406,6 @@ def recetas(request):
 ########3 agregar recetas
 
 
-def agregar_receta(request):
-    if request.method == 'POST':
-        form = RecetaForm(request.POST, user=request.user)
-        if form.is_valid():
-            receta_instancia = form.save(commit=False)
-            receta_instancia.id_usuario = request.user
-            receta_instancia.save()  # Guardar la receta antes de acceder a su id
-            return redirect('Programar/asociar_medicamentos.html', receta_id=receta_instancia.id)
-    else:
-        form = RecetaForm(user=request.user)
-    return render(request, 'Programar/agregar_recetas.html', {'form': form})
-
-def asociar_medicamentos(request, receta_id):
-    receta_instancia = get_object_or_404(receta, id_Recetas=receta_id)
-    if request.method == 'POST':
-        form = RecetaMedicamentoForm(request.POST, receta=receta_instancia, user=request.user)
-        if form.is_valid():
-            receta_medicamento = form.save(commit=False)
-            receta_medicamento.receta = receta_instancia
-            receta_medicamento.save()
-            return redirect('detalle_receta', receta_id=receta_instancia.id_Recetas)
-    else:
-        form = RecetaMedicamentoForm(receta=receta_instancia, user=request.user)
-    return render(request, 'Programar/asociar_medicamentos.html', {'form': form, 'receta': receta_instancia})
-
-def detalles_receta(request, receta_id):
-    receta_instancia = get_object_or_404(receta, id_Recetas=receta_id)
-    return render(request, 'Programar/detalles_receta.html', {'receta': receta_instancia})
-
-
-
-###########################################################################################33
-#asociar medicamentos
-# views.py
-
 
 
 
