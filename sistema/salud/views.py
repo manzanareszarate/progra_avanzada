@@ -34,6 +34,7 @@ from .forms import LaboratorioAgregarForm
 from .forms import Laboratorioeditarform
 from .forms import MedicamentoForm
 from .forms import EditarMedicamentoForm
+from .forms import pacienteForm, RecetaForm, MedicamentoSelectionForm
 
 # Create your views here.
 
@@ -340,6 +341,8 @@ def agregar_medicamentos(request):
 
     return render(request, 'Programar/agregar_medicamentos.html', {'form': form})
 
+
+
 ##############################################################################################################3
 ########3 editar medicamentos
 
@@ -395,56 +398,17 @@ def eliminar_medicamentos(request, id_Eliminarmedicamentos):
 
 ##############################################################################################################3
 ########3 ver recetas
-@login_required(login_url='/accounts/login/')
-def recetas(request):
-    user = request.user
-    recetas = receta.objects.filter(id_usuario=user)
-    return render(request, 'Programar/recetas.html', {'recetas': recetas})
 
 
-############33##############################################################################################################3
-########3 agregar recetas
-from django.shortcuts import render, redirect
-from .forms import RecetaForm
-from .models import medicamento
 
-from django.shortcuts import render, redirect
-from .forms import RecetaForm
-from .models import receta_medicamento, medicamento
 
-def agregar_receta(request):
-    if request.method == "POST":
-        form = RecetaForm(request.POST, user=request.user)
 
-        if form.is_valid():
-            receta_instance = form.save(commit=False)
-            receta_instance.id_usuario = request.user
-            receta_instance.save()
 
-            selected_medicamentos = request.POST.getlist('medicamentos')
 
-            for med_id in selected_medicamentos:
-                medicamento_instance = medicamento.objects.get(id=med_id)
 
-                # Obtener cantidad y frecuencia desde el formulario
-                cantidad = request.POST.get('cantidad_' + med_id, '1')  # Valor predeterminado
-                frecuencia = request.POST.get('frecuencia_' + med_id, 'Una vez al día')  # Valor predeterminado
 
-                receta_medicamento.objects.create(
-                    receta=receta_instance,
-                    medicamento=medicamento_instance,
-                    cantidad=cantidad,
-                    frecuencia=frecuencia,
-                    id_usuario=request.user
-                )
 
-            return redirect('recetas')
-    else:
-        form = RecetaForm(user=request.user)
 
-    medicamentos = medicamento.objects.filter(id_usuario=request.user)
-
-    return render(request, 'Programar/agregar_receta.html', {'form': form, 'medicamentos': medicamentos})
 
 
 

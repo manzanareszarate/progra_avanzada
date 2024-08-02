@@ -167,38 +167,6 @@ class MedicamentoForm(forms.ModelForm):
         }
 
 ##############################################################################################################
-#agregar receta
-# forms.py
-
-# forms.py
-from django import forms
-from .models import receta, medicamento, paciente
-
-class RecetaForm(forms.ModelForm):
-    class Meta:
-        model = receta
-        fields = ['id_paciente', 'fecha_Emision', 'fecha_Reposicion', 'medico', 'lugar']
-        widgets = {
-            'id_paciente': forms.Select(attrs={'class': 'form-control'}),
-            'fecha_Emision': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'fecha_Reposicion': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'medico': forms.TextInput(attrs={'class': 'form-control'}),
-            'lugar': forms.TextInput(attrs={'class': 'form-control'}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)
-        if user:
-            self.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=user)
-
-
-
-
-
-
-
-
 
 
 
