@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block titulo %}Detalles de la Receta{% endblock %}
+
+{% block contenido %}
+<form method="POST">
+    {% csrf_token %}
+    <div>
+        <label for="id_paciente">Paciente:</label>
+        <select name="id_paciente" required>
+            {% for paciente in form.id_paciente.field.queryset %}
+                <option value="{{ paciente.id }}" {% if paciente.id == receta.id_paciente.id %}selected{% endif %}>{{ paciente.nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label for="fecha_emision">Fecha de Emisión:</label>
+        <input type="date" name="fecha_emision" value="{{ receta.fecha_emision }}" required>
+    </div>
+    <div>
+        <label for="fecha_reposicion">Fecha de Reposición:</label>
+        <input type="date" name="fecha_reposicion" value="{{ receta.fecha_reposicion }}" required>
+    </div>
+    <div>
+        <label for="medico">Médico:</label>
+        <input type="text" name="medico" value="{{ receta.medico }}" required>
+    </div>
+    <div>
+        <label for="lugar">Lugar:</label>
+        <input type="text" name="lugar" value="{{ receta.lugar }}" required>
+    </div>
+    <div>
+        <label for="lista_medicamentos">Medicamentos:</label>
+        {% for medicamento in form.lista_medicamentos %}
+            <div>
+                <input type="checkbox" name="lista_medicamentos" value="{{ medicamento.value }}" {% if medicamento.value in receta.lista_medicamentos.all|map:"id" %}checked{% endif %}> {{ medicamento.choice_label }}
+            </div>
+        {% endfor %}
+    </div>
+    <button type="submit">Actualizar Receta</button>
+</form>
+{% endblock %}

@@ -24,7 +24,7 @@
             border-bottom: 1px solid #ddd; /* Borde inferior de las filas (opcional) */
         }
         .button {
-            padding: 8px 12px;
+            padding: 10px 20px; /* Aumenta el espacio interno del botón */
             margin: 5px; /* Espacio entre los botones */
             border: none;
             border-radius: 4px;
@@ -32,7 +32,6 @@
             text-decoration: none;
             font-weight: bold;
             display: inline-block; /* Asegura que el margen se aplique correctamente */
-            width: 120px; /* Ancho fijo para todos los botones */
             text-align: center; /* Centra el texto dentro del botón */
             box-sizing: border-box; /* Incluye padding y border en el ancho total */
         }
@@ -40,6 +39,15 @@
             background-color: #008CBA; /* Azul */
         }
         .view-button:hover {
+            opacity: 0.8;
+        }
+        .add-button {
+            background-color: #4CAF50; /* Verde */
+            width: 150px; /* Ancho fijo para el botón */
+            display: inline-block; /* Mantiene el botón en línea */
+            margin: 20px auto; /* Centra el botón */
+        }
+        .add-button:hover {
             opacity: 0.8;
         }
         h1 {
@@ -53,7 +61,6 @@
     <table>
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Paciente</th>
                 <th>Fecha de Emisión</th>
                 <th>Fecha de Reposición</th>
@@ -65,24 +72,25 @@
         <tbody>
             {% for receta in recetas %}
             <tr>
-                <td>{{ receta.id_Recetas }}</td>
-                <td>{{ receta.id_paciente.nombre_paciente }}</td>
-                <td>{{ receta.fecha_Emision }}</td>
-                <td>{{ receta.fecha_Reposicion }}</td>
+                <td>{{ receta.id_paciente.nombre }}</td>
+                <td>{{ receta.fecha_emision }}</td>
+                <td>{{ receta.fecha_reposicion }}</td>
                 <td>{{ receta.medico }}</td>
                 <td>{{ receta.lugar }}</td>
                 <td>
-                    <a href="" class="button view-button">Ver Detalles</a>
+                    <a href="{%url detalles_receta%""}" class="button view-button">Ver Detalles</a>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="7">No hay recetas disponibles.</td>
+                <td colspan="6">No hay recetas disponibles.</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'agregar_receta' %}" class="button add-button">Agregar Nueva Receta</a>
+    <div style="text-align: center;"> <!-- Añadido para centrar el botón -->
+        <a href="{% url 'agregar_receta' %}" class="button add-button">Agregar Nueva Receta</a>
+    </div>
 </body>
 </html>
 {% endblock %}

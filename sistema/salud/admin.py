@@ -66,7 +66,7 @@ admin.site.register(medicamento, medicamentoAdmin)
 
 
 class RecetaAdmin(admin.ModelAdmin):
-    list_display = ('paciente_nombre_apellido', 'fecha_Emision', 'id_usuario', 'lista_medicamentos')
+    list_display = ('paciente_nombre_apellido', 'fecha_Emision', 'fecha_Reposicion' , 'medico','lugar', 'lista_medicamentos')
 
     def paciente_nombre_apellido(self, obj):
         # Devuelve el nombre completo del paciente

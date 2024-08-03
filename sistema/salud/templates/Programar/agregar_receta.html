@@ -1,36 +1,38 @@
+
 {% extends "base.html" %}
 
 {% block titulo %}Agregar Recetas{% endblock %}
 
 {% block contenido %}
+<!DOCTYPE html>
 
-<h1>Agregar Receta</h1>
+<h1 style="text-align: center; margin-bottom: 20px;">Agregar Receta</h1>
 
-<form method="post">
+<form method="post" style="max-width: 600px; margin: auto;">
     {% csrf_token %}
     
     <!-- Formulario de Receta -->
-    <fieldset>
-        <legend>Información de la Receta</legend>
+    <fieldset style="border: 1px solid #ccc; padding: 20px; border-radius: 5px;">
+        <legend style="font-weight: bold; font-size: 1.2em;">Información de la Receta</legend>
         {{ receta_form.as_p }}
     </fieldset>
 
     <!-- Formulario de Medicamentos -->
-    <fieldset>
-        <legend>Medicamentos</legend>
+    <fieldset style="border: 1px solid #ccc; padding: 20px; border-radius: 5px; margin-top: 20px;">
+        <legend style="font-weight: bold; font-size: 1.2em;">Medicamentos</legend>
         {{ medicamento_forms.management_form }}
         <div id="medicamentos">
             {% for form in medicamento_forms %}
-                <div class="medicamento-form">
+                <div class="medicamento-form" style="margin-bottom: 10px;">
                     {{ form.as_p }}
-                    <button type="button" class="remove-form">Eliminar</button>
+                    <button type="button" class="remove-form" style="background-color: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">Eliminar</button>
                 </div>
             {% endfor %}
         </div>
-        <button type="button" id="add-form">Agregar otro medicamento</button>
+        <button type="button" id="add-form" style="background-color: #4CAF50; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">Agregar otro medicamento</button>
     </fieldset>
 
-    <button type="submit">Guardar Receta</button>
+    <button type="submit" style="background-color: #008CBA; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-top: 20px;">Guardar Receta</button>
 </form>
 
 <!-- JavaScript para manejo dinámico de formularios -->
@@ -58,7 +60,10 @@
         });
     });
 </script>
+
 {% endblock %}
+
+
 
 
 

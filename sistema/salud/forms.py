@@ -166,7 +166,7 @@ from django import forms
 from .models import receta, RecetaMedicamento, medicamento, paciente
 
 from django import forms
-from .models import Receta, Medicamento, Paciente
+
 
 class RecetaForm(forms.ModelForm):
     lista_medicamentos = forms.ModelMultipleChoiceField(
@@ -176,8 +176,8 @@ class RecetaForm(forms.ModelForm):
     )
 
     class Meta:
-        model = Receta
-        fields = ['id_paciente', 'fecha_emision', 'fecha_reposicion', 'lista_medicamentos', 'medico', 'lugar']
+        model = receta
+        fields = ['id_paciente', 'fecha_Emision', 'fecha_Reposicion', 'medico', 'lugar']
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)

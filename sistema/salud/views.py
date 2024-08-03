@@ -415,35 +415,75 @@ from django.contrib.auth.decorators import login_required
 from .models import  medicamento, paciente
 from .forms import RecetaForm, RecetaMedicamentoForm
 
-@login_required
 def agregar_receta(request):
     if request.method == 'POST':
-        receta_form = RecetaForm(request.POST, usuario=request.user)
-        RecetaMedicamentoFormSet = formset_factory(RecetaMedicamentoForm, extra=1)
-        medicamento_forms = RecetaMedicamentoFormSet(request.POST, form_kwargs={'usuario': request.user})
-        
-        if receta_form.is_valid() and all(form.is_valid() for form in medicamento_forms):
-            receta_instance = receta_form.save(commit=False)
-            receta_instance.id_usuario = request.user
-            receta_instance.save()
-            
-            for form in medicamento_forms:
-                medicamento_instance = form.save(commit=False)
-                medicamento_instance.receta = receta_instance
-                medicamento_instance.usuario = request.user
-                medicamento_instance.save()
-            
-            return redirect('receta_list')
+        # Inicializa el formulario RecetaForm con los datos POST y el usuario actual
+        receta_form = RecetaForm(request.POST, user=request.user)
+
+        # Comprueba si el formulario es válido
+        if receta_form.is_valid():
+            # Guarda la receta sin confirmarla aún
+            receta = receta_form.save(commit=False)
+            receta.id_usuario = request.user  # Asigna el usuario que está creando la receta
+            receta.save()  # Guarda la receta
+
+            # Maneja la parte de los medicamentos
+            total_forms = int(request.POST.get('medicamento_forms-TOTAL_FORMS', 0))
+            for i in range(total_forms):
+                # Obtén los datos de cada medicamento
+                medicamento_id = request.POST.get(f'medicamento_forms-{i}-medicamento')
+                cantidad = request.POST.get(f'medicamento_forms-{i}-cantidad')
+
+                if medicamento_id and cantidad:
+                    # Crea la relación entre la receta y el medicamento
+                    RecetaMedicamento.objects.create(
+                        receta=receta,
+                        medicamento_id=medicamento_id,
+                        cantidad=cantidad
+                    )
+
+            return redirect('recetas')  # Redirige a la vista de recetaas después de guardar
 
     else:
-        receta_form = RecetaForm(usuario=request.user)
-        RecetaMedicamentoFormSet = formset_factory(RecetaMedicamentoForm, extra=1)
-        medicamento_forms = RecetaMedicamentoFormSet(form_kwargs={'usuario': request.user})
+        # Si es un GET, crea una instancia vacía del formulario
+        receta_form = RecetaForm(user=request.user)
+
+    # Inicializa un formset para los medicamentos (puedes ajustar el número inicial si es necesario)
+    medicamento_forms = [MedicamentoForm(prefix='medicamento_forms') for _ in range(1)]  # Inicia con un formulario
 
     return render(request, 'Programar/agregar_receta.html', {
         'receta_form': receta_form,
-        'medicamento_forms': medicamento_forms
+        'medicamento_forms': medicamento_forms,
     })
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import receta, RecetaMedicamento
+from .forms import RecetaForm
+
+def detalles_receta(request, receta_id):
+    receta_instance = get_object_or_404(receta, id_Recetas=receta_id)
+
+    if request.method == 'POST':
+        form = RecetaForm(request.POST, instance=receta_instance)
+        if form.is_valid():
+            receta_instance = form.save(commit=False)  # Guarda sin guardar las relaciones
+            receta_instance.id_usuario = request.user  # Asegúrate de asignar el usuario logueado
+            receta_instance.save()
+            
+            # Eliminar medicaciones existentes
+            RecetaMedicamento.objects.filter(receta=receta_instance).delete()
+            
+            # Guardar medicamentos seleccionados
+            for medicamento in form.cleaned_data['medicamentos']:
+                RecetaMedicamento.objects.create(receta=receta_instance, medicamento=medicamento)
+
+            return redirect('receta', receta_id=receta_instance.id_Recetas)
+    else:
+        form = RecetaForm(instance=receta_instance)
+
+    return render(request, 'Programar/detalles_receta.html', {'receta': receta_instance, 'form': form})
+
+
 
 
 

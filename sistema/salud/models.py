@@ -63,37 +63,34 @@ def __str__(self):
 
 ########################################################################################
 
+from django.db import models
+from django.contrib.auth.models import User
+
 class medicamento(models.Model):
-    id_Medicamento = models.AutoField(primary_key=True , verbose_name='ID_Medicamento')
+    id_Medicamento = models.AutoField(primary_key=True, verbose_name='ID_Medicamento')
     nombre_Medicamento = models.CharField(max_length=50, verbose_name='Nombre')
     dosis = models.CharField(max_length=50, verbose_name='Dosis')
     presentacion = models.CharField(max_length=50, verbose_name='Presentacion')
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
-def __str__(self):
+    def __str__(self):
         return f"{self.nombre_Medicamento} {self.dosis} {self.presentacion}"
 
-    ###########################################################################################
+class receta(models.Model):
+    id_Recetas = models.AutoField(primary_key=True, verbose_name='ID_Recetas')
+    id_paciente = models.ForeignKey('paciente', on_delete=models.CASCADE)  # Asegúrate de que 'paciente' exista
+    fecha_Emision = models.DateField(null=False, verbose_name='Fecha_Emision')
+    fecha_Reposicion = models.DateField(null=False, verbose_name='Fecha_Reposicion')
+    medico = models.CharField(max_length=50, verbose_name='Medico')
+    lugar = models.CharField(max_length=200, verbose_name='Lugar')
+    medicamentos = models.ManyToManyField(medicamento, through='RecetaMedicamento')
+    id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
-class receta (models.Model):
-        id_Recetas = models.AutoField(primary_key=True , verbose_name='ID_Recetas')
-        id_paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
-        fecha_Emision = models.DateField(null=False, verbose_name='Fecha_Emision')
-        fecha_Reposicion = models.DateField(null=False, verbose_name='Fecha_Reposicion')
-        medico = models.CharField(max_length=50, verbose_name='Medico')
-        lugar = models.CharField(max_length=200, verbose_name='Lugar')
-        medicamentos = models.ManyToManyField(medicamento, through='RecetaMedicamento')
-        id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-
-def __str__(self):
+    def __str__(self):
         return f"{self.fecha_Emision} {self.fecha_Reposicion} {self.medico} {self.lugar}"
 
-###########################################################################################
-
-
-
 class RecetaMedicamento(models.Model):
-    id_receta_medicamento = models.AutoField(primary_key=True , verbose_name='ID_Receta_Medicamento')
+    id_receta_medicamento = models.AutoField(primary_key=True, verbose_name='ID_Receta_Medicamento')
     receta = models.ForeignKey(receta, on_delete=models.CASCADE)
     medicamento = models.ForeignKey(medicamento, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(verbose_name='Cantidad')
@@ -101,10 +98,11 @@ class RecetaMedicamento(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Usuario')
 
     class Meta:
-        unique_together = ('receta', 'medicamento')  # Opcional: asegura que una combinación de receta y medicamento sea única
+        unique_together = ('receta', 'medicamento')  # Asegura que la combinación sea única
 
-def __str__(self):
-        return f"{self.fecha_Emision} {self.fecha_Reposicion} {self.medico} {self.lugar}"
+    def __str__(self):
+        return f"{self.medicamento.nombre_Medicamento} - Cantidad: {self.cantidad} - Frecuencia: {self.frecuencia}"
+
 
 
 ###########################################################################################
