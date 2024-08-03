@@ -162,25 +162,40 @@ class MedicamentoForm(forms.ModelForm):
 ##############################################################################################################
 
 from django import forms
-from .models import  RecetaMedicamento, medicamento
+from .models import receta, medicamento, RecetaMedicamento
 
 class RecetaForm(forms.ModelForm):
     class Meta:
         model = receta
         fields = ['id_paciente', 'fecha_Emision', 'fecha_Reposicion', 'medico', 'lugar']
 
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Solo permitir seleccionar pacientes asociados al usuario
+        self.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=user)
+
 class RecetaMedicamentoForm(forms.ModelForm):
     class Meta:
         model = RecetaMedicamento
         fields = ['medicamento', 'cantidad', 'frecuencia']
 
-class MedicamentoFormSet(forms.BaseFormSet):
-    def _init_(self, *args, **kwargs):
-        super()._init_(*args, **kwargs)
-        for form in self.forms:
-            form.fields['medicamento'].queryset = medicamento.objects.filter(id_usuario=self.request.user)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Solo permitir seleccionar medicamentos existentes
+        self.fields['medicamento'].queryset = medicamento.objects.all()
+        
+        # Asegúrate de que el modelo esté importado correctamente
+
+from django import forms
+from .models import medicamento
+
+class MedicamentoForm(forms.ModelForm):
+    class Meta:
+        model = medicamento
+        fields = ['nombre_Medicamento', 'dosis', 'presentacion']
 
 
+    
 
 
 

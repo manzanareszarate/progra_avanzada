@@ -13,16 +13,19 @@ from .models import RecetaMedicamento
 
 
 
+
 # Register your models here.
 
 
 
-
+admin.site.register(medicamento)
+admin.site.register(receta)
+admin.site.register(RecetaMedicamento)
 admin.site.register(Control_Hipertensione)
 admin.site.register(Control_Glucosa)
 admin.site.register(Control_Peso)
 admin.site.register(alarmas)
-admin.site.register(RecetaMedicamento)
+
 
 
 
@@ -56,28 +59,23 @@ class laboratorioAdmin(admin.ModelAdmin):
         return f'{obj.id_paciente.nombre} {obj.id_paciente.apellido}'
     paciente_nombre_apellido.short_description = 'Paciente'
 
-admin.site.register(laboratorio, laboratorioAdmin)
 
+from django.contrib import admin
+from .models import medicamento, receta, RecetaMedicamento
 
-class medicamentoAdmin(admin.ModelAdmin):
-    list_display = ('nombre_Medicamento', 'dosis', 'presentacion', 'id_usuario')
-
-admin.site.register(medicamento, medicamentoAdmin)
-
+class MedicamentoAdmin(admin.ModelAdmin):
+    list_display = ('id_Medicamento', 'nombre_Medicamento', 'dosis', 'presentacion', 'id_usuario')
+    search_fields = ('nombre_Medicamento', 'dosis')
+    list_filter = ('id_usuario',)
 
 class RecetaAdmin(admin.ModelAdmin):
-    list_display = ('paciente_nombre_apellido', 'fecha_Emision', 'fecha_Reposicion' , 'medico','lugar', 'lista_medicamentos')
+    list_display = ('id_Recetas', 'id_paciente', 'fecha_Emision', 'fecha_Reposicion', 'medico', 'lugar', 'id_usuario')
+    search_fields = ('medico', 'lugar', 'id_paciente__nombre')  # Asegúrate de que 'nombre' es un campo en tu modelo 'paciente'
+    list_filter = ('fecha_Emision', 'fecha_Reposicion', 'id_usuario')
 
-    def paciente_nombre_apellido(self, obj):
-        # Devuelve el nombre completo del paciente
-        return f'{obj.id_paciente.nombre} {obj.id_paciente.apellido}'
-    paciente_nombre_apellido.short_description = 'Paciente'
-
-    def lista_medicamentos(self, obj):
-        # Devuelve una lista de medicamentos asociados, separados por comas
-        return ', '.join([medicamento.nombre_Medicamento for medicamento in obj.lista_Medicamentos.all()])
-    lista_medicamentos.short_description = 'Medicamentos'
-
-admin.site.register(receta, RecetaAdmin)
+class RecetaMedicamentoAdmin(admin.ModelAdmin):
+    list_display = ('id_receta_medicamento', 'receta', 'medicamento', 'cantidad', 'frecuencia', 'usuario')
+    search_fields = ('receta__medico', 'medicamento__nombre_Medicamento')
+    list_filter = ('usuario',)
 
 

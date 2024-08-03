@@ -3,6 +3,7 @@
 {% block titulo %}Recetas{% endblock %}
 
 {% block contenido %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -73,12 +74,12 @@
             {% for receta in recetas %}
             <tr>
                 <td>{{ receta.id_paciente.nombre }}</td>
-                <td>{{ receta.fecha_emision }}</td>
-                <td>{{ receta.fecha_reposicion }}</td>
+                <td>{{ receta.fecha_Emision }}</td>
+                <td>{{ receta.fecha_Reposicion }}</td>
                 <td>{{ receta.medico }}</td>
                 <td>{{ receta.lugar }}</td>
                 <td>
-                    <a href="" class="button view-button">Ver Detalles</a>
+                    <a href="{% url 'detalle_receta' receta.id_Recetas %}" class="button view-button">Ver Detalles</a>
                 </td>
             </tr>
             {% empty %}
@@ -94,3 +95,4 @@
 </body>
 </html>
 {% endblock %}
+

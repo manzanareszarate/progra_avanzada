@@ -33,7 +33,7 @@ from .forms import CitaEditarForm
 from .forms import LaboratorioAgregarForm
 from .forms import Laboratorioeditarform
 from .forms import MedicamentoForm
-from .forms import EditarMedicamentoForm, pacienteForm
+from .forms import EditarMedicamentoForm, pacienteForm,RecetaMedicamento
 
 
 # Create your views here.
@@ -409,57 +409,64 @@ def recetas(request):
 
 
 ##############################################################################################################3
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.forms import formset_factory
-from .models import  RecetaMedicamento, medicamento
-from .forms import RecetaForm, RecetaMedicamentoForm
-
 @login_required
 def agregar_receta(request):
     if request.method == 'POST':
-        receta_form = RecetaForm(request.POST)
-        MedicamentoFormSet = formset_factory(RecetaMedicamentoForm, extra=1, can_delete=True)
-        medicamento_formset = MedicamentoFormSet(request.POST)
+        id_paciente = request.POST.get('id_paciente')
+        fecha_emision = request.POST.get('fecha_Emision')
+        fecha_reposicion = request.POST.get('fecha_Reposicion')
+        lugar = request.POST.get('lugar')
+        medico = request.POST.get('medico')
+        medicamentos_ids = request.POST.get('medicamentos_ids').split(',')
         
-        if receta_form.is_valid() and medicamento_formset.is_valid():
-            receta = receta_form.save(commit=False)
-            receta.id_usuario = request.user
-            receta.save()
-            
-            medicamento_ids = set()
-            for form in medicamento_formset:
-                medicamento = form.cleaned_data.get('medicamento')
-                cantidad = form.cleaned_data.get('cantidad')
-                frecuencia = form.cleaned_data.get('frecuencia')
-                
-                if medicamento and medicamento.id not in medicamento_ids:
-                    RecetaMedicamento.objects.create(
-                        receta=receta,
-                        medicamento=medicamento,
-                        cantidad=cantidad,
-                        frecuencia=frecuencia,
-                        usuario=request.user
-                    )
-                    medicamento_ids.add(medicamento.id)
-            
-            return redirect('Programar/recetas.html')  # Redirigir a la lista de recetas
-    else:
-        receta_form = RecetaForm()
-        MedicamentoFormSet = formset_factory(RecetaMedicamentoForm, extra=1, can_delete=True)
-        medicamento_formset = MedicamentoFormSet()
-    
-    context = {
-        'receta_form': receta_form,
-        'medicamento_formset': medicamento_formset,
-    }
-    return render(request, 'Programar/agregar_recetas.html', context)
+        # Validación básica
+        if not id_paciente or not fecha_emision or not fecha_reposicion or not lugar or not medico:
+            messages.error(request, 'Por favor, complete todos los campos requeridos.')
+            return redirect('agregar_receta')  # Redirige a la misma página
+
+        # Crear una nueva receta
+        receta_nueva = receta(
+            id_paciente_id=id_paciente,
+            fecha_Emision=fecha_emision,
+            fecha_Reposicion=fecha_reposicion,
+            medico=medico,  # Guardamos el nombre del médico ingresado
+            lugar=lugar,
+            id_usuario=request.user
+        )
+        receta_nueva.save()
+
+        # Agregar medicamentos a la receta
+        for medicamento_id in medicamentos_ids:
+            if medicamento_id:  # Asegúrate de que el ID no esté vacío
+                medicamento_obj = medicamento.objects.get(id_Medicamento=medicamento_id)
+                cantidad = request.POST.get('cantidad', None)
+                frecuencia = request.POST.get('frecuencia', None)
+
+                # Solo agrega los campos si no están vacíos
+                RecetaMedicamento.objects.create(
+                    receta=receta_nueva,
+                    medicamento=medicamento_obj,
+                    cantidad=cantidad if cantidad else None,
+                    frecuencia=frecuencia if frecuencia else None,
+                    usuario=request.user
+                )
+
+        messages.success(request, 'Receta agregada exitosamente.')
+        return redirect('recetas')  # Redirige a la lista de recetas
+
+    # Filtra pacientes por el usuario actual
+    pacientes = paciente.objects.filter(id_usuario=request.user)  # Filtra solo los pacientes del usuario
+    medicamentos = medicamento.objects.all()
+    return render(request, 'Programar/agregar_receta.html', {'pacientes': pacientes, 'medicamentos': medicamentos})
 
 
 
+from django.shortcuts import render, get_object_or_404
+from .models import receta  # Asegúrate de importar el modelo correcto
 
-
-
+def detalle_receta(request, receta_id):
+    receta = get_object_or_404(receta, id_Receta=receta_id)
+    return render(request, 'Programacion/detalles_receta.html', {'receta': receta})
 
 
 

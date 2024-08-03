@@ -1,42 +1,78 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de la Receta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        h2 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .medicamento-item {
+            margin-top: 10px;
+        }
+        .btn {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Detalles de la Receta</h2>
+        
+        <label>Paciente:</label>
+        <p>{{ receta.paciente.nombre }}</p>
 
-{% block titulo %}Detalles de la Receta{% endblock %}
+        <label>Fecha de Emisión:</label>
+        <p>{{ receta.fecha_Emision }}</p>
 
-{% block contenido %}
-<form method="POST">
-    {% csrf_token %}
-    <div>
-        <label for="id_paciente">Paciente:</label>
-        <select name="id_paciente" required>
-            {% for paciente in form.id_paciente.field.queryset %}
-                <option value="{{ paciente.id }}" {% if paciente.id == receta.id_paciente.id %}selected{% endif %}>{{ paciente.nombre }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div>
-        <label for="fecha_emision">Fecha de Emisión:</label>
-        <input type="date" name="fecha_emision" value="{{ receta.fecha_emision }}" required>
-    </div>
-    <div>
-        <label for="fecha_reposicion">Fecha de Reposición:</label>
-        <input type="date" name="fecha_reposicion" value="{{ receta.fecha_reposicion }}" required>
-    </div>
-    <div>
-        <label for="medico">Médico:</label>
-        <input type="text" name="medico" value="{{ receta.medico }}" required>
-    </div>
-    <div>
-        <label for="lugar">Lugar:</label>
-        <input type="text" name="lugar" value="{{ receta.lugar }}" required>
-    </div>
-    <div>
-        <label for="lista_medicamentos">Medicamentos:</label>
-        {% for medicamento in form.lista_medicamentos %}
-            <div>
-                <input type="checkbox" name="lista_medicamentos" value="{{ medicamento.value }}" {% if medicamento.value in receta.lista_medicamentos.all|map:"id" %}checked{% endif %}> {{ medicamento.choice_label }}
+        <label>Fecha de Reposición:</label>
+        <p>{{ receta.fecha_Reposicion }}</p>
+
+        <h3>Medicamentos</h3>
+        {% for medicamento in receta.medicamentos.all %}
+            <div class="medicamento-item">
+                <strong>{{ medicamento.nombre }}</strong><br>
+                Cantidad: {{ medicamento.receta_medicamento.cantidad }}<br>
+                Frecuencia: {{ medicamento.receta_medicamento.frecuencia }}
             </div>
         {% endfor %}
+        
+        <button class="btn" onclick="window.history.back();">Volver</button>
     </div>
-    <button type="submit">Actualizar Receta</button>
-</form>
-{% endblock %}
+</body>
+</html>
+

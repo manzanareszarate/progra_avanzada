@@ -1,51 +1,259 @@
-
-{% extends "base.html" %}
-
-{% block titulo %}Agregar Recetas{% endblock %}
-
-{% block contenido %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Crear Receta</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Receta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+        form {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        h2, h3 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        select, input[type="text"], input[type="date"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .medicamento-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .medicamentos-list {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 5px;
+            background-color: #f8f8f8;
+        }
+        .medicamento-item {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .medicamento-item:hover {
+            background-color: #e2e2e2;
+        }
+        .selected-medicamentos {
+            margin-top: 20px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .highlight {
+            background-color: #e2e2e2;
+        }
+    </style>
 </head>
 <body>
-    <h1>Crear Receta</h1>
-    <form method="post">
+    <form method="post" action="{% url 'agregar_receta' %}" id="formReceta">
         {% csrf_token %}
-        {{ receta_form.as_p }}
+        <h2>Agregar Receta</h2>
+
+        <h3>Información de la Receta</h3>
         
-        <h2>Medicamentos</h2>
-        {{ medicamento_formset.management_form }}
-        {% for form in medicamento_formset %}
-            <div class="formset-row">
-                {{ form.as_p }}
-                <a href="#" class="remove-form">Eliminar</a>
-            </div>
-        {% endfor %}
+        <label for="paciente">Paciente:</label>
+        <select name="id_paciente" id="paciente" required>
+            {% for paciente in pacientes %}
+                <option value="{{ paciente.id }}">{{ paciente.nombre }}</option>
+            {% endfor %}
+        </select>
         
+        <label for="fecha_emision">Fecha de Emisión:</label>
+        <input type="date" name="fecha_Emision" id="fecha_emision" required>
+        
+        <label for="fecha_reposicion">Fecha de Reposición:</label>
+        <input type="date" name="fecha_Reposicion" id="fecha_reposicion" required>
+
+        <label for="lugar">Lugar:</label>
+        <input type="text" name="lugar" id="lugar" placeholder="Ingrese el lugar" required>
+
+        <label for="medico">Médico:</label>
+        <input type="text" name="medico" id="medico" placeholder="Ingrese el nombre del médico" required>
+        
+        <label for="medicamento">Medicamento:</label>
+        <div class="medicamentos-list" id="medicamentos-list">
+            {% for medicamento in medicamentos %}
+                <div class="medicamento-item" data-id="{{ medicamento.id }}">{{ medicamento.nombre_Medicamento }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="medicamento-section" id="medicamento-controls" style="display: none;">
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" name="cantidad" id="cantidad" min="1" value="1" required>
+        </div>
+
+        <div class="medicamento-section" id="frecuencia-controls" style="display: none;">
+            <label for="frecuencia">Frecuencia:</label>
+            <input type="text" name="frecuencia" id="frecuencia" placeholder="Ejemplo: 1 vez al día" required>
+        </div>
+
+        <button type="button" id="agregar-medicamento">Agregar Medicamento</button>
+
+        <h3>Medicamentos Seleccionados</h3>
+        <div class="selected-medicamentos" id="selected-medicamentos">
+            <!-- Aquí se agregarán los medicamentos seleccionados -->
+        </div>
+
+        <!-- Campo oculto para los IDs de medicamentos -->
+        <input type="hidden" name="medicamentos_ids" id="medicamentos_ids">
+
         <button type="submit">Guardar Receta</button>
     </form>
-    
+
     <script>
-        document.querySelectorAll('.remove-form').forEach(button => {
-            button.addEventListener('click', function(event) {
-                event.preventDefault();
-                const formRow = button.closest('.formset-row');
-                formRow.remove();
+        const selectedMedicamentosDiv = document.getElementById('selected-medicamentos');
+        const cantidadInput = document.getElementById('cantidad');
+        const frecuenciaInput = document.getElementById('frecuencia');
+        const medicamentoControls = document.getElementById('medicamento-controls');
+        const frecuenciaControls = document.getElementById('frecuencia-controls');
+        let medicamentoSeleccionado = null;
+        let medicamentosSeleccionados = [];
+
+        // Ocultar los campos de cantidad y frecuencia al inicio
+        cantidadInput.value = 1; // Valor inicial de cantidad
+
+        // Agregar evento a cada medicamento en la lista
+        document.querySelectorAll('.medicamento-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Resaltar el medicamento seleccionado
+                if (medicamentoSeleccionado) {
+                    medicamentoSeleccionado.classList.remove('highlight');
+                }
+                medicamentoSeleccionado = this;
+                medicamentoSeleccionado.classList.add('highlight');
+
+                // Mostrar los campos de cantidad y frecuencia
+                medicamentoControls.style.display = 'block'; // Mostrar controles de cantidad
+                frecuenciaControls.style.display = 'block'; // Mostrar controles de frecuencia
             });
         });
+
+        // Función para agregar el medicamento a la lista seleccionada
+        document.getElementById('agregar-medicamento').addEventListener('click', function() {
+            if (!medicamentoSeleccionado) {
+                alert("Por favor, selecciona un medicamento.");
+                return;
+            }
+
+            const medicamentoId = medicamentoSeleccionado.getAttribute('data-id');
+            const medicamentoNombre = medicamentoSeleccionado.textContent;
+
+            // Verificar si el medicamento ya está en la lista de seleccionados
+            if (medicamentosSeleccionados.includes(medicamentoId)) {
+                alert("Este medicamento ya ha sido agregado.");
+                return;
+            }
+
+            // Agregar el medicamento a la lista de seleccionados
+            medicamentosSeleccionados.push(medicamentoId);
+
+            // Crear un nuevo div para el medicamento seleccionado
+            const nuevoMedicamento = document.createElement('div');
+            nuevoMedicamento.classList.add('medicamento-item');
+            nuevoMedicamento.setAttribute('data-id', medicamentoId);
+            nuevoMedicamento.innerHTML = `
+                <strong>${medicamentoNombre}</strong> - Cantidad: ${cantidadInput.value}, Frecuencia: ${frecuenciaInput.value}
+                <button type="button" class="eliminar">Eliminar</button>
+            `;
+
+            // Agregar el medicamento a la lista de seleccionados
+            selectedMedicamentosDiv.appendChild(nuevoMedicamento);
+
+            // Limpiar los campos después de agregar
+            cantidadInput.value = 1;
+            frecuenciaInput.value = "";
+            medicamentoSeleccionado.classList.remove('highlight');
+
+            // Ocultar el medicamento seleccionado de la lista principal
+            medicamentoSeleccionado.remove();
+
+            // Ocultar los campos de cantidad y frecuencia
+            medicamentoControls.style.display = 'none';
+            frecuenciaControls.style.display = 'none';
+
+            // Agregar evento para eliminar el medicamento
+            const eliminarBoton = nuevoMedicamento.querySelector('.eliminar');
+            eliminarBoton.addEventListener('click', function() {
+                // Remover de la lista de seleccionados
+                medicamentosSeleccionados = medicamentosSeleccionados.filter(id => id !== medicamentoId);
+                selectedMedicamentosDiv.removeChild(nuevoMedicamento);
+
+                // Reagregar el medicamento a la lista principal
+                const medicamentoLista = document.createElement('div');
+                medicamentoLista.classList.add('medicamento-item');
+                medicamentoLista.setAttribute('data-id', medicamentoId);
+                medicamentoLista.textContent = medicamentoNombre;
+
+                // Agregar el evento de selección nuevamente
+                medicamentoLista.addEventListener('click', function() {
+                    // Resaltar el medicamento seleccionado
+                    if (medicamentoSeleccionado) {
+                        medicamentoSeleccionado.classList.remove('highlight');
+                    }
+                    medicamentoSeleccionado = this;
+                    medicamentoSeleccionado.classList.add('highlight');
+
+                    // Mostrar los campos de cantidad y frecuencia
+                    medicamentoControls.style.display = 'block'; // Mostrar controles de cantidad
+                    frecuenciaControls.style.display = 'block'; // Mostrar controles de frecuencia
+                });
+
+                // Agregar de nuevo a la lista
+                document.getElementById('medicamentos-list').appendChild(medicamentoLista);
+
+                // Ocultar los campos de cantidad y frecuencia si no hay medicamentos seleccionados
+                if (selectedMedicamentosDiv.children.length === 0) {
+                    medicamentoControls.style.display = 'none';
+                    frecuenciaControls.style.display = 'none';
+                }
+            });
+
+            // Actualizar el campo oculto con los IDs de medicamentos al agregar
+            actualizarMedicamentosIds();
+        });
+
+        // Función para actualizar los IDs de medicamentos
+        function actualizarMedicamentosIds() {
+            document.getElementById('medicamentos_ids').value = medicamentosSeleccionados.join(',');
+        }
     </script>
 </body>
 </html>
-
-{% endblock %}
-
-
-
-
-
 
 
 
