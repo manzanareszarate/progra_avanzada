@@ -161,46 +161,24 @@ class MedicamentoForm(forms.ModelForm):
 
 ##############################################################################################################
 
-
 from django import forms
-from .models import receta, RecetaMedicamento, medicamento, paciente
-
-from django import forms
-
+from .models import  RecetaMedicamento, medicamento
 
 class RecetaForm(forms.ModelForm):
-    lista_medicamentos = forms.ModelMultipleChoiceField(
-        queryset=medicamento.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False
-    )
-
     class Meta:
         model = receta
         fields = ['id_paciente', 'fecha_Emision', 'fecha_Reposicion', 'medico', 'lugar']
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)
-
-        if user:
-            self.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=user)  # Filtra pacientes por usuario
-
 
 class RecetaMedicamentoForm(forms.ModelForm):
     class Meta:
         model = RecetaMedicamento
         fields = ['medicamento', 'cantidad', 'frecuencia']
-    
-    medicamento = forms.ModelChoiceField(
-        queryset=medicamento.objects.none(),
-        widget=forms.Select(attrs={'class': 'medicamento-select'})
-    )
 
-    def __init__(self, *args, **kwargs):
-        usuario = kwargs.pop('usuario')
-        super().__init__(*args, **kwargs)
-        self.fields['medicamento'].queryset = medicamento.objects.filter(id_usuario=usuario)
+class MedicamentoFormSet(forms.BaseFormSet):
+    def _init_(self, *args, **kwargs):
+        super()._init_(*args, **kwargs)
+        for form in self.forms:
+            form.fields['medicamento'].queryset = medicamento.objects.filter(id_usuario=self.request.user)
 
 
 

@@ -5,61 +5,40 @@
 
 {% block contenido %}
 <!DOCTYPE html>
-
-<h1 style="text-align: center; margin-bottom: 20px;">Agregar Receta</h1>
-
-<form method="post" style="max-width: 600px; margin: auto;">
-    {% csrf_token %}
-    
-    <!-- Formulario de Receta -->
-    <fieldset style="border: 1px solid #ccc; padding: 20px; border-radius: 5px;">
-        <legend style="font-weight: bold; font-size: 1.2em;">Información de la Receta</legend>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Receta</title>
+</head>
+<body>
+    <h1>Crear Receta</h1>
+    <form method="post">
+        {% csrf_token %}
         {{ receta_form.as_p }}
-    </fieldset>
-
-    <!-- Formulario de Medicamentos -->
-    <fieldset style="border: 1px solid #ccc; padding: 20px; border-radius: 5px; margin-top: 20px;">
-        <legend style="font-weight: bold; font-size: 1.2em;">Medicamentos</legend>
-        {{ medicamento_forms.management_form }}
-        <div id="medicamentos">
-            {% for form in medicamento_forms %}
-                <div class="medicamento-form" style="margin-bottom: 10px;">
-                    {{ form.as_p }}
-                    <button type="button" class="remove-form" style="background-color: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">Eliminar</button>
-                </div>
-            {% endfor %}
-        </div>
-        <button type="button" id="add-form" style="background-color: #4CAF50; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">Agregar otro medicamento</button>
-    </fieldset>
-
-    <button type="submit" style="background-color: #008CBA; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-top: 20px;">Guardar Receta</button>
-</form>
-
-<!-- JavaScript para manejo dinámico de formularios -->
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        let formIdx = {{ medicamento_forms.total_form_count }};
-
-        document.getElementById('add-form').addEventListener('click', function () {
-            let formset = document.getElementById('medicamentos');
-            let formTemplate = formset.querySelector('.medicamento-form');
-            let newForm = formTemplate.cloneNode(true);
-            newForm.querySelectorAll('input, select').forEach(function (input) {
-                input.name = input.name.replace(/-\d+-/, `-${formIdx}-`);
-                input.id = input.id.replace(/_\d+_/, `_${formIdx}_`);
-                input.value = '';
+        
+        <h2>Medicamentos</h2>
+        {{ medicamento_formset.management_form }}
+        {% for form in medicamento_formset %}
+            <div class="formset-row">
+                {{ form.as_p }}
+                <a href="#" class="remove-form">Eliminar</a>
+            </div>
+        {% endfor %}
+        
+        <button type="submit">Guardar Receta</button>
+    </form>
+    
+    <script>
+        document.querySelectorAll('.remove-form').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const formRow = button.closest('.formset-row');
+                formRow.remove();
             });
-            formset.appendChild(newForm);
-            formIdx++;
         });
-
-        document.getElementById('medicamentos').addEventListener('click', function (event) {
-            if (event.target.classList.contains('remove-form')) {
-                event.target.closest('.medicamento-form').remove();
-            }
-        });
-    });
-</script>
+    </script>
+</body>
+</html>
 
 {% endblock %}
 
