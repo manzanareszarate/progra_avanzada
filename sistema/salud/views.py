@@ -398,12 +398,52 @@ def eliminar_medicamentos(request, id_Eliminarmedicamentos):
 
 ##############################################################################################################3
 ########3 ver recetas
-
+@login_required
+def recetas(request):
+    # Obtén todas las recetas asociadas al usuario logueado
+    recetas = receta.objects.filter(id_usuario=request.user)
+    
+    return render(request, 'Programar/recetas.html', {'recetas': recetas})
 
 
 
 
 ##############################################################################################################3
+from django.shortcuts import render, redirect
+from django.forms import formset_factory
+from django.contrib.auth.decorators import login_required
+from .models import  medicamento, paciente
+from .forms import RecetaForm, RecetaMedicamentoForm
+
+@login_required
+def agregar_receta(request):
+    if request.method == 'POST':
+        receta_form = RecetaForm(request.POST, usuario=request.user)
+        RecetaMedicamentoFormSet = formset_factory(RecetaMedicamentoForm, extra=1)
+        medicamento_forms = RecetaMedicamentoFormSet(request.POST, form_kwargs={'usuario': request.user})
+        
+        if receta_form.is_valid() and all(form.is_valid() for form in medicamento_forms):
+            receta_instance = receta_form.save(commit=False)
+            receta_instance.id_usuario = request.user
+            receta_instance.save()
+            
+            for form in medicamento_forms:
+                medicamento_instance = form.save(commit=False)
+                medicamento_instance.receta = receta_instance
+                medicamento_instance.usuario = request.user
+                medicamento_instance.save()
+            
+            return redirect('receta_list')
+
+    else:
+        receta_form = RecetaForm(usuario=request.user)
+        RecetaMedicamentoFormSet = formset_factory(RecetaMedicamentoForm, extra=1)
+        medicamento_forms = RecetaMedicamentoFormSet(form_kwargs={'usuario': request.user})
+
+    return render(request, 'Programar/agregar_receta.html', {
+        'receta_form': receta_form,
+        'medicamento_forms': medicamento_forms
+    })
 
 
 

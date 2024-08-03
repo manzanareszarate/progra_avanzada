@@ -1,3 +1,66 @@
+{% extends "base.html" %}
+
+{% block titulo %}Agregar Recetas{% endblock %}
+
+{% block contenido %}
+
+<h1>Agregar Receta</h1>
+
+<form method="post">
+    {% csrf_token %}
+    
+    <!-- Formulario de Receta -->
+    <fieldset>
+        <legend>Información de la Receta</legend>
+        {{ receta_form.as_p }}
+    </fieldset>
+
+    <!-- Formulario de Medicamentos -->
+    <fieldset>
+        <legend>Medicamentos</legend>
+        {{ medicamento_forms.management_form }}
+        <div id="medicamentos">
+            {% for form in medicamento_forms %}
+                <div class="medicamento-form">
+                    {{ form.as_p }}
+                    <button type="button" class="remove-form">Eliminar</button>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-form">Agregar otro medicamento</button>
+    </fieldset>
+
+    <button type="submit">Guardar Receta</button>
+</form>
+
+<!-- JavaScript para manejo dinámico de formularios -->
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        let formIdx = {{ medicamento_forms.total_form_count }};
+
+        document.getElementById('add-form').addEventListener('click', function () {
+            let formset = document.getElementById('medicamentos');
+            let formTemplate = formset.querySelector('.medicamento-form');
+            let newForm = formTemplate.cloneNode(true);
+            newForm.querySelectorAll('input, select').forEach(function (input) {
+                input.name = input.name.replace(/-\d+-/, `-${formIdx}-`);
+                input.id = input.id.replace(/_\d+_/, `_${formIdx}_`);
+                input.value = '';
+            });
+            formset.appendChild(newForm);
+            formIdx++;
+        });
+
+        document.getElementById('medicamentos').addEventListener('click', function (event) {
+            if (event.target.classList.contains('remove-form')) {
+                event.target.closest('.medicamento-form').remove();
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+
 
 
 

@@ -147,13 +147,6 @@ class EditarMedicamentoForm(forms.ModelForm):
         fields = ['nombre_Medicamento', 'dosis','presentacion',]
 
 
-################################################################################################3
-
-####Agregar  receta  y recetamedicamento form ################################
-
-#######################################################################################################3
-
-
 
 
 class MedicamentoForm(forms.ModelForm):
@@ -169,6 +162,45 @@ class MedicamentoForm(forms.ModelForm):
 ##############################################################################################################
 
 
+from django import forms
+from .models import receta, RecetaMedicamento, medicamento, paciente
+
+from django import forms
+from .models import Receta, Medicamento, Paciente
+
+class RecetaForm(forms.ModelForm):
+    lista_medicamentos = forms.ModelMultipleChoiceField(
+        queryset=medicamento.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+
+    class Meta:
+        model = Receta
+        fields = ['id_paciente', 'fecha_emision', 'fecha_reposicion', 'lista_medicamentos', 'medico', 'lugar']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        if user:
+            self.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=user)  # Filtra pacientes por usuario
+
+
+class RecetaMedicamentoForm(forms.ModelForm):
+    class Meta:
+        model = RecetaMedicamento
+        fields = ['medicamento', 'cantidad', 'frecuencia']
+    
+    medicamento = forms.ModelChoiceField(
+        queryset=medicamento.objects.none(),
+        widget=forms.Select(attrs={'class': 'medicamento-select'})
+    )
+
+    def __init__(self, *args, **kwargs):
+        usuario = kwargs.pop('usuario')
+        super().__init__(*args, **kwargs)
+        self.fields['medicamento'].queryset = medicamento.objects.filter(id_usuario=usuario)
 
 
 
