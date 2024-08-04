@@ -6,7 +6,7 @@ from .models import paciente
 from .models import laboratorio
 from .models import medicamento
 from .models import receta  
-from .models import RecetaMedicamento,
+from .models import RecetaMedicamento
 
 
 from django.forms import inlineformset_factory, BaseFormSet, formset_factory

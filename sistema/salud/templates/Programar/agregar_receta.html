@@ -2,15 +2,98 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agregar Receta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+        form {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        h2, h3 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        select, input[type="text"], input[type="date"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .volver-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: green;
+            text-decoration: none;
+        }
+        .volver-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Agregar Receta</h1>
-    <form method="post">
+    <form method="post" action="{% url 'agregar_receta' %}">
         {% csrf_token %}
-        {{ form.as_p }}
+        <h2>Agregar Receta</h2>
+        <h3>Información de la Receta</h3>
+
+        <label for="paciente">Paciente:</label>
+        <select name="id_paciente" id="paciente" required>
+            {% if pacientes %}
+                {% for paciente in pacientes %}
+                    <option value="{{ paciente.id_paciente }}">{{ paciente }}</option>
+                {% endfor %}
+            {% else %}
+                <option value="">No hay pacientes disponibles</option>
+            {% endif %}
+        </select>
+
+        <label for="fecha_emision">Fecha de Emisión:</label>
+        <input type="date" name="fecha_Emision" id="fecha_emision" required>
+
+        <label for="fecha_reposicion">Fecha de Reposición:</label>
+        <input type="date" name="fecha_Reposicion" id="fecha_reposicion" required>
+
+        <label for="lugar">Lugar:</label>
+        <input type="text" name="lugar" id="lugar" placeholder="Ingrese el lugar" required>
+
+        <label for="medico">Médico:</label>
+        <input type="text" name="medico" id="medico" placeholder="Ingrese el nombre del médico" required>
+
         <button type="submit">Guardar Receta</button>
+        <a href="{% url 'recetas' %}" class="volver-link">Volver al listado de recetas</a>
     </form>
-    <a href="{% url 'recetas' %}">Volver al listado de recetas</a>
 </body>
 </html>
+

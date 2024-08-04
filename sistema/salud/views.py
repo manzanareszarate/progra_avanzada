@@ -406,18 +406,73 @@ def recetas(request):
     recetas_list = receta.objects.filter(id_usuario=request.user)
     return render(request, 'Programar/recetas.html', {'recetas': recetas_list})
 
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+
+from .forms import RecetaForm  # Si estás utilizando un formulario para Receta
+
+
 @login_required
 def agregar_receta(request):
-    if request.method == 'POST':
-        form = RecetaForm(request.POST)
-        if form.is_valid():
-            nueva_receta = form.save(commit=False)
-            nueva_receta.id_usuario = request.user  # Asigna el usuario logueado
-            nueva_receta.save()
-            return redirect('receta_terminada', receta_id=nueva_receta.id_Recetas)
-    else:
-        form = RecetaForm()
-    return render(request, 'Programar/agregar_receta.html', {'form': form})
+    if request.method == "POST":
+        # Recogiendo datos del formulario
+        id_paciente = request.POST.get('id_paciente')
+        fecha_emision = request.POST.get('fecha_Emision')
+        fecha_reposicion = request.POST.get('fecha_Reposicion')
+        lugar = request.POST.get('lugar')
+        medico = request.POST.get('medico')
+
+        # Aquí podrías crear una nueva receta
+        try:
+            receta = receta(
+                paciente_id=id_paciente,
+                fecha_emision=fecha_emision,
+                fecha_reposicion=fecha_reposicion,
+                lugar=lugar,
+                medico=medico,
+                id_usuario=request.user  # Asumiendo que tienes un campo id_usuario en Receta
+            )
+            receta.save()
+            messages.success(request, "Receta guardada exitosamente.")
+            return redirect('recetas')  # Redirige a la vista del listado de recetas
+        except Exception as e:
+            messages.error(request, "Error al guardar la receta: {}".format(str(e)))
+
+    # Filtrar pacientes por el usuario actual
+    pacientes = paciente.objects.filter(id_usuario=request.user)
+
+    return render(request, 'Programar/agregar_receta.html', {'pacientes': pacientes})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @login_required
 def receta_terminada(request, receta_id):

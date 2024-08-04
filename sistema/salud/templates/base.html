@@ -57,15 +57,7 @@
                 <a class="nav-item nav-link" href="{% url 'citas'%}">Citas Médicas</a>
                 <a class="nav-item nav-link" href="{% url 'laboratorios' %}">Laboratorios</a>
                 <a class="nav-item nav-link" href="{% url 'medicamentos' %}">Medicamentos</a>
-                
-                <!-- Menú desplegable para Recetas -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Recetas</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{% url 'listado_recetas' %}">Listado de Recetas</a></li>
-                        <li><a class="dropdown-item" href="{% url 'agregar_receta' %}">Agregar Nueva Receta</a></li>
-                    </ul>
-                </li>
+                <a class="nav'item nav-link" href="{% url 'recetas' %}">Recetas</a></li>
                 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Controles</a>
