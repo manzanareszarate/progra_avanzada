@@ -161,11 +161,10 @@ class MedicamentoForm(forms.ModelForm):
         }
 
 ##############################################################################################################
-
 from django import forms
-from .models import receta, RecetaMedicamento, medicamento
+from .models import receta, paciente
 
-class RecetaForm(forms.ModelForm):
+class RecetaAgregarForm(forms.ModelForm):
     class Meta:
         model = receta
         fields = ['id_paciente', 'fecha_Emision', 'fecha_Reposicion', 'medico', 'lugar']
@@ -174,10 +173,15 @@ class RecetaForm(forms.ModelForm):
             'fecha_Reposicion': forms.DateInput(attrs={'type': 'date'}),
         }
 
-class RecetaMedicamentoForm(forms.ModelForm):
-    class Meta:
-        model = RecetaMedicamento
-        fields = ['medicamento', 'cantidad', 'frecuencia']
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(RecetaAgregarForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=user)
+        self.fields['id_paciente'].empty_label = "Selecciona un paciente"
+        self.fields['id_paciente'].label = "Nombre del Paciente"
+        self.fields['id_paciente'].widget.attrs.update({'class': 'form-control'})
+
 
 
 #####################################################################################################################

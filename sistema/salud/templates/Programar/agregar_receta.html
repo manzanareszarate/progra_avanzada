@@ -3,97 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Receta</title>
+    <title>Agregar Recetas</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
             margin: 0;
-            background-color: #f9f9f9;
+            padding: 0;
         }
-        form {
-            border: 1px solid #ccc;
+        .form-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            border: 1px solid #ddd;
             border-radius: 8px;
-            padding: 20px;
             background-color: #fff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        h2, h3 {
+        h1 {
             text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
         }
-        label {
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
             display: block;
-            margin-top: 10px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
         }
-        select, input[type="text"], input[type="date"], input[type="number"] {
+        .form-group input, .form-group select {
             width: 100%;
-            padding: 8px;
-            margin-top: 5px;
+            padding: 12px;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 16px;
         }
-        button {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #28a745;
-            color: white;
+        .form-group input:focus, .form-group select:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
+        }
+        .form-group button {
+            padding: 12px 20px;
             border: none;
             border-radius: 4px;
+            color: white;
+            background-color: #4CAF50;
+            font-weight: bold;
             cursor: pointer;
-            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
         }
-        button:hover {
-            background-color: #218838;
+        .form-group button:hover {
+            background-color: #45a049;
         }
-        .volver-link {
-            display: block;
-            text-align: center;
-            margin-top: 10px;
-            color: green;
+        .form-group button:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
+        }
+        .form-group .form-error {
+            color: #f44336;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .form-group a {
+            color: #007bff;
             text-decoration: none;
         }
-        .volver-link:hover {
+        .form-group a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <form method="post" action="{% url 'agregar_receta' %}">
-        {% csrf_token %}
-        <h2>Agregar Receta</h2>
-        <h3>Información de la Receta</h3>
-
-        <label for="paciente">Paciente:</label>
-        <select name="id_paciente" id="paciente" required>
-            {% if pacientes %}
-                {% for paciente in pacientes %}
-                    <option value="{{ paciente.id_paciente }}">{{ paciente }}</option>
-                {% endfor %}
-            {% else %}
-                <option value="">No hay pacientes disponibles</option>
-            {% endif %}
-        </select>
-
-        <label for="fecha_emision">Fecha de Emisión:</label>
-        <input type="date" name="fecha_Emision" id="fecha_emision" required>
-
-        <label for="fecha_reposicion">Fecha de Reposición:</label>
-        <input type="date" name="fecha_Reposicion" id="fecha_reposicion" required>
-
-        <label for="lugar">Lugar:</label>
-        <input type="text" name="lugar" id="lugar" placeholder="Ingrese el lugar" required>
-
-        <label for="medico">Médico:</label>
-        <input type="text" name="medico" id="medico" placeholder="Ingrese el nombre del médico" required>
-
-        <button type="submit">Guardar Receta</button>
-        <a href="{% url 'recetas' %}" class="volver-link">Volver al listado de recetas</a>
-    </form>
+    <h1>Agregar Recetas</h1>
+    <div class="form-container">
+        <form method="post" action="{% url 'agregar_receta' %}">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="form-error">
+                            {% for error in field.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div class="form-group">
+                <button type="submit">Guardar</button>
+            </div>
+            <div class="form-group">
+                <a href="{% url 'recetas' %}">Volver a la lista de Recetas</a>
+            </div>
+        </form>
+    </div>
 </body>
 </html>
-

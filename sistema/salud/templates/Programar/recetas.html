@@ -3,29 +3,146 @@
 {% block titulo %}Recetas{% endblock %}
 
 {% block contenido %}
-
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Listado de Recetas</title>
+    <title>Recetas</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Elimina el espacio entre bordes de las celdas */
+        }
+        th, td {
+            border: 1px solid black; /* Borde de las celdas */
+            padding: 20px; /* Aumenta el espacio interno de las celdas */
+            text-align: center; /* Alinea el texto al centro */
+        }
+        th {
+            background-color: #f2f2f2; /* Color de fondo para los encabezados */
+        }
+        tbody tr {
+            border-bottom: 1px solid #ddd; /* Borde inferior de las filas (opcional) */
+        }
+        .button {
+            padding: 8px 12px;
+            margin: 5px; /* Espacio entre los botones */
+            border: none;
+            border-radius: 4px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block; /* Asegura que el margen se aplique correctamente */
+            width: 120px; /* Ancho fijo para todos los botones */
+            text-align: center; /* Centra el texto dentro del botón */
+            box-sizing: border-box; /* Incluye padding y border en el ancho total */
+        }
+        .edit-button {
+            background-color: #4CAF50; /* Verde */
+        }
+        .delete-button {
+            background-color: #f44336; /* Rojo */
+        }
+        .more-info-button {
+            background-color: #ff9800; /* Naranja */
+        }
+        .edit-button:hover, .delete-button:hover, .more-info-button:hover {
+            opacity: 0.8;
+        }
+        .add-button {
+            background-color: #008CBA; /* Azul */
+            display: block; /* Asegura que el botón ocupe toda la línea disponible */
+            margin: 20px auto; /* Centra el botón y añade espacio alrededor */
+            width: 200px; /* Ajusta el ancho del botón */
+            text-align: center; /* Centra el texto dentro del botón */
+        }
+        h1 {
+            text-align: center; /* Centra el título */
+        }
+        .form-hidden {
+            display: none;
+            margin-top: 20px;
+        }
+        .form-container {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        function toggleMoreInfo(id) {
+            var element = document.getElementById('more-info-' + id);
+            if (element.style.display === 'none' || element.style.display === '') {
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        }
+    </script>
 </head>
 <body>
-    <h1>Listado de Recetas</h1>
-    <a href="{% url 'agregar_receta' %}">Agregar Nueva Receta</a>
-    <ul>
-        {% for receta in recetas %}
-            <li>
-                <a href="{% url 'detalles_receta' receta.id_Recetas %}">
-                    {{ receta.fecha_Emision }} - {{ receta.medico }} - {{ receta.lugar }}
-                </a>
-            </li>
-        {% empty %}
-            <li>No hay recetas disponibles.</li>
-        {% endfor %}
-    </ul>
+    <h1>Información de las Recetas</h1>
+    
+    <form method="post" action="{% url 'recetas' %}">
+        {% csrf_token %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre del Paciente</th>
+                    <th>Fecha de Emisión</th>
+                    <th>Fecha de Reposición</th>
+                    <th>Médico</th>
+                    <th>Lugar</th>
+                    <th>Acciones</th> <!-- Nueva columna para los botones -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for receta in recetas %}
+                <tr>
+                    <td>{{ receta.id_paciente.nombre }} {{ receta.id_paciente.apellido }}</td>
+                    <td>{{ receta.fecha_Emision }}</td>
+                    <td>{{ receta.fecha_Reposicion }}</td>
+                    <td>{{ receta.medico }}</td>
+                    <td>{{ receta.lugar }}</td>
+                    <td>
+                        <a href="" class="button edit-button">Editar</a>
+                        <a href="" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar esta receta?');">Eliminar</a>
+                        <button type="button" class="button more-info-button" onclick="toggleMoreInfo('{{ receta.id_Recetas }}')">Más Información</button>
+                    </td>
+                </tr>
+                <tr id="more-info-{{ receta.id_Recetas }}" class="form-hidden">
+                    <td colspan="6">
+                        <div class="form-container">
+                            <form method="post" action="{% url 'detalles_receta' receta.id_Recetas %}">
+                                {% csrf_token %}
+                                <h3>Detalles Adicionales</h3>
+                                <!-- Agrega campos adicionales según sea necesario -->
+                                <div class="form-group">
+                                    <label for="detalle1">Detalle 1</label>
+                                    <input type="text" id="detalle1" name="detalle1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="detalle2">Detalle 2</label>
+                                    <input type="text" id="detalle2" name="detalle2">
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="button add-button">Guardar Detalles</button>
+                                </div>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No hay recetas disponibles.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- Botón para agregar una nueva receta -->
+        <a href="{% url 'agregar_receta' %}" class="button add-button">Agregar Nueva Receta</a>
+    </form>
 </body>
 </html>
+
+
 
 
 {% endblock %}

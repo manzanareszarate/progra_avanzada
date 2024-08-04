@@ -18,9 +18,8 @@ class paciente(models.Model):
     email = models.EmailField( verbose_name='Email')
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     
-def __str__(self):
-    return f"{self.nombre} {self.apellido}"
-
+    def __str__(self):
+            return f"{self.nombre} {self.apellido}"
 
 
 #########################################################
