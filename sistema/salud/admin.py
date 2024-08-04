@@ -9,6 +9,8 @@ from .models import Control_Glucosa
 from .models import Control_Peso
 from .models import alarmas
 from .models import RecetaMedicamento
+from .models import medicamento
+from .models import receta
 
 
 

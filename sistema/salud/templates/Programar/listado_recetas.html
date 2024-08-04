@@ -5,64 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agregar Receta</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f9f9f9;
-        }
-        form {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
-        }
-        h2 {
-            text-align: center;
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-        select, input[type="text"], input[type="date"], input[type="number"] {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-        .medicamento-section {
-            margin-top: 10px;
-        }
-        button {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .remove-button {
-            background-color: #dc3545;
-        }
-        .remove-button:hover {
-            background-color: #c82333;
-        }
+        /* Estilos igual que antes */
     </style>
 </head>
 <body>
-    <form method="post" action="{% url 'agregar_receta' %}">
+    <form method="post" action="{% url 'agregar_receta' %}" id="receta-form">
         {% csrf_token %}
         <h2>Agregar Receta</h2>
 
@@ -87,7 +34,7 @@
         <input type="text" name="medico" id="medico" placeholder="Ingrese el nombre del médico" required>
 
         <h3>Medicamentos</h3>
-        <select id="medicamentos-list" onchange="agregarMedicamento()">
+        <select id="medicamentos-list">
             <option value="">Seleccione un medicamento</option>
             {% for medicamento in medicamentos %}
                 <option value="{{ medicamento.id_Medicamento }}" data-nombre="{{ medicamento.nombre_Medicamento }}" data-dosis="{{ medicamento.dosis }}" data-presentacion="{{ medicamento.presentacion }}">
@@ -105,7 +52,7 @@
         <input type="hidden" name="cantidades" id="cantidades_ids">
         <input type="hidden" name="frecuencias" id="frecuencias_ids">
 
-        <button type="submit" onclick="return validarFormulario()">Guardar Receta</button>
+        <button type="button" onclick="guardarReceta()">Guardar Receta</button>
     </form>
 
     <script>
@@ -180,13 +127,25 @@
             document.getElementById('frecuencias_ids').value = frecuencias.join(',');
         }
 
-        function validarFormulario() {
+        function guardarReceta() {
             // Comprobar si se han agregado medicamentos seleccionados
             if (selectedMedicamentosDiv.children.length === 0) {
                 alert('Por favor, agregue al menos un medicamento.');
-                return false; // No enviar el formulario
+                return; // No enviar el formulario
             }
-            return true; // Enviar el formulario
+
+            // Verificar que todos los campos estén llenos
+            const fields = ['id_paciente', 'fecha_emision', 'fecha_reposicion', 'lugar', 'medico'];
+            for (let field of fields) {
+                const input = document.getElementById(field);
+                if (!input.value) {
+                    alert(`Por favor, complete el campo ${input.placeholder || input.name}.`);
+                    return; // No enviar el formulario
+                }
+            }
+
+            // Si todo está bien, enviar el formulario
+            document.getElementById('receta-form').submit();
         }
     </script>
 </body>

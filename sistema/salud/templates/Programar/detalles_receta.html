@@ -4,75 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles de la Receta</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f9f9f9;
-        }
-        .container {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
-        }
-        h2 {
-            text-align: center;
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-        .medicamento-item {
-            margin-top: 10px;
-        }
-        .btn {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            text-align: center;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Detalles de la Receta</h2>
-        
-        <label>Paciente:</label>
-        <p>{{ receta.paciente.nombre }}</p>
+    <h2>Detalles de la Receta</h2>
+    <p><strong>Paciente:</strong> {{ receta.id_paciente.nombre }}</p>
+    <p><strong>Fecha de Emisión:</strong> {{ receta.fecha_Emision }}</p>
+    <p><strong>Fecha de Reposición:</strong> {{ receta.fecha_Reposicion }}</p>
+    <p><strong>Lugar:</strong> {{ receta.lugar }}</p>
+    <p><strong>Médico:</strong> {{ receta.medico }}</p>
 
-        <label>Fecha de Emisión:</label>
-        <p>{{ receta.fecha_Emision }}</p>
-
-        <label>Fecha de Reposición:</label>
-        <p>{{ receta.fecha_Reposicion }}</p>
-
-        <h3>Medicamentos</h3>
-        {% for medicamento in receta.medicamentos.all %}
-            <div class="medicamento-item">
-                <strong>{{ medicamento.nombre }}</strong><br>
-                Cantidad: {{ medicamento.receta_medicamento.cantidad }}<br>
-                Frecuencia: {{ medicamento.receta_medicamento.frecuencia }}
-            </div>
-        {% endfor %}
-        
-        <button class="btn" onclick="window.history.back();">Volver</button>
-    </div>
+    <h3>Medicamentos Recetados</h3>
+    {% for medicamento in receta.recetamedicamento_set.all %}
+        <div class="medicamento-item">
+            <strong>{{ medicamento.medicamento.nombre_Medicamento }}</strong><br>
+            Cantidad: {{ medicamento.cantidad }}<br>
+            Frecuencia: {{ medicamento.frecuencia }}
+        </div>
+    {% endfor %}
 </body>
 </html>
-
