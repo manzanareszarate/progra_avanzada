@@ -33,7 +33,7 @@ from .forms import CitaEditarForm
 from .forms import LaboratorioAgregarForm
 from .forms import Laboratorioeditarform
 from .forms import MedicamentoForm
-from .forms import EditarMedicamentoForm, pacienteForm,RecetaMedicamentoForm,RecetaForm,RecetaMedicamento
+from .forms import EditarMedicamentoForm, pacienteForm,RecetaMedicamento
 
 
 # Create your views here.
@@ -412,17 +412,124 @@ from .forms import RecetaAgregarForm
 from .models import receta
 from django.contrib.auth.decorators import login_required
 
-@login_required
+@login_required(login_url='/accounts/login/')
 def agregar_receta(request):
     if request.method == 'POST':
-        form = RecetaAgregarForm(request.POST, user=request.user)
+        form = RecetaAgregarForm(request.POST)
         if form.is_valid():
-            form.save()
+            instancia =form.save(commit=False)
+            instancia.id_usuario = request.user
+            instancia.save()
             return redirect('recetas')  # Redirige a la vista de lista de recetas
     else:
-        form = RecetaAgregarForm(user=request.user)
-
+        form = RecetaAgregarForm
+        form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)  # Filtra los pacientes para el usuario autenticado
     return render(request, 'Programar/agregar_receta.html', {'form': form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

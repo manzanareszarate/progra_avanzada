@@ -110,7 +110,7 @@
                 <tr id="more-info-{{ receta.id_Recetas }}" class="form-hidden">
                     <td colspan="6">
                         <div class="form-container">
-                            <form method="post" action="{% url 'detalles_receta' receta.id_Recetas %}">
+                            <form method="post" action="">
                                 {% csrf_token %}
                                 <h3>Detalles Adicionales</h3>
                                 <!-- Agrega campos adicionales según sea necesario -->
