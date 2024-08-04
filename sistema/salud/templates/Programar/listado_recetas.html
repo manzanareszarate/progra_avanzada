@@ -2,151 +2,40 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Receta</title>
-    <style>
-        /* Estilos igual que antes */
-    </style>
+    <title>Agregar Medicamentos a la Receta</title>
 </head>
 <body>
-    <form method="post" action="{% url 'agregar_receta' %}" id="receta-form">
+    <h2>Agregar Medicamentos a la Receta</h2>
+    <h3>Receta: {{ receta.fecha_Emision }} - {{ receta.medico }}</h3>
+    
+    <form method="post">
         {% csrf_token %}
-        <h2>Agregar Receta</h2>
-
-        <label for="paciente">Paciente:</label>
-        <select name="id_paciente" id="paciente" required>
-            <option value="">Seleccione un paciente</option>
-            {% for paciente in pacientes %}
-                <option value="{{ paciente.id }}">{{ paciente.nombre }}</option>
-            {% endfor %}
-        </select>
-        
-        <label for="fecha_emision">Fecha de Emisión:</label>
-        <input type="date" name="fecha_Emision" id="fecha_emision" required>
-        
-        <label for="fecha_reposicion">Fecha de Reposición:</label>
-        <input type="date" name="fecha_Reposicion" id="fecha_reposicion" required>
-
-        <label for="lugar">Lugar:</label>
-        <input type="text" name="lugar" id="lugar" placeholder="Ingrese el lugar" required>
-
-        <label for="medico">Médico:</label>
-        <input type="text" name="medico" id="medico" placeholder="Ingrese el nombre del médico" required>
-
-        <h3>Medicamentos</h3>
-        <select id="medicamentos-list">
-            <option value="">Seleccione un medicamento</option>
+        <label for="medicamento">Medicamento:</label>
+        <select name="medicamento" id="medicamento" required>
             {% for medicamento in medicamentos %}
-                <option value="{{ medicamento.id_Medicamento }}" data-nombre="{{ medicamento.nombre_Medicamento }}" data-dosis="{{ medicamento.dosis }}" data-presentacion="{{ medicamento.presentacion }}">
-                    {{ medicamento.nombre_Medicamento }} - Dosis: {{ medicamento.dosis }} - Presentación: {{ medicamento.presentacion }}
-                </option>
+                <option value="{{ medicamento.id_Medicamento }}">{{ medicamento.nombre_Medicamento }}</option>
             {% endfor %}
         </select>
 
-        <h3>Medicamentos Seleccionados</h3>
-        <div class="selected-medicamentos" id="selected-medicamentos">
-            <!-- Aquí se agregarán los medicamentos seleccionados -->
-        </div>
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" name="cantidad" id="cantidad" min="1" required>
 
-        <input type="hidden" name="medicamentos_ids" id="medicamentos_ids">
-        <input type="hidden" name="cantidades" id="cantidades_ids">
-        <input type="hidden" name="frecuencias" id="frecuencias_ids">
+        <label for="frecuencia">Frecuencia:</label>
+        <input type="text" name="frecuencia" id="frecuencia" required>
 
-        <button type="button" onclick="guardarReceta()">Guardar Receta</button>
+        <button type="submit">Agregar Medicamento</button>
     </form>
 
-    <script>
-        const selectedMedicamentosDiv = document.getElementById('selected-medicamentos');
-        const medicamentosSelect = document.getElementById('medicamentos-list');
+    <h3>Medicamentos Agregados:</h3>
+    <ul>
+        {% for item in receta_medicamentos %}
+            <li>
+                {{ item.medicamento.nombre_Medicamento }} - Cantidad: {{ item.cantidad }} - Frecuencia: {{ item.frecuencia }}
+            </li>
+        {% endfor %}
+    </ul>
 
-        function agregarMedicamento() {
-            const selectedOption = medicamentosSelect.options[medicamentosSelect.selectedIndex];
-
-            if (selectedOption.value === "") {
-                return; // No hacer nada si no hay selección
-            }
-
-            const medicamentoId = selectedOption.value;
-            const medicamentoNombre = selectedOption.getAttribute('data-nombre');
-            const medicamentoDosis = selectedOption.getAttribute('data-dosis');
-            const medicamentoPresentacion = selectedOption.getAttribute('data-presentacion');
-
-            // Verificar si el medicamento ya está en la lista seleccionada
-            if ([...selectedMedicamentosDiv.children].some(medicamento => medicamento.dataset.id === medicamentoId)) {
-                alert('Este medicamento ya está en la lista seleccionada.');
-                return;
-            }
-
-            // Crear un nuevo div para el medicamento seleccionado
-            const nuevoMedicamento = document.createElement('div');
-            nuevoMedicamento.classList.add('medicamento-list-item');
-            nuevoMedicamento.setAttribute('data-id', medicamentoId);
-            nuevoMedicamento.innerHTML = `
-                <strong>${medicamentoNombre}</strong> - Dosis: ${medicamentoDosis}, Presentación: ${medicamentoPresentacion}
-                <input type="number" name="cantidades" placeholder="Cantidad" min="1" required>
-                <input type="text" name="frecuencias" placeholder="Frecuencia" required>
-                <button type="button" class="remove-button" onclick="eliminarMedicamento(this)">Eliminar</button>
-            `;
-
-            selectedMedicamentosDiv.appendChild(nuevoMedicamento);
-            // Deshabilitar el medicamento seleccionado
-            selectedOption.disabled = true;
-            // Limpiar la selección
-            medicamentosSelect.selectedIndex = 0;
-
-            // Actualizar los IDs de medicamentos
-            actualizarMedicamentosIds();
-        }
-
-        function eliminarMedicamento(button) {
-            const medicamentoDiv = button.parentElement;
-            const medicamentoId = medicamentoDiv.dataset.id;
-            selectedMedicamentosDiv.removeChild(medicamentoDiv);
-
-            // Habilitar nuevamente el medicamento en la lista
-            const option = medicamentosSelect.querySelector(`option[value="${medicamentoId}"]`);
-            if (option) {
-                option.disabled = false;
-            }
-
-            // Actualizar IDs después de eliminar
-            actualizarMedicamentosIds();
-        }
-
-        function actualizarMedicamentosIds() {
-            const ids = [];
-            const cantidades = [];
-            const frecuencias = [];
-            selectedMedicamentosDiv.querySelectorAll('.medicamento-list-item').forEach(item => {
-                ids.push(item.getAttribute('data-id'));
-                cantidades.push(item.querySelector('input[type="number"]').value);
-                frecuencias.push(item.querySelector('input[type="text"]').value);
-            });
-            document.getElementById('medicamentos_ids').value = ids.join(',');
-            document.getElementById('cantidades_ids').value = cantidades.join(',');
-            document.getElementById('frecuencias_ids').value = frecuencias.join(',');
-        }
-
-        function guardarReceta() {
-            // Comprobar si se han agregado medicamentos seleccionados
-            if (selectedMedicamentosDiv.children.length === 0) {
-                alert('Por favor, agregue al menos un medicamento.');
-                return; // No enviar el formulario
-            }
-
-            // Verificar que todos los campos estén llenos
-            const fields = ['id_paciente', 'fecha_emision', 'fecha_reposicion', 'lugar', 'medico'];
-            for (let field of fields) {
-                const input = document.getElementById(field);
-                if (!input.value) {
-                    alert(`Por favor, complete el campo ${input.placeholder || input.name}.`);
-                    return; // No enviar el formulario
-                }
-            }
-
-            // Si todo está bien, enviar el formulario
-            document.getElementById('receta-form').submit();
-        }
-    </script>
+    <a href="{% url 'recetas' %}">Volver a la lista de recetas</a>
 </body>
 </html>
+

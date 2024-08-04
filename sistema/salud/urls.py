@@ -31,8 +31,9 @@ path('eliminar_laboratorios/<int:id_Eliminarlaboratorios>/', views.eliminar_labo
 path('agregar_medicamentos/', views.agregar_medicamentos, name='agregar_medicamentos'),
 path('editar_medicamentos/<int:medicamento_id>/', views.editar_medicamentos, name='editar_medicamentos'),
 path('eliminar_medicamentos/<int:id_Eliminarmedicamentos>/', views.eliminar_medicamentos, name='eliminar_medicamentos'),
-path('recetas/', views.recetas, name='recetas'),
+path('recetas', views.recetas, name='recetas'),
 path('agregar_receta/', views.agregar_receta, name='agregar_receta'),
-path('detalle_receta/<int:receta_id>/', views.detalle_receta, name='detalle_receta'),
+path('detalles_receta/<int:receta_id>/', views.detalles_receta, name='detalles_receta'),
+path('listado_recetas/',views.listado_recetas, name='listado_recetas'),
 
 ]
