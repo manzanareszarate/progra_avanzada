@@ -8,30 +8,22 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Recetas</title>
+    <title>Listado de Recetas</title>
 </head>
 <body>
-    <h2>Lista de Recetas</h2>
-    <a href="{% url 'receta' %}">Crear Nueva Receta</a>
-    <table>
-        <tr>
-            <th>Paciente</th>
-            <th>Fecha de Emisión</th>
-            <th>Fecha de Reposición</th>
-            <th>Médico</th>
-            <th>Lugar</th>
-        </tr>
+    <h1>Listado de Recetas</h1>
+    <a href="{% url 'agregar_receta' %}">Agregar Nueva Receta</a>
+    <ul>
         {% for receta in recetas %}
-        <tr>
-            <td>{{ receta.id_paciente.nombre }}</td>
-            <td>{{ receta.fecha_Emision }}</td>
-            <td>{{ receta.fecha_Reposicion }}</td>
-            <td>{{ receta.medico }}</td>
-            <td>{{ receta.lugar }}</td>
-            <td><a href="{% url 'detalles_receta' receta.id_Recetas %}">Agregar Medicamentos</a></td>
-        </tr>
+            <li>
+                <a href="{% url 'detalles_receta' receta.id_Recetas %}">
+                    {{ receta.fecha_Emision }} - {{ receta.medico }} - {{ receta.lugar }}
+                </a>
+            </li>
+        {% empty %}
+            <li>No hay recetas disponibles.</li>
         {% endfor %}
-    </table>
+    </ul>
 </body>
 </html>
 

@@ -6,6 +6,7 @@ from .models import paciente
 from .models import laboratorio
 from .models import medicamento
 from .models import receta  
+from .models import RecetaMedicamento,
 
 
 from django.forms import inlineformset_factory, BaseFormSet, formset_factory
@@ -162,7 +163,7 @@ class MedicamentoForm(forms.ModelForm):
 ##############################################################################################################
 
 from django import forms
-from .models import receta
+from .models import receta, RecetaMedicamento, medicamento
 
 class RecetaForm(forms.ModelForm):
     class Meta:
@@ -171,12 +172,12 @@ class RecetaForm(forms.ModelForm):
         widgets = {
             'fecha_Emision': forms.DateInput(attrs={'type': 'date'}),
             'fecha_Reposicion': forms.DateInput(attrs={'type': 'date'}),
-            'medico': forms.TextInput(attrs={'placeholder': 'Médico'}),
-            'lugar': forms.TextInput(attrs={'placeholder': 'Lugar de la receta'}),
         }
 
-    
-
+class RecetaMedicamentoForm(forms.ModelForm):
+    class Meta:
+        model = RecetaMedicamento
+        fields = ['medicamento', 'cantidad', 'frecuencia']
 
 
 #####################################################################################################################

@@ -2,15 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Crear Receta</title>
+    <title>Agregar Receta</title>
 </head>
 <body>
-    <h2>Crear Receta</h2>
+    <h1>Agregar Receta</h1>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Guardar Receta</button>
     </form>
-    <a href="{% url 'recetas' %}">Volver a la lista de recetas</a>
+    <a href="{% url 'recetas' %}">Volver al listado de recetas</a>
 </body>
 </html>

@@ -67,17 +67,18 @@ from .models import medicamento, receta, RecetaMedicamento
 
 class MedicamentoAdmin(admin.ModelAdmin):
     list_display = ('id_Medicamento', 'nombre_Medicamento', 'dosis', 'presentacion', 'id_usuario')
-    search_fields = ('nombre_Medicamento', 'dosis')
-    list_filter = ('id_usuario',)
+    def paciente_nombre_apellido(self, obj):
+        return f'{obj.id_paciente.nombre} {obj.id_paciente.apellido}'
+
+
 
 class RecetaAdmin(admin.ModelAdmin):
     list_display = ('id_Recetas', 'id_paciente', 'fecha_Emision', 'fecha_Reposicion', 'medico', 'lugar', 'id_usuario')
-    search_fields = ('medico', 'lugar', 'id_paciente__nombre')  # Asegúrate de que 'nombre' es un campo en tu modelo 'paciente'
-    list_filter = ('fecha_Emision', 'fecha_Reposicion', 'id_usuario')
+    def paciente_nombre_apellido(self, obj):
+        return f'{obj.id_paciente.nombre} {obj.id_paciente.apellido}'
 
 class RecetaMedicamentoAdmin(admin.ModelAdmin):
     list_display = ('id_receta_medicamento', 'receta', 'medicamento', 'cantidad', 'frecuencia', 'usuario')
-    search_fields = ('receta__medico', 'medicamento__nombre_Medicamento')
-    list_filter = ('usuario',)
-
+    def paciente_nombre_apellido(self, obj):
+        return f'{obj.id_paciente.nombre} {obj.id_paciente.apellido}'   
 
