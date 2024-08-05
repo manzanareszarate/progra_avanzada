@@ -20,9 +20,9 @@ from .models import receta
 
 
 
-admin.site.register(medicamento)
-admin.site.register(receta)
-admin.site.register(RecetaMedicamento)
+
+
+
 admin.site.register(Control_Hipertensione)
 admin.site.register(Control_Glucosa)
 admin.site.register(Control_Peso)
@@ -60,7 +60,7 @@ class laboratorioAdmin(admin.ModelAdmin):
     def paciente_nombre_apellido(self, obj):
         return f'{obj.id_paciente.nombre} {obj.id_paciente.apellido}'
     paciente_nombre_apellido.short_description = 'Paciente'
-
+admin.site.register(laboratorio, laboratorioAdmin)
 
 from django.contrib import admin
 from .models import medicamento, receta, RecetaMedicamento
@@ -70,15 +70,69 @@ class MedicamentoAdmin(admin.ModelAdmin):
     def paciente_nombre_apellido(self, obj):
         return f'{obj.id_paciente.nombre} {obj.id_paciente.apellido}'
 
-
+admin.site.register(medicamento, MedicamentoAdmin)
 
 class RecetaAdmin(admin.ModelAdmin):
-    list_display = ('id_Recetas', 'id_paciente', 'fecha_Emision', 'fecha_Reposicion', 'medico', 'lugar', 'id_usuario')
+    list_display = ('id_Recetas', 'paciente_nombre_apellido', 'fecha_Emision', 'fecha_Reposicion', 'medico', 'lugar', 'id_usuario')
     def paciente_nombre_apellido(self, obj):
         return f'{obj.id_paciente.nombre} {obj.id_paciente.apellido}'
+    paciente_nombre_apellido.short_description = 'Paciente' 
+admin.site.register(receta, RecetaAdmin)
+
+
+
+
 
 class RecetaMedicamentoAdmin(admin.ModelAdmin):
-    list_display = ('id_receta_medicamento', 'receta', 'medicamento', 'cantidad', 'frecuencia', 'usuario')
-    def paciente_nombre_apellido(self, obj):
-        return f'{obj.id_paciente.nombre} {obj.id_paciente.apellido}'   
+    list_display = (
+        'id_receta_medicamento',
+        'receta_id',
+        'paciente_nombre_apellido',
+        'fecha_emision',
+        'fecha_reposicion',
+        'medico',
+        'lugar',
+        'medicamento_nombre',
+        'medicamento_dosis',
+        'medicamento_presentacion',
+        'cantidad',
+        'frecuencia',
+    )
 
+    def receta_id(self, obj):
+        return obj.receta.id_Recetas
+    receta_id.short_description = 'ID Receta'
+
+    def paciente_nombre_apellido(self, obj):
+        return f'{obj.receta.id_paciente.nombre} {obj.receta.id_paciente.apellido}'  
+    paciente_nombre_apellido.short_description = 'Paciente'
+
+    def fecha_emision(self, obj):
+        return obj.receta.fecha_Emision
+    fecha_emision.short_description = 'Fecha Emisión'
+
+    def fecha_reposicion(self, obj):
+        return obj.receta.fecha_Reposicion
+    fecha_reposicion.short_description = 'Fecha Reposición'
+
+    def medico(self, obj):
+        return obj.receta.medico
+    medico.short_description = 'Médico'
+
+    def lugar(self, obj):
+        return obj.receta.lugar
+    lugar.short_description = 'Lugar'
+
+    def medicamento_nombre(self, obj):
+        return obj.medicamento.nombre_Medicamento
+    medicamento_nombre.short_description = 'Medicamento'
+
+    def medicamento_dosis(self, obj):
+        return obj.medicamento.dosis
+    medicamento_dosis.short_description = 'Dosis'
+
+    def medicamento_presentacion(self, obj):
+        return obj.medicamento.presentacion
+    medicamento_presentacion.short_description = 'Presentación'
+
+admin.site.register(RecetaMedicamento, RecetaMedicamentoAdmin)

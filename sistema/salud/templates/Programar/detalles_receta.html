@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de la Receta</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">  <!-- Enlace a tu CSS -->
+</head>
+<body>
+    <div class="container">
+        <h1>Detalles de la Receta</h1>
+        <h2>Paciente: {{ receta.id_paciente }}</h2>  <!-- Muestra el paciente asociado -->
+        <p><strong>Fecha de Emisión:</strong> {{ receta.fecha_Emision }}</p>
+        <p><strong>Fecha de Reposición:</strong> {{ receta.fecha_Reposicion }}</p>
+        <p><strong>Médico:</strong> {{ receta.medico }}</p>
+        <p><strong>Lugar:</strong> {{ receta.lugar }}</p>
+
+        <h3>Medicamentos Prescritos</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre del Medicamento</th>
+                    <th>Dosis</th>
+                    <th>Presentación</th>
+                    <th>Cantidad</th>
+                    <th>Frecuencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in receta_medicamentos %}
+                <tr>
+                    <td>{{ item.medicamento.nombre_Medicamento }}</td>
+                    <td>{{ item.medicamento.dosis }}</td>
+                    <td>{{ item.medicamento.presentacion }}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>{{ item.frecuencia }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No se han agregado medicamentos a esta receta.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'agregar_receta' %}">Agregar Nueva Receta</a> <!-- O un enlace de regreso -->
+    </div>
+</body>
+</html>
