@@ -406,7 +406,7 @@ def recetas(request):
     recetas_list = receta.objects.filter(id_usuario=request.user)
     return render(request, 'Programar/recetas.html', {'recetas': recetas_list})
 
-
+######################################################################################################################################
 from django.shortcuts import render, redirect
 from .forms import RecetaAgregarForm
 from .models import receta
@@ -422,41 +422,48 @@ def agregar_receta(request):
             instancia.id_usuario = request.user
             instancia.save()
             return redirect('receta_terminada', receta_id=instancia.id_Recetas)
-            #return redirect('recetas')  # Redirige a la vista de lista de recetas
+        
     else:
         form = RecetaAgregarForm()
         form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)  # Filtra los pacientes para el usuario autenticado
     return render(request, 'Programar/agregar_receta.html', {'form': form})
 
 
-
+####################################################################################################################################
 
 
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import medicamento, RecetaMedicamento
-from .forms import RecetaMedicamentosForm
+from .forms import RecetaMedicamentoAgregarForm
 
+
+
+
+@login_required(login_url='/accounts/login/')
 def receta_terminada(request, receta_id):
-    receta_instancia = get_object_or_404(receta, id_Recetas=receta_id)
-    
+    receta = receta.objects.get(id_Recetas=receta_id)
     if request.method == 'POST':
-        form = RecetaMedicamentosForm(request.POST, user=request.user, receta=receta_instancia)
+        form = RecetaMedicamentoAgregarForm(request.POST)
         if form.is_valid():
-            receta_medicamento = form.save(commit=False)
-            receta_medicamento.receta = receta_instancia
-            receta_medicamento.usuario = request.user
-            receta_medicamento.save()
-            return redirect('receta_terminada', receta_id=receta_id)
+            medicamento = form.cleaned_data['medicamento']
+            # Verificar si el medicamento ya ha sido agregado a esta receta
+            if not RecetaMedicamento.objects.filter(receta=receta, medicamento=medicamento).exists():
+                receta_medicamento = RecetaMedicamento(
+                    receta=receta,
+                    medicamento=medicamento,
+                    cantidad=form.cleaned_data['cantidad'],
+                    frecuencia=form.cleaned_data['frecuencia'],
+                    usuario=request.user
+                )
+                receta_medicamento.save()
+                return redirect('receta_detalle', receta_id=receta_id)  # Redirigir a la vista de detalles de la receta
+            else:
+                form.add_error('medicamento', 'Este medicamento ya está agregado a la receta.')
     else:
-        form = RecetaMedicamentosForm(user=request.user, receta=receta_instancia)
-    
-    return render(request, 'Programar/receta_terminada.html', {'form': form, 'receta': receta_instancia})
+        form = RecetaMedicamentoAgregarForm()
+        form.fields['medicamento'].queryset = medicamento.objects.filter(id_usuario=request.user)  # Filtrar medicamentos
 
-
-
-
-
-
+    return render(request, 'Programar/receta_terminada.html', {'form': form, 'receta': receta})
 
 
 

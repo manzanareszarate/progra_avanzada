@@ -1,8 +1,6 @@
-
-<h2>Agregar Medicamento a la Receta</h2>
-<form method="post" action="{% url 'receta_terminada' receta.id_Recetas %}">
+<h2>Agregar Medicamento a la Receta: {{ receta }}</h2>
+<form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Agregar Medicamento</button>
 </form>
-
