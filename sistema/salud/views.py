@@ -413,12 +413,17 @@ from .models import receta
 from django.contrib.auth.decorators import login_required
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import receta, RecetaMedicamento  # Asegúrate de que los modelos estén importados
+from .forms import RecetaMedicamentoFormSet  # Asegúrate de que el FormSet esté importado
+
 @login_required(login_url='/accounts/login/')
 def agregar_receta(request):
     if request.method == 'POST':
         form = RecetaAgregarForm(request.POST)
         if form.is_valid():
-            instancia=form.save(commit=False)
+            instancia = form.save(commit=False)
             instancia.id_usuario = request.user
             instancia.save()
             return redirect('receta_terminada', receta_id=instancia.id_Recetas)
@@ -428,38 +433,15 @@ def agregar_receta(request):
         form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)  # Filtra los pacientes para el usuario autenticado
     return render(request, 'Programar/agregar_receta.html', {'form': form})
 
-
-####################################################################################################################################
-
-
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import medicamento, RecetaMedicamento
-from .forms import RecetaMedicamentoFormSet
-
-
-
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from .models import RecetaMedicamento # Asegúrate de que estos modelos estén importados
- # Asegúrate de que tu formulario esté importado
-
-
-
-from django.forms import modelformset_factory
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from .models import receta, RecetaMedicamento
-from .forms import RecetaMedicamentoFormSet
-
 @login_required(login_url='/accounts/login/')
 def receta_terminada(request, receta_id):
     receta_instance = get_object_or_404(receta, id_Recetas=receta_id)
 
     if request.method == 'POST':
         formset = RecetaMedicamentoFormSet(request.POST, queryset=RecetaMedicamento.objects.filter(receta=receta_instance))
-        
+
         if formset.is_valid():
+            # Guardar cada formulario en el formset
             for form in formset:
                 if form.cleaned_data:  # Solo procesar formularios con datos
                     medicamento_instance = form.cleaned_data['medicamento']
@@ -468,7 +450,6 @@ def receta_terminada(request, receta_id):
 
                     # Verificar si el medicamento ya ha sido agregado a esta receta
                     if not RecetaMedicamento.objects.filter(receta=receta_instance, medicamento=medicamento_instance).exists():
-                        # Si el formulario tiene datos válidos y el medicamento no está duplicado, guardar
                         receta_medicamento = RecetaMedicamento(
                             receta=receta_instance,
                             medicamento=medicamento_instance,
@@ -478,54 +459,14 @@ def receta_terminada(request, receta_id):
                         )
                         receta_medicamento.save()  # Guardar en la tabla 'RecetaMedicamento'
                     else:
-                        # Si el medicamento ya existe, agregar un error
                         form.add_error('medicamento', f'El medicamento "{medicamento_instance}" ya está agregado a la receta.')
 
-            return redirect('detalles_receta', receta_id=receta_id)  # Redirigir a detalles de la receta
+            return redirect('detalles_receta', receta_id=receta_id)
 
     else:
         formset = RecetaMedicamentoFormSet(queryset=RecetaMedicamento.objects.filter(receta=receta_instance))
 
-    # Renderizar la plantilla
     return render(request, 'Programar/receta_terminada.html', {'formset': formset, 'receta': receta_instance})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @login_required(login_url='/accounts/login/')
 def detalles_receta(request, receta_id):
@@ -540,6 +481,47 @@ def detalles_receta(request, receta_id):
         'receta': receta_instance,
         'receta_medicamentos': receta_medicamentos
     })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

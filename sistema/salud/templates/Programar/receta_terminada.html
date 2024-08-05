@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
@@ -41,8 +40,13 @@
                 newForm.find('select').val(''); // Limpiar el select
                 newForm.find('.remove-form').show(); // Mostrar el botón de eliminar
 
-                // Cambiar el título para reflejar el nuevo número
+                // Actualizar el título del nuevo formulario
                 newForm.find('h4').text(`Médicamento ${formset + 1}`);
+
+                newForm.insertAfter($('.medicamento-form:last')); // Insertar el nuevo formulario después del último
+
+                // Actualizar el management form
+                $('#id_form-TOTAL_FORMS').val(formset + 1); // Incrementar el número total de formularios
 
                 // Actualizar los IDs de los formularios clonados
                 newForm.find('input, select').each(function() {
@@ -51,17 +55,17 @@
                     $(this).attr('name', name).attr('id', id);
                 });
 
-                // Insertar el nuevo formulario después del último
-                newForm.insertAfter($('.medicamento-form:last')); 
-                formset++; // Incrementar el contador de formularios
+                formset++; // Incrementar el conteo de formularios
             });
 
             // Eliminar formulario
             $(document).on('click', '.remove-form', function() {
                 $(this).closest('.medicamento-form').remove();
+                // Actualizar el management form después de eliminar
+                formset--;
+                $('#id_form-TOTAL_FORMS').val(formset);
             });
         });
     </script>
 </body>
 </html>
-
