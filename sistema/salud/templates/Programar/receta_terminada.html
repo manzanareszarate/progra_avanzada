@@ -1,6 +1,67 @@
-<h2>Agregar Medicamento a la Receta: {{ receta }}</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Agregar Medicamento</button>
-</form>
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Medicamentos a la Receta</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">  <!-- Enlaza tu CSS si es necesario -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Asegúrate de tener jQuery -->
+</head>
+<body>
+    <div class="container">
+        <h1>Agregar Medicamentos a la Receta: {{ receta.id_Recetas }}</h1>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div id="medicamentos-formset">
+                {{ formset.management_form }}
+                {% for form in formset %}
+                    <div class="medicamento-form">
+                        <h4>Médicamento {{ forloop.counter }}</h4>
+                        {{ form.medicamento }} {{ form.cantidad }} {{ form.frecuencia }}
+                        <button type="button" class="remove-form">Eliminar</button>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" id="add-form">Agregar otro medicamento</button>
+            <button type="submit">Guardar Receta</button>
+        </form>
+        <a href="{% url 'recetas' %}">Volver a la lista de recetas</a>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            let formset = {{ formset.total_form_count }}; // Total de formularios existentes
+
+            $('#add-form').click(function() {
+                let newForm = $('.medicamento-form:first').clone(); // Clonar el primer formulario
+                newForm.find('input').val(''); // Limpiar los valores de los inputs
+                newForm.find('select').val(''); // Limpiar el select
+                newForm.find('.remove-form').show(); // Mostrar el botón de eliminar
+
+                // Cambiar el título para reflejar el nuevo número
+                newForm.find('h4').text(`Médicamento ${formset + 1}`);
+
+                // Actualizar los IDs de los formularios clonados
+                newForm.find('input, select').each(function() {
+                    const name = $(this).attr('name').replace(/-\d+-/, `-${formset}-`);
+                    const id = $(this).attr('id').replace(/-\d+-/, `-${formset}-`);
+                    $(this).attr('name', name).attr('id', id);
+                });
+
+                // Insertar el nuevo formulario después del último
+                newForm.insertAfter($('.medicamento-form:last')); 
+                formset++; // Incrementar el contador de formularios
+            });
+
+            // Eliminar formulario
+            $(document).on('click', '.remove-form', function() {
+                $(this).closest('.medicamento-form').remove();
+            });
+        });
+    </script>
+</body>
+</html>
+
