@@ -193,7 +193,42 @@ class RecetaAgregarForm(forms.ModelForm):
 
 
 
+from django import forms
+from .models import RecetaMedicamento,  medicamento
 
+class RecetaMedicamentosForm(forms.ModelForm):
+    class Meta:
+        model = RecetaMedicamento
+        fields = ['medicamento', 'cantidad', 'frecuencia']
+        widgets = {
+            'cantidad': forms.TextInput(attrs={'placeholder': 'Cantidad'}),
+            'frecuencia': forms.TextInput(attrs={'placeholder': 'Frecuencia'}),
+        }
+
+    medicamento = forms.ModelChoiceField(
+        queryset=medicamento.objects.none(),  # Se filtrará en la vista
+        empty_label="Selecciona un medicamento",
+        label="Medicamento",
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        receta = kwargs.pop('receta', None)
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['medicamento'].queryset = medicamento.objects.filter(id_usuario=user)
+        self.receta = receta
+
+    def clean(self):
+        cleaned_data = super().clean()
+        medicamento = cleaned_data.get('medicamento')
+
+        if medicamento:
+            # Verifica si el medicamento ya está en la receta
+            if RecetaMedicamento.objects.filter(receta=self.receta, medicamento=medicamento).exists():
+                self.add_error('medicamento', 'Este medicamento ya está en la receta.')
+        return cleaned_data
 
 
 

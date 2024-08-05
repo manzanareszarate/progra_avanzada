@@ -412,17 +412,19 @@ from .forms import RecetaAgregarForm
 from .models import receta
 from django.contrib.auth.decorators import login_required
 
+
 @login_required(login_url='/accounts/login/')
 def agregar_receta(request):
     if request.method == 'POST':
         form = RecetaAgregarForm(request.POST)
         if form.is_valid():
-            instancia =form.save(commit=False)
+            instancia=form.save(commit=False)
             instancia.id_usuario = request.user
             instancia.save()
-            return redirect('recetas')  # Redirige a la vista de lista de recetas
+            return redirect('receta_terminada', receta_id=instancia.id_Recetas)
+            #return redirect('recetas')  # Redirige a la vista de lista de recetas
     else:
-        form = RecetaAgregarForm
+        form = RecetaAgregarForm()
         form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)  # Filtra los pacientes para el usuario autenticado
     return render(request, 'Programar/agregar_receta.html', {'form': form})
 
@@ -430,11 +432,25 @@ def agregar_receta(request):
 
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import medicamento, RecetaMedicamento
+from .forms import RecetaMedicamentosForm
 
-
-
-
-
+def receta_terminada(request, receta_id):
+    receta_instancia = get_object_or_404(receta, id_Recetas=receta_id)
+    
+    if request.method == 'POST':
+        form = RecetaMedicamentosForm(request.POST, user=request.user, receta=receta_instancia)
+        if form.is_valid():
+            receta_medicamento = form.save(commit=False)
+            receta_medicamento.receta = receta_instancia
+            receta_medicamento.usuario = request.user
+            receta_medicamento.save()
+            return redirect('receta_terminada', receta_id=receta_id)
+    else:
+        form = RecetaMedicamentosForm(user=request.user, receta=receta_instancia)
+    
+    return render(request, 'Programar/receta_terminada.html', {'form': form, 'receta': receta_instancia})
 
 
 
