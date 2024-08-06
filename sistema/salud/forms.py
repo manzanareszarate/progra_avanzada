@@ -188,10 +188,16 @@ class RecetaAgregarForm(forms.ModelForm):
 
 
 
-
+from django import forms
+from django.forms import modelformset_factory
+from .models import RecetaMedicamento, medicamento
 from django import forms
 from django.forms import modelformset_factory
 from .models import RecetaMedicamento, medicamento  # Asegúrate de que los modelos estén importados
+
+
+from django import forms
+from django.forms import modelformset_factory
 
 class RecetaMedicamentoForm(forms.ModelForm):
     class Meta:
@@ -203,26 +209,21 @@ class RecetaMedicamentoForm(forms.ModelForm):
             'frecuencia': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
+class RecetaMedicamentoFormSet(forms.BaseModelFormSet):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         if user:
-            self.fields['medicamento'].queryset = medicamento.objects.filter(id_usuario=user)  # Filtrar medicamentos
+            for form in self.forms:
+                form.fields['medicamento'].queryset = medicamento.objects.filter(id_usuario=user)
 
-# Crear el Formset
+# Crear el formset usando tu modelo y el formset personalizado
 RecetaMedicamentoFormSet = modelformset_factory(
     RecetaMedicamento,
     form=RecetaMedicamentoForm,
-    extra=1,  # Número de formularios extra a mostrar inicialmente
-    can_delete=True  # Permite eliminar formularios
+    formset=RecetaMedicamentoFormSet,
+    extra=1  # Número de formularios adicionales que se mostrarán
 )
-
-
-
-
-
-
-
 
 
 

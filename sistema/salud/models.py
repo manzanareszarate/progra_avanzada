@@ -90,7 +90,7 @@ class RecetaMedicamento(models.Model):
     medicamento = models.ForeignKey(medicamento, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(verbose_name='Cantidad')
     frecuencia = models.CharField(max_length=50, verbose_name='Frecuencia')
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Usuario')
+    
 
     class Meta:
         unique_together = ('receta', 'medicamento')  # Asegura que la combinación sea única
