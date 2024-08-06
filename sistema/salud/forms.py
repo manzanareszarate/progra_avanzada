@@ -164,30 +164,6 @@ class MedicamentoForm(forms.ModelForm):
 
 ##############################################################################################################
 
-class RecetaAgregarForm(forms.ModelForm):
-    class Meta:
-        model = receta
-        fields = ['id_paciente', 'fecha_Emision', 'fecha_Reposicion', 'medico', 'lugar']
-        widgets = {
-            'fecha_Emision': forms.DateInput(attrs={'type': 'date'}),
-            'fecha_Reposicion': forms.DateInput(attrs={'type': 'date'}),
-        }
-
-    
-        id_paciente = forms.ModelChoiceField(
-        queryset=paciente.objects.all(),
-        empty_label="Selecciona un paciente",
-        label="Nombre del Paciente",
-        widget=forms.Select(attrs={'class': 'form-control'})
-    )
-
-
-
-
-
-
-
-
 
 from django import forms
 from django.forms import modelformset_factory
@@ -198,7 +174,16 @@ from .models import RecetaMedicamento, medicamento  # Asegúrate de que los mode
 
 
 from django import forms
+from .models import RecetaMedicamento, medicamento
+
+from django import forms
 from django.forms import modelformset_factory
+from .models import RecetaMedicamento, medicamento
+from django import forms
+from django.forms import modelformset_factory
+from .models import RecetaMedicamento, medicamento
+
+
 
 class RecetaMedicamentoForm(forms.ModelForm):
     class Meta:
@@ -226,6 +211,28 @@ RecetaMedicamentoFormSet = modelformset_factory(
     formset=RecetaMedicamentoFormSet,
     extra=1  # Número de formularios adicionales que se mostrarán
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

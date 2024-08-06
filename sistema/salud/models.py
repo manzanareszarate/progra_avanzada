@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.db import models
 from django.utils import timezone
 from datetime import date
 from django.contrib.auth.models import User
@@ -57,9 +59,6 @@ def __str__(self):
 
 
 ########################################################################################
-
-from django.db import models
-from django.contrib.auth.models import User
 
 class medicamento(models.Model):
     id_Medicamento = models.AutoField(primary_key=True, verbose_name='ID_Medicamento')
