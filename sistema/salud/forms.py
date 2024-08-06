@@ -160,6 +160,8 @@ class MedicamentoForm(forms.ModelForm):
             'presentacion': forms.TextInput(attrs={'placeholder': 'Presentación'}),
         }
 
+
+
 ##############################################################################################################
 
 class RecetaAgregarForm(forms.ModelForm):
@@ -207,6 +209,7 @@ class RecetaMedicamentoForm(forms.ModelForm):
             'cantidad': forms.NumberInput(attrs={'class': 'form-control'}),
             'frecuencia': forms.TextInput(attrs={'class': 'form-control'}),
         }
+        
 
 class RecetaMedicamentoFormSet(forms.BaseModelFormSet):
     def __init__(self, *args, **kwargs):

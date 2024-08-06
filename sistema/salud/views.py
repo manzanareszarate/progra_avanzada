@@ -554,10 +554,13 @@ def receta_terminada(request, receta_id):
     # Obtener la instancia de la receta
     receta_instance = get_object_or_404(receta, id_Recetas=receta_id)
 
+    # Obtener los medicamentos asociados a la receta
+    receta_medicamentos = RecetaMedicamento.objects.filter(receta=receta_instance)
+
     if request.method == 'POST':
         formset = RecetaMedicamentoFormSet(
             request.POST,
-            queryset=RecetaMedicamento.objects.filter(receta=receta_instance),
+            queryset=receta_medicamentos,
             user=request.user  # Pasar el usuario al formset
         )
 
@@ -582,12 +585,22 @@ def receta_terminada(request, receta_id):
             return redirect('detalles_receta', receta_id=receta_id)
 
     else:
+        # Filtrar los medicamentos disponibles (los que no están en receta_medicamentos)
+        medicamentos_utilizados_ids = receta_medicamentos.values_list('medicamento_id', flat=True)
+        medicamentos_disponibles = medicamento.objects.exclude(id__in=medicamentos_utilizados_ids)
+
+        # Actualizar el queryset del formset
         formset = RecetaMedicamentoFormSet(
-            queryset=RecetaMedicamento.objects.filter(receta=receta_instance),
+            queryset=receta_medicamentos,
             user=request.user  # Pasar el usuario al formset
         )
 
-    return render(request, 'Programar/receta_terminada.html', {'formset': formset, 'receta': receta_instance})
+    return render(request, 'Programar/receta_terminada.html', {
+        'formset': formset,
+        'receta': receta_instance,
+        'medicamentos_disponibles': medicamentos_disponibles  # Pasar los medicamentos disponibles
+    })
+
 
 
 
