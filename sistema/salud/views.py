@@ -399,6 +399,207 @@ def eliminar_medicamentos(request, id_Eliminarmedicamentos):
 ##############################################################################################################3
 ########3 ver recetas
 # views.py
+########3 ver recetas
+# views.py
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##############################################################################################################3
+########3 ver recetas
+# views.py
+
+
+@login_required
+def recetas(request):
+    recetas_list = receta.objects.filter(id_usuario=request.user)
+    return render(request, 'Programar/recetas.html', {'recetas': recetas_list})
+
+
+
+
+
+
+
+
+
+######################################################################################################################################
+from django.shortcuts import render, redirect
+from .forms import RecetaAgregarForm
+from .models import receta
+from django.contrib.auth.decorators import login_required
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import receta, RecetaMedicamento  # Asegúrate de que los modelos estén importados
+from .forms import RecetaMedicamentoFormSet  # Asegúrate de que el FormSet esté importado
+
+
+
+##############################################################################################################3
+
+@login_required(login_url='/accounts/login/')
+def agregar_receta(request):
+    if request.method == 'POST':
+        form = RecetaAgregarForm(request.POST)
+        if form.is_valid():
+            instancia = form.save(commit=False)  # No guardar en la base de datos aún
+            instancia.id_usuario = request.user  # Asignar el usuario que crea la receta
+            instancia.save()  # Guardar la receta en la base de datos
+            return redirect('receta_terminada', receta_id=instancia.id_Recetas)
+    else:
+        form = RecetaAgregarForm()  # Crear un nuevo formulario vacío
+
+    # Filtra los pacientes para el usuario autenticado al cargar el formulario
+    form.fields['id_paciente'].queryset = paciente.objects.filter(id_usuario=request.user)
+
+    return render(request, 'Programar/agregar_receta.html', {'form': form})
+
+##############################################################################################################3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@login_required(login_url='/accounts/login/')
+def receta_terminada(request, receta_id):
+    # Obtener la instancia de la receta
+    receta_instance = get_object_or_404(receta, id_Recetas=receta_id)
+
+    if request.method == 'POST':
+        formset = RecetaMedicamentoFormSet(
+            request.POST,
+            queryset=RecetaMedicamento.objects.filter(receta=receta_instance),
+            user=request.user  # Pasar el usuario al formset
+        )
+
+        if formset.is_valid():
+            for form in formset:
+                if form.cleaned_data:
+                    medicamento_instance = form.cleaned_data['medicamento']
+                    cantidad = form.cleaned_data['cantidad']
+                    frecuencia = form.cleaned_data['frecuencia']
+
+                    if not RecetaMedicamento.objects.filter(receta=receta_instance, medicamento=medicamento_instance).exists():
+                        receta_medicamento = RecetaMedicamento(
+                            receta=receta_instance,
+                            medicamento=medicamento_instance,
+                            cantidad=cantidad,
+                            frecuencia=frecuencia,
+                        )
+                        receta_medicamento.save()
+                    else:
+                        form.add_error('medicamento', f'El medicamento "{medicamento_instance}" ya está agregado a la receta.')
+
+            return redirect('detalles_receta', receta_id=receta_id)
+
+    else:
+        formset = RecetaMedicamentoFormSet(
+            queryset=RecetaMedicamento.objects.filter(receta=receta_instance),
+            user=request.user  # Pasar el usuario al formset
+        )
+
+    return render(request, 'Programar/receta_terminada.html', {'formset': formset, 'receta': receta_instance})
+
+
+
+
+
+##############################################################################################################3
+########3 ver recetas
+# views.py
+
+##############################################################################################################3
+########3 ver recetas
+# views.py
 
 
 @login_required
@@ -601,36 +802,6 @@ def detalles_receta(request, receta_id):
         'receta': receta_instance,
         'receta_medicamentos': receta_medicamentos
     })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

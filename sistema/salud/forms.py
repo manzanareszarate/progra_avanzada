@@ -162,7 +162,6 @@ class MedicamentoForm(forms.ModelForm):
 
 ##############################################################################################################
 
-
 class RecetaAgregarForm(forms.ModelForm):
     class Meta:
         model = receta
@@ -224,35 +223,6 @@ RecetaMedicamentoFormSet = modelformset_factory(
     formset=RecetaMedicamentoFormSet,
     extra=1  # Número de formularios adicionales que se mostrarán
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
