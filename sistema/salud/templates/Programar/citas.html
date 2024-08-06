@@ -14,17 +14,21 @@
         }
         th, td {
             border: 1px solid black; /* Borde de las celdas */
-            padding: 20px; /* Aumenta el espacio interno de las celdas */
+            padding: 10px; /* Espacio interno reducido de las celdas */
             text-align: center; /* Alinea el texto al centro */
         }
         th {
             background-color: #f2f2f2; /* Color de fondo para los encabezados */
+            width: 15%; /* Aumentar el ancho de las columnas de encabezado */
+        }
+        td {
+            height: 40px; /* Altura de las filas más delgada */
         }
         tbody tr {
             border-bottom: 1px solid #ddd; /* Borde inferior de las filas (opcional) */
         }
         .button {
-            padding: 8px 12px;
+            padding: 6px 10px; /* Tamaño del botón ajustado */
             margin: 5px; /* Espacio entre los botones */
             border: none;
             border-radius: 4px;
@@ -32,7 +36,7 @@
             text-decoration: none;
             font-weight: bold;
             display: inline-block; /* Asegura que el margen se aplique correctamente */
-            width: 120px; /* Ancho fijo para todos los botones */
+            width: 100px; /* Ancho fijo para todos los botones */
             text-align: center; /* Centra el texto dentro del botón */
             box-sizing: border-box; /* Incluye padding y border en el ancho total */
         }
@@ -55,24 +59,7 @@
         h1 {
             text-align: center; /* Centra el título */
         }
-        .details {
-            display: none; /* Oculta la sección de detalles por defecto */
-            margin-top: 10px;
-            border: 1px solid #ddd; /* Borde para la sección de detalles */
-            padding: 10px;
-            background-color: #f9f9f9; /* Color de fondo para la sección de detalles */
-        }
-        .details-button {
-            cursor: pointer; /* Cambia el cursor para indicar que es clickable */
-            color: blue; /* Color para el texto del botón de detalles */
-        }
     </style>
-    <script>
-        function toggleDetails(citaId) {
-            const detailsDiv = document.getElementById(`details-${citaId}`);
-            detailsDiv.style.display = detailsDiv.style.display === 'none' ? 'block' : 'none';
-        }
-    </script>
 </head>
 <body>
     <h1>Información de las Citas</h1>
@@ -87,7 +74,6 @@
                     <th>Hora</th>
                     <th>Lugar</th>
                     <th>Especialidad</th>
-                    <th>Detalles</th> <!-- Nueva columna para detalles -->
                     <th>Acciones</th> <!-- Columna para los botones -->
                 </tr>
             </thead>
@@ -100,21 +86,13 @@
                     <td>{{ cita.lugar }}</td>
                     <td>{{ cita.especialidad }}</td>
                     <td>
-                        <span class="details-button" onclick="toggleDetails({{ cita.id_Cita }})">+</span>
-                        <div id="details-{{ cita.id_Cita }}" class="details">
-                            <!-- Aquí puedes incluir la información detallada de la receta -->
-                            <p><strong>Detalles de la receta:</strong></p>
-                            <p>{{ cita.detalle_receta }}</p>
-                        </div>
-                    </td>
-                    <td>
-                        <a href="" class="button edit-button">Editar</a>
+                        <a href="{% url 'editar_cita' cita.id_Cita %}" class="button edit-button">Editar</a>
                         <a href="{% url 'eliminar_cita' cita.id_Cita %}" class="button delete-button" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar</a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7">No hay citas disponibles.</td>
+                    <td colspan="6">No hay citas disponibles.</td>
                 </tr>
                 {% endfor %}
             </tbody>

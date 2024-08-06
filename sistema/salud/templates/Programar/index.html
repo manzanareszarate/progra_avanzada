@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block titulo %}Paciente{% endblock %}
+{% block titulo %}Pacientes{% endblock %}
 
 {% block contenido %}
 <!DOCTYPE html>
@@ -14,17 +14,21 @@
         }
         th, td {
             border: 1px solid black; /* Borde de las celdas */
-            padding: 20px; /* Aumenta el espacio interno de las celdas */
+            padding: 8px; /* Espacio interno reducido de las celdas */
             text-align: center; /* Alinea el texto al centro */
         }
         th {
             background-color: #f2f2f2; /* Color de fondo para los encabezados */
+            width: 12%; /* Aumentar el ancho de las columnas de encabezado */
+        }
+        td {
+            height: 30px; /* Altura de las filas más delgada */
         }
         tbody tr {
             border-bottom: 1px solid #ddd; /* Borde inferior de las filas (opcional) */
         }
         .button {
-            padding: 8px 12px;
+            padding: 6px 10px; /* Tamaño del botón ajustado */
             margin: 5px; /* Espacio entre los botones */
             border: none;
             border-radius: 4px;
@@ -32,7 +36,7 @@
             text-decoration: none;
             font-weight: bold;
             display: inline-block; /* Asegura que el margen se aplique correctamente */
-            width: 120px; /* Ancho fijo para todos los botones */
+            width: 90px; /* Ancho fijo para todos los botones */
             text-align: center; /* Centra el texto dentro del botón */
             box-sizing: border-box; /* Incluye padding y border en el ancho total */
         }
@@ -106,5 +110,4 @@
     </form>
 </body>
 </html>
-
 {% endblock %}

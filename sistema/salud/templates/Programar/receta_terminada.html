@@ -7,19 +7,33 @@
     <title>Agregar Medicamentos a la Receta</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">  <!-- Enlaza tu CSS si es necesario -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Asegúrate de tener jQuery -->
+    <style>
+        .duplicate {
+            border: 2px solid red; /* Resaltar con borde rojo */
+            background-color: #ffcccc; /* Color de fondo para duplicados */
+        }
+        .medicamento-name.duplicate {
+            text-decoration: underline; /* Subrayar solo el nombre del medicamento duplicado */
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Agregar Medicamentos a la Receta: {{ receta.id_Recetas }}</h1>
 
-        <form method="POST">
+        <form method="POST" id="medicamento-form">
             {% csrf_token %}
             <div id="medicamentos-formset">
                 {{ formset.management_form }}
                 {% for form in formset %}
                     <div class="medicamento-form">
                         <h4>Médicamento {{ forloop.counter }}</h4>
-                        {{ form.medicamento }} {{ form.cantidad }} {{ form.frecuencia }}
+                        <label for="{{ form.medicamento.id_for_label }}">Medicamento:</label>
+                        {{ form.medicamento }} <br>
+                        <label for="{{ form.cantidad.id_for_label }}">Dosis:</label>
+                        {{ form.cantidad }} <br>
+                        <label for="{{ form.frecuencia.id_for_label }}">Frecuencia:</label>
+                        {{ form.frecuencia }} <br>
                         <button type="button" class="remove-form">Eliminar</button>
                     </div>
                 {% endfor %}
@@ -46,7 +60,7 @@
                 newForm.insertAfter($('.medicamento-form:last')); // Insertar el nuevo formulario después del último
 
                 // Actualizar el management form
-                $('#id_form-TOTAL_FORMS').val(formset+1 ); // Incrementar el número total de formularios
+                $('#id_form-TOTAL_FORMS').val(formset + 1); // Incrementar el número total de formularios
 
                 // Actualizar los IDs de los formularios clonados
                 newForm.find('input, select').each(function() {
@@ -64,6 +78,36 @@
                 // Actualizar el management form después de eliminar
                 formset--;
                 $('#id_form-TOTAL_FORMS').val(formset);
+            });
+
+            // Validar al enviar el formulario
+            $('#medicamento-form').submit(function(e) {
+                let medicamentosIds = [];
+                let duplicados = []; // Array para almacenar medicamentos duplicados
+
+                // Limpiar el estilo de duplicados
+                $('.medicamento-form').removeClass('duplicate');
+                $('.medicamento-name.duplicate').removeClass('duplicate'); // Limpiar subrayados
+
+                // Recorrer todos los formularios para obtener los IDs de medicamentos
+                $('.medicamento-form select').each(function() {
+                    const selectedValue = $(this).val();
+                    if (selectedValue) {
+                        if (medicamentosIds.includes(selectedValue)) {
+                            duplicados.push(selectedValue); // Guardar duplicado
+                            // Resaltar solo el nombre del medicamento duplicado
+                            $(this).closest('.medicamento-form').find('label').first().addClass('duplicate');
+                        } else {
+                            medicamentosIds.push(selectedValue);
+                        }
+                    }
+                });
+
+                // Si hay duplicados, mostrar alertas
+                if (duplicados.length > 0) {
+                    e.preventDefault(); // Prevenir el envío del formulario
+                    alert('Error: Los siguientes medicamentos están duplicados: ' + duplicados.join(', '));
+                }
             });
         });
     </script>
