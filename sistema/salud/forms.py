@@ -10,7 +10,7 @@ from .models import RecetaMedicamento
 from .models import RecetaMedicamento, medicamento
 from django.forms import modelformset_factory
 from .models import RecetaMedicamento, medicamento
-from .models import Alarma
+from .models import alarmas
 
 
 class pacienteForm(forms.ModelForm):#formulario para el modelo paciente
@@ -222,33 +222,32 @@ RecetaMedicamentoFormSet = modelformset_factory(
 ##############################################################################################################
 #### Alarmas
 
-# forms.py
+
 
 
 
 class AlarmaForm(forms.ModelForm):
     class Meta:
-        model = Alarma
-        fields = ['id_paciente', 'fecha_alarma', 'frecuencia', 'medio_notificacion', 'activa']
-        widgets = {
-            'fecha_alarma': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-        }
+        model = alarmas
+        fields = [
+            'id_paciente', 
+            'id_cita', 
+            'id_laboratorio', 
+            'id_receta', 
+            'fecha_alarma', 
+            'frecuencia', 
+            'medio_notificacion', 
+            'activa'
+        ]
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('usuario', None)  # Extraemos el usuario de los argumentos
+        super().__init__(*args, **kwargs)  # Llamamos al constructor de la clase base
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        if user:  # Solo si el usuario está disponible
+            self.fields['id_cita'].queryset = cita.objects.filter(id_usuario=user)
+            self.fields['id_laboratorio'].queryset = laboratorio.objects.filter(id_usuario=user)
+            self.fields['id_receta'].queryset = receta.objects.filter(id_usuario=user)
 
 
 

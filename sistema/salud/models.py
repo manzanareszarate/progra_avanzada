@@ -141,20 +141,12 @@ class Control_Peso(models.Model):
 
 
 
+
+
+
+from datetime import timedelta
+
 class alarmas(models.Model):
-        id_Alarmas = models.AutoField(primary_key=True , verbose_name='ID_Alerta')
-        id_Recetas = models.ForeignKey(receta, on_delete=models.CASCADE, verbose_name='ID_Recetas')
-        id_paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
-        id_Cita = models.ForeignKey(cita, on_delete=models.CASCADE, verbose_name='ID_Cita')
-        id_Laboratorios = models.ForeignKey(laboratorio, on_delete=models.CASCADE, verbose_name='ID_Laboratorio')
-        fecha_Alarma = models.DateField(null=False, verbose_name='Fecha_Alarma')
-
-
-
-from django.db import models
-from django.contrib.auth.models import User
-
-class Alarma(models.Model):
     ALARMA_TIPO = (
         ('cita', 'Cita Médica'),
         ('laboratorio', 'Laboratorio'),
@@ -168,7 +160,6 @@ class Alarma(models.Model):
     )
     
     FRECUENCIA_OPCIONES = (
-        ('1 minuto', '1 minuto'),
         ('1 hora', '1 hora'),
         ('1 día', '1 día'),
         ('1 semana', '1 semana'),
@@ -177,7 +168,7 @@ class Alarma(models.Model):
     
     id_alarma = models.AutoField(primary_key=True, verbose_name='ID_Alarma')
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Usuario')
-    id_paciente = models.ForeignKey(paciente, on_delete=models.CASCADE, verbose_name='Paciente')
+    id_paciente = models.ForeignKey('paciente', on_delete=models.CASCADE, verbose_name='Paciente')
     fecha_alarma = models.DateTimeField(verbose_name='Fecha y Hora de la Alarma')
     frecuencia = models.CharField(max_length=20, choices=FRECUENCIA_OPCIONES, verbose_name='Frecuencia')
     medio_notificacion = models.CharField(max_length=20, choices=MEDIO_NOTIFICACION, verbose_name='Medio de Notificación')
@@ -191,3 +182,15 @@ class Alarma(models.Model):
         verbose_name = 'Alarma'
         verbose_name_plural = 'Alarmas'
         ordering = ['fecha_alarma']
+
+    def calcular_fecha_notificacion(self):
+        """Calcula la fecha de notificación basada en la frecuencia."""
+        if self.frecuencia == '1 hora':
+            return self.fecha_alarma - timedelta(hours=1)
+        elif self.frecuencia == '1 día':
+            return self.fecha_alarma - timedelta(days=1)
+        elif self.frecuencia == '1 semana':
+            return self.fecha_alarma - timedelta(weeks=1)
+        elif self.frecuencia == '1 mes':
+            return self.fecha_alarma - timedelta(days=30)  # Considera un mes como 30 días
+        return self.fecha_alarma  # Si no coincide, retorna la fecha original

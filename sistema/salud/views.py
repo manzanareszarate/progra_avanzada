@@ -507,18 +507,35 @@ def alarmas(request):
     return render(request, 'Programar/alarmas.html', {'alarmas': alarmas})
 
 ###Alarmas Agregar
+
+
+
+# views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import AlarmaForm
+from .models import cita, laboratorio, receta
+
 @login_required
 def agregar_alarmas(request):
     if request.method == 'POST':
-        form = AlarmaForm(request.POST)
+        form = AlarmaForm(request.POST, usuario=request.user)  # Pasamos el usuario aquí
         if form.is_valid():
             alarma = form.save(commit=False)
             alarma.id_usuario = request.user  # Asignar el usuario logueado
             alarma.save()
             return redirect('alarmas')  # Redirigir a la lista de alarmas
     else:
-        form = AlarmaForm()
+        form = AlarmaForm(usuario=request.user)  # Y aquí también
+
     return render(request, 'Programar/agregar_alarmas.html', {'form': form})
+
+
+
+
+
+
+
 
 ###Alarmas Editar
 

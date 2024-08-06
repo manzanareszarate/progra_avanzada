@@ -41,7 +41,7 @@ path('agregar_receta/', views.agregar_receta, name='agregar_receta'),
 path('detalles_receta/<int:receta_id>/', views.detalles_receta, name='detalles_receta'),
 path('receta_terminada/<int:receta_id>/',views.receta_terminada, name='receta_terminada'),
 path('agregar-alarmas/', views. agregar_alarmas, name='agregar_alarmas'),
-path('listar-alarmas/',views. alarmas, name='alarmas'),
+path('alarmas/',views. alarmas, name='alarmas'),
 path('editar-alarmas/<int:id_alarma>/',views. editar_alarmas, name='editar_alarmas'),
 path('eliminar-alarmas/<int:id_alarma>/',views. eliminar_alarmas, name='eliminar_alarmas'),
 ]
