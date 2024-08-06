@@ -1,0 +1,12 @@
+<!-- crear_alarma.html -->
+{% extends "base.html" %}
+
+{% block contenido %}
+<h2>Crear Alarma</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Guardar Alarma</button>
+</form>
+<a href="{% url 'alarmas' %}" class="btn btn-secondary">Volver a la lista</a>
+{% endblock %}

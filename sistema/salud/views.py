@@ -1,39 +1,49 @@
-from django.forms import inlineformset_factory
-from .models import receta
+from django.contrib.auth.models import User
+from .models import receta,medicamento
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
 from django.db import IntegrityError
-from .models import receta, medicamento
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
-from .models import receta, medicamento
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
-from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
-from django.contrib.auth.models import User
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from .forms import RegistroForm
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import cita, paciente,laboratorio,medicamento
+from .models import cita, paciente,laboratorio
 from .forms import CitaAgregarForm
 from .forms import CitaEditarForm
 from .forms import LaboratorioAgregarForm
 from .forms import Laboratorioeditarform
 from .forms import MedicamentoForm
-from .forms import EditarMedicamentoForm, pacienteForm,RecetaMedicamento
+from .forms import EditarMedicamentoForm, pacienteForm
+from .models import  RecetaMedicamento
+from .forms import RecetaMedicamentoFormSet
+from django.shortcuts import render, redirect
+from .forms import RecetaAgregarForm
+from .models import receta
+from .models import  RecetaMedicamento  
+from .models import Alarma
+from .forms import AlarmaForm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Create your views here.
@@ -398,36 +408,12 @@ def eliminar_medicamentos(request, id_Eliminarmedicamentos):
 
 ##############################################################################################################3
 ########3 ver recetas
-# views.py
-########3 ver recetas
-# views.py
 
 
 @login_required
 def recetas(request):
     recetas_list = receta.objects.filter(id_usuario=request.user)
     return render(request, 'Programar/recetas.html', {'recetas': recetas_list})
-
-
-
-
-
-
-
-
-
-######################################################################################################################################
-from django.shortcuts import render, redirect
-from .forms import RecetaAgregarForm
-from .models import receta
-from django.contrib.auth.decorators import login_required
-
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from .models import receta, RecetaMedicamento  # Asegúrate de que los modelos estén importados
-from .forms import RecetaMedicamentoFormSet  # Asegúrate de que el FormSet esté importado
-
 
 
 ##############################################################################################################3
@@ -450,33 +436,7 @@ def agregar_receta(request):
     return render(request, 'Programar/agregar_receta.html', {'form': form})
 
 ##############################################################################################################3
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from .models import  RecetaMedicamento
-from .forms import RecetaMedicamentoFormSet
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import receta, RecetaMedicamento, medicamento
-from .forms import RecetaMedicamentoFormSet
-
-
-
-
+#Agregar medicamentos a la receta
 
 @login_required(login_url='/accounts/login/')
 def receta_terminada(request, receta_id):
@@ -518,90 +478,8 @@ def receta_terminada(request, receta_id):
 
     return render(request, 'Programar/receta_terminada.html', {'formset': formset, 'receta': receta_instance})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+##############################################################################################################3
+#Detalles de la receta
 
 
 @login_required(login_url='/accounts/login/')
@@ -620,8 +498,52 @@ def detalles_receta(request, receta_id):
 
 
 
+#########################################################################################################################33
+##### Alarmas ver
+
+@login_required
+def alarmas(request):
+    alarmas = Alarma.objects.filter(id_usuario=request.user)  # Filtrar alarmas por usuario
+    return render(request, 'Programar/alarmas.html', {'alarmas': alarmas})
+
+###Alarmas Agregar
+@login_required
+def agregar_alarmas(request):
+    if request.method == 'POST':
+        form = AlarmaForm(request.POST)
+        if form.is_valid():
+            alarma = form.save(commit=False)
+            alarma.id_usuario = request.user  # Asignar el usuario logueado
+            alarma.save()
+            return redirect('alarmas')  # Redirigir a la lista de alarmas
+    else:
+        form = AlarmaForm()
+    return render(request, 'Programar/agregar_alarmas.html', {'form': form})
+
+###Alarmas Editar
+
+@login_required
+def editar_alarmas(request, id_alarma):
+    alarma = get_object_or_404(Alarma, id_alarma=id_alarma, id_usuario=request.user)
+    if request.method == 'POST':
+        form = AlarmaForm(request.POST, instance=alarma)
+        if form.is_valid():
+            form.save()
+            return redirect('alarmas')  # Redirigir a la lista de alarmas
+    else:
+        form = AlarmaForm(instance=alarma)
+    return render(request, 'Programar/editar_alarmas.html', {'form': form, 'alarma': alarma})
 
 
+###Alarmas Eliminar
+
+@login_required
+def eliminar_alarmas(request, id_alarma):
+    alarma = get_object_or_404(Alarma, id_alarma=id_alarma, id_usuario=request.user)
+    if request.method == 'POST':
+        alarma.delete()
+        return redirect('alarmas')  # Redirigir a la lista de alarmas
+    return render(request, 'Programar/eliminar_alarmas.html', {'alarma': alarma})
 
 
 

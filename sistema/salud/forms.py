@@ -7,9 +7,11 @@ from .models import laboratorio
 from .models import medicamento
 from .models import receta  
 from .models import RecetaMedicamento
+from .models import RecetaMedicamento, medicamento
+from django.forms import modelformset_factory
+from .models import RecetaMedicamento, medicamento
+from .models import Alarma
 
-
-from django.forms import inlineformset_factory, BaseFormSet, formset_factory
 
 class pacienteForm(forms.ModelForm):#formulario para el modelo paciente
     class Meta:
@@ -163,11 +165,7 @@ class MedicamentoForm(forms.ModelForm):
 
 
 ##############################################################################################################
-
-
-
-
-
+#Agregar Receta
 
 
 class RecetaAgregarForm(forms.ModelForm):
@@ -189,33 +187,8 @@ class RecetaAgregarForm(forms.ModelForm):
 
 
 
-
-
-
-
-
-
-
-
-
-from django import forms
-from django.forms import modelformset_factory
-from .models import RecetaMedicamento, medicamento
-from django import forms
-from django.forms import modelformset_factory
-from .models import RecetaMedicamento, medicamento  # Asegúrate de que los modelos estén importados
-
-
-from django import forms
-from .models import RecetaMedicamento, medicamento
-
-from django import forms
-from django.forms import modelformset_factory
-from .models import RecetaMedicamento, medicamento
-from django import forms
-from django.forms import modelformset_factory
-from .models import RecetaMedicamento, medicamento
-
+##############################################################################################################
+#Agregar medicamentos a la receta
 
 
 class RecetaMedicamentoForm(forms.ModelForm):
@@ -246,6 +219,20 @@ RecetaMedicamentoFormSet = modelformset_factory(
 )
 
 
+##############################################################################################################
+#### Alarmas
+
+# forms.py
+
+
+
+class AlarmaForm(forms.ModelForm):
+    class Meta:
+        model = Alarma
+        fields = ['id_paciente', 'fecha_alarma', 'frecuencia', 'medio_notificacion', 'activa']
+        widgets = {
+            'fecha_alarma': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
 
 
 

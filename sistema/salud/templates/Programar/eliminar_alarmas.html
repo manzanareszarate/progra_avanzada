@@ -1,0 +1,12 @@
+<!-- eliminar_alarma.html -->
+{% extends "base.html" %}
+
+{% block contenido %}
+<h2>Eliminar Alarma</h2>
+<p>¿Estás seguro de que deseas eliminar la alarma para {{ alarma.id_paciente }}?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+</form>
+<a href="{% url 'alarmas' %}" class="btn btn-secondary">Cancelar</a>
+{% endblock %}

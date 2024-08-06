@@ -114,13 +114,6 @@ class RecetaMedicamento(models.Model):
 
 
 
-
-
-
-
-
-
-
 class Control_Hipertensione (models.Model):
         id_Hipertension = models.AutoField(primary_key=True , verbose_name='ID_Hipertension')
         id_paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
@@ -144,6 +137,10 @@ class Control_Peso(models.Model):
     Altura = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Altura')
     IMC = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='IMC')
 
+
+
+
+
 class alarmas(models.Model):
         id_Alarmas = models.AutoField(primary_key=True , verbose_name='ID_Alerta')
         id_Recetas = models.ForeignKey(receta, on_delete=models.CASCADE, verbose_name='ID_Recetas')
@@ -154,3 +151,43 @@ class alarmas(models.Model):
 
 
 
+from django.db import models
+from django.contrib.auth.models import User
+
+class Alarma(models.Model):
+    ALARMA_TIPO = (
+        ('cita', 'Cita Médica'),
+        ('laboratorio', 'Laboratorio'),
+        ('receta', 'Receta Médica'),
+    )
+    
+    MEDIO_NOTIFICACION = (
+        ('email', 'Correo Electrónico'),
+        ('whatsapp', 'WhatsApp'),
+        ('sms', 'SMS'),
+    )
+    
+    FRECUENCIA_OPCIONES = (
+        ('1 minuto', '1 minuto'),
+        ('1 hora', '1 hora'),
+        ('1 día', '1 día'),
+        ('1 semana', '1 semana'),
+        ('1 mes', '1 mes'),
+    )
+    
+    id_alarma = models.AutoField(primary_key=True, verbose_name='ID_Alarma')
+    id_usuario = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Usuario')
+    id_paciente = models.ForeignKey(paciente, on_delete=models.CASCADE, verbose_name='Paciente')
+    fecha_alarma = models.DateTimeField(verbose_name='Fecha y Hora de la Alarma')
+    frecuencia = models.CharField(max_length=20, choices=FRECUENCIA_OPCIONES, verbose_name='Frecuencia')
+    medio_notificacion = models.CharField(max_length=20, choices=MEDIO_NOTIFICACION, verbose_name='Medio de Notificación')
+    activa = models.BooleanField(default=True, verbose_name='Activa')
+    fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Creación')
+
+    def __str__(self):
+        return f"Alarma para {self.id_paciente} - {self.id_usuario.username} - {self.fecha_alarma}"
+
+    class Meta:
+        verbose_name = 'Alarma'
+        verbose_name_plural = 'Alarmas'
+        ordering = ['fecha_alarma']
