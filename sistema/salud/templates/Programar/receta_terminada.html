@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agregar Medicamentos a la Receta</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">  <!-- Enlaza tu CSS si es necesario -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"> <!-- Enlaza tu CSS si es necesario -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Asegúrate de tener jQuery -->
     <style>
         .duplicate {
@@ -46,7 +46,7 @@
 
     <script>
         $(document).ready(function() {
-            let formset = {{ formset.total_form_count }}; // Total de formularios existentes
+            let formset = parseInt($('#id_form-TOTAL_FORMS').val()); // Obtener el total de formularios inicial
 
             $('#add-form').click(function() {
                 let newForm = $('.medicamento-form:first').clone(); // Clonar el primer formulario
@@ -57,27 +57,39 @@
                 // Actualizar el título del nuevo formulario
                 newForm.find('h4').text(`Médicamento ${formset + 1}`);
 
-                newForm.insertAfter($('.medicamento-form:last')); // Insertar el nuevo formulario después del último
-
-                // Actualizar el management form
-                $('#id_form-TOTAL_FORMS').val(formset + 1); // Incrementar el número total de formularios
-
-                // Actualizar los IDs de los formularios clonados
+                // Actualizar los IDs y nombres de los nuevos formularios
                 newForm.find('input, select').each(function() {
                     const name = $(this).attr('name').replace(/-\d+-/, `-${formset}-`);
                     const id = $(this).attr('id').replace(/-\d+-/, `-${formset}-`);
                     $(this).attr('name', name).attr('id', id);
                 });
 
+                newForm.insertAfter($('.medicamento-form:last')); // Insertar el nuevo formulario después del último
+
+                // Actualizar el management form
                 formset++; // Incrementar el conteo de formularios
+                $('#id_form-TOTAL_FORMS').val(formset); // Actualizar el número total de formularios
             });
 
             // Eliminar formulario
             $(document).on('click', '.remove-form', function() {
                 $(this).closest('.medicamento-form').remove();
-                // Actualizar el management form después de eliminar
-                formset--;
-                $('#id_form-TOTAL_FORMS').val(formset);
+                formset--; // Decrementar el conteo de formularios
+                $('#id_form-TOTAL_FORMS').val(formset); // Actualizar el número total de formularios
+
+                // Actualizar los títulos de los formularios restantes
+                $('.medicamento-form').each(function(index) {
+                    $(this).find('h4').text(`Médicamento ${index + 1}`);
+                });
+
+                // Actualizar los IDs y nombres de los formularios restantes
+                $('.medicamento-form').each(function(index) {
+                    $(this).find('input, select').each(function() {
+                        const name = $(this).attr('name').replace(/-\d+-/, `-${index}-`);
+                        const id = $(this).attr('id').replace(/-\d+-/, `-${index}-`);
+                        $(this).attr('name', name).attr('id', id);
+                    });
+                });
             });
 
             // Validar al enviar el formulario
@@ -96,6 +108,7 @@
                         if (medicamentosIds.includes(selectedValue)) {
                             duplicados.push(selectedValue); // Guardar duplicado
                             // Resaltar solo el nombre del medicamento duplicado
+                            $(this).closest('.medicamento-form').addClass('duplicate');
                             $(this).closest('.medicamento-form').find('label').first().addClass('duplicate');
                         } else {
                             medicamentosIds.push(selectedValue);
